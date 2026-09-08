@@ -1,8 +1,14 @@
 {
   "project": "roadmap-live",
   "milestones": [
-    { "id": "m1", "title": "MVP" },
-    { "id": "m2", "title": "Release" }
+    {
+      "id": "m1",
+      "title": "MVP"
+    },
+    {
+      "id": "m2",
+      "title": "Release"
+    }
   ],
   "items": [
     {
@@ -85,6 +91,35 @@
       "title": "Publish to npm for npx roadmap-live",
       "milestone": "m2",
       "status": "todo"
+    },
+    {
+      "id": "now-panel",
+      "title": "Panel for the item in progress with a running timer",
+      "milestone": "m2",
+      "status": "done",
+      "updated": "2026-09-08T10:05:00Z"
+    },
+    {
+      "id": "history",
+      "title": "History of status changes, kept by the server",
+      "milestone": "m2",
+      "status": "done",
+      "note": "Survives page reloads while the server runs.",
+      "updated": "2026-09-08T10:15:00Z"
+    },
+    {
+      "id": "milestone-filter",
+      "title": "Filter the board by clicking a milestone",
+      "milestone": "m2",
+      "status": "done",
+      "updated": "2026-09-08T10:20:00Z"
+    },
+    {
+      "id": "theme-and-favicon",
+      "title": "Theme switch, progress favicon and tab title",
+      "milestone": "m2",
+      "status": "done",
+      "updated": "2026-09-08T10:25:00Z"
     }
   ]
 }

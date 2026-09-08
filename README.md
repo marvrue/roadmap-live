@@ -41,6 +41,8 @@ node roadmap-live.js --port 5000            # another port
 node roadmap-live.js --check                # validate only, exit code 0 or 1
 ```
 
+The page shows the project name, a progress bar segmented by milestone, the item that is in progress with a running timer, a history of status changes, and a Todo / Active / Done board. Clicking a milestone in the progress bar filters the board (Escape clears the filter). The tab title and favicon show the overall progress. Light and dark follow the system; the switch in the top right overrides it.
+
 The server serves three routes: `/` is the page, `/data` returns the current state as JSON, `/events` is a Server-Sent Events stream that sends an event on every change.
 
 The file is watched with `fs.watch` (debounced) plus mtime polling every two seconds as a fallback. Editors that replace the file by rename are handled. An invalid file never stops the server: the page keeps showing the last valid state and displays a red banner with the error until the file is valid again.
