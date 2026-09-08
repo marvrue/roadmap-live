@@ -1,0 +1,31 @@
+{
+  "name": "roadmap-live",
+  "version": "0.1.0",
+  "description": "Live browser view of a roadmap.json maintained by coding agents",
+  "license": "MIT",
+  "bin": {
+    "roadmap-live": "roadmap-live.js"
+  },
+  "main": "roadmap-live.js",
+  "files": [
+    "roadmap-live.js",
+    "AGENTS.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node roadmap-live.js",
+    "check": "node roadmap-live.js --check"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "roadmap",
+    "coding-agents",
+    "claude-code",
+    "codex",
+    "sse",
+    "kanban"
+  ]
+}
