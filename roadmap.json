@@ -1,0 +1,90 @@
+{
+  "project": "roadmap-live",
+  "milestones": [
+    { "id": "m1", "title": "MVP" },
+    { "id": "m2", "title": "Release" }
+  ],
+  "items": [
+    {
+      "id": "http-server",
+      "title": "HTTP server with /, /data and /events",
+      "milestone": "m1",
+      "status": "done",
+      "note": "Single file, no dependencies.",
+      "updated": "2026-09-08T07:10:00Z"
+    },
+    {
+      "id": "file-watcher",
+      "title": "Watch roadmap.json with debounce and polling fallback",
+      "milestone": "m1",
+      "status": "done",
+      "note": "Handles editors that replace the file by rename.",
+      "updated": "2026-09-08T07:25:00Z"
+    },
+    {
+      "id": "validator",
+      "title": "Schema validation and --check mode",
+      "milestone": "m1",
+      "status": "done",
+      "note": "Invalid files never stop the server.",
+      "updated": "2026-09-08T07:40:00Z"
+    },
+    {
+      "id": "progress-bar",
+      "title": "Segmented milestone progress bar",
+      "milestone": "m1",
+      "status": "done",
+      "updated": "2026-09-08T08:05:00Z"
+    },
+    {
+      "id": "kanban-board",
+      "title": "Todo / Active / Done board with live updates",
+      "milestone": "m1",
+      "status": "done",
+      "note": "Cards move to their new column without a reload.",
+      "updated": "2026-09-08T08:30:00Z"
+    },
+    {
+      "id": "error-banner",
+      "title": "Red banner for invalid roadmap files",
+      "milestone": "m1",
+      "status": "done",
+      "updated": "2026-09-08T08:45:00Z"
+    },
+    {
+      "id": "agent-instructions",
+      "title": "AGENTS.md rules for maintaining roadmap.json",
+      "milestone": "m1",
+      "status": "done",
+      "updated": "2026-09-08T09:00:00Z"
+    },
+    {
+      "id": "readme",
+      "title": "README with install and data format",
+      "milestone": "m2",
+      "status": "done",
+      "updated": "2026-09-08T09:20:00Z"
+    },
+    {
+      "id": "screenshot",
+      "title": "Screenshot for the README",
+      "milestone": "m2",
+      "status": "active",
+      "note": "Replacing the placeholder in the README with a real screenshot.",
+      "updated": "2026-09-08T09:40:00Z"
+    },
+    {
+      "id": "windows-check",
+      "title": "Verify file watching on Windows",
+      "milestone": "m2",
+      "status": "todo",
+      "note": "fs.watch behaves differently per platform."
+    },
+    {
+      "id": "npm-publish",
+      "title": "Publish to npm for npx roadmap-live",
+      "milestone": "m2",
+      "status": "todo"
+    }
+  ]
+}
