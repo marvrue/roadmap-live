@@ -25,11 +25,7 @@ Copy three files into the project root:
 }
 ```
 
-If you use Claude Code, add a line to your `CLAUDE.md` that points to `AGENTS.md`:
-
-```
-Read AGENTS.md and follow its rules for maintaining roadmap.json.
-```
+Then tell your coding agent about it, see [Using it with Claude Code, Codex and others](#using-it-with-claude-code-codex-and-others).
 
 ## Start
 
@@ -48,6 +44,28 @@ node roadmap-live.js --check                # validate only, exit code 0 or 1
 The server serves three routes: `/` is the page, `/data` returns the current state as JSON, `/events` is a Server-Sent Events stream that sends an event on every change.
 
 The file is watched with `fs.watch` (debounced) plus mtime polling every two seconds as a fallback. Editors that replace the file by rename are handled. An invalid file never stops the server: the page keeps showing the last valid state and displays a red banner with the error until the file is valid again.
+
+## Using it with Claude Code, Codex and others
+
+The agent only needs to read `AGENTS.md`. How it finds that file depends on the tool.
+
+**Codex** reads `AGENTS.md` in the project root on its own. Nothing else to do.
+
+**Claude Code** reads `CLAUDE.md`. Add this line to the project's `CLAUDE.md` (create the file if it does not exist):
+
+```
+Read AGENTS.md and follow its rules for maintaining roadmap.json.
+```
+
+**Other agents** (Cursor, Gemini CLI, Copilot, Aider, ...) read their own rules file, for example `.cursor/rules`, `GEMINI.md` or `.github/copilot-instructions.md`. Put the same line there.
+
+Then, in the project:
+
+1. Start the page in a second terminal: `node roadmap-live.js`, open http://localhost:4242.
+2. Ask the agent to plan, for example: "Read AGENTS.md. Break the next feature into items in roadmap.json, assign them to milestones and run the check."
+3. Ask the agent to work: "Work through the open items in roadmap.json one by one, following AGENTS.md."
+
+The agent sets each item to `active` before it starts and to `done` when it is finished. The page follows along without a reload.
 
 ## Data format
 
