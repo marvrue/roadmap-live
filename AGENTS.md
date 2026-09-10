@@ -1,6 +1,6 @@
 # Instructions for coding agents
 
-`roadmap.json` in the project root is the project's roadmap. You, the coding agent, maintain the items. A human watches it live with `node roadmap-live.js` or on a rendered page; nobody edits it in a UI. `roadmap-live sync` adds pull request activity from GitHub to the same file.
+`roadmap.json` in the project root is the project's roadmap. You, the coding agent, maintain the items. A human watches it live with `node roadmap-live.js` or on a rendered page, and can leave comments and answer your questions there; nothing else is edited in a UI. `roadmap-live sync` adds pull request activity from GitHub to the same file.
 
 ## When you work on an item
 
