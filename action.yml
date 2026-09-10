@@ -25,5 +25,5 @@ inputs:
     required: false
     default: "true"
 runs:
-  using: node20
+  using: node24
   main: src/action.js
