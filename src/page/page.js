@@ -15,6 +15,9 @@
   var state = read('roadmap-state') || { mode: 'static', data: null };
   var locales = read('roadmap-locales') || {};
   var MODE_KEY = 'roadmap-live-mode';
+  var THEME_KEY = 'roadmap-live-theme';
+  var themes = Array.isArray(state.themes) ? state.themes : [];
+  var theme = state.theme || themes[0] || null;
   var MODES = ['system', 'light', 'dark'];
 
   // ---- language: ?lang, then roadmap.json / ROADMAP_LANG, then the browser
@@ -48,6 +51,18 @@
     document.documentElement.removeAttribute('data-mode');
   }
 
+  // ---- theme: every theme is embedded as its own style element -----------------
+  function applyTheme(name) {
+    theme = name;
+    var styles = document.querySelectorAll('style[data-theme]');
+    for (var i = 0; i < styles.length; i++) styles[i].media = styles[i].getAttribute('data-theme') === name ? 'all' : 'not all';
+    try { localStorage.setItem(THEME_KEY, name); } catch (e) { /* ignore */ }
+  }
+  try {
+    var storedTheme = localStorage.getItem(THEME_KEY);
+    if (storedTheme && themes.indexOf(storedTheme) >= 0 && storedTheme !== theme) applyTheme(storedTheme);
+  } catch (e) { /* ignore */ }
+
   // ---- render ----------------------------------------------------------------
   var filter = null;
   var showAllDone = false;
@@ -55,7 +70,7 @@
   var unseen = false;
 
   function opts(changed) {
-    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, showAllDone: showAllDone, changed: changed || null };
+    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, showAllDone: showAllDone, changed: changed || null };
   }
 
   function render(changed) {
@@ -151,6 +166,7 @@
     if (e.target.closest('a')) return;
     var action = el.getAttribute('data-action');
     if (action === 'theme') applyMode(MODES[(MODES.indexOf(colorMode) + 1) % MODES.length]), render();
+    else if (action === 'theme-name') applyTheme(themes[(themes.indexOf(theme) + 1) % themes.length]), render();
     else if (action === 'filter') setFilter(filter === el.getAttribute('data-id') ? null : el.getAttribute('data-id'));
     else if (action === 'clear-filter') setFilter(null);
     else if (action === 'more-done') showAllDone = true, render();
@@ -166,6 +182,8 @@
     getState: function () { return state; },
     setState: function (next) {
       state = next;
+      state.themes = themes;
+      state.theme = theme;
       var changed = null;
       if (state.data) {
         var status = {};

@@ -10,7 +10,7 @@
  *   changelog: [lines], generatedAt,  static view
  *   repoUrl, roadmapUrl
  * }
- * opts = { t, lang, now, filter, colorMode, showAllDone, changed }
+ * opts = { t, lang, now, filter, colorMode, theme, showAllDone, changed }
  */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
@@ -226,6 +226,9 @@
       parts.push('<span>' + (upd ? esc(t('page.updated', { time: '' })).trim() + ' ' + time(upd, opts.now, opts.lang) : esc(t('page.updatedNever'))) + '</span>');
       var pr = latestPr(data);
       if (pr) parts.push('<span class="sep">&middot;</span><span>' + prLabel(state, t, pr) + '</span>');
+    }
+    if (opts.theme && state.themes && state.themes.length > 1) {
+      parts.push('<button type="button" class="theme" data-action="theme-name" title="' + esc(t('page.pickTheme', { list: state.themes.join(', ') })) + '">' + esc(opts.theme) + '</button>');
     }
     parts.push('<button type="button" class="theme" data-action="theme" title="' + esc(t('page.themeTitle')) + '">' + esc(t('page.theme.' + (opts.colorMode || 'system'))) + '</button>');
     return '<header class="top"><h1>' + esc(data ? data.project : 'roadmap-live') + '</h1><div class="meta">' + parts.join('') + '</div></header>';

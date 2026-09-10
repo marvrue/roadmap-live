@@ -7,6 +7,7 @@
     "prs": "PRs {list}",
     "theme": { "system": "System", "light": "Light", "dark": "Dark" },
     "themeTitle": "Switch between light, dark and system",
+    "pickTheme": "Switch the theme ({list})",
     "connected": "connected",
     "disconnected": "disconnected",
     "progress": "{done} of {total} done",
