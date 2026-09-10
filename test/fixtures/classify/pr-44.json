@@ -1,0 +1,8 @@
+{
+  "matches": [ { "item_id": "checkout", "confidence": 0.88, "status_hint": "active" } ],
+  "open_points": [
+    { "item_id": "checkout", "text": "Please debounce the quantity buttons, double taps add two items", "source": "pr:44#review_comment:2001", "resolved": false },
+    { "item_id": "checkout", "text": "Add a test for the empty cart case", "source": "pr:44#review_comment:2002", "resolved": false }
+  ],
+  "unplanned": []
+}

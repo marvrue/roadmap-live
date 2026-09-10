@@ -1,0 +1,118 @@
+{
+  "project": "storefront",
+  "theme": "neutral",
+  "stale_after_days": 7,
+  "milestones": [
+    { "id": "m1", "title": "Buying flow" },
+    { "id": "m2", "title": "Warehouse" },
+    { "id": "m3", "title": "Launch" }
+  ],
+  "items": [
+    {
+      "id": "listing-editor",
+      "title": "Listing editor",
+      "milestone": "m1",
+      "status": "done",
+      "note": "Images are resized on upload.",
+      "updated": "2026-09-08T14:02:00Z",
+      "prs": [42],
+      "open_points": [
+        {
+          "text": "Please validate the image size before upload",
+          "source": "pr:42#comment:1893",
+          "opened": "2026-09-08T13:40:00Z",
+          "resolved": "2026-09-08T14:02:00Z"
+        }
+      ]
+    },
+    {
+      "id": "checkout",
+      "title": "Checkout with reserved copies",
+      "milestone": "m1",
+      "status": "active",
+      "updated": "2026-09-09T09:00:00Z",
+      "prs": [44],
+      "open_points": [
+        {
+          "text": "Please debounce the quantity buttons, double taps add two items",
+          "source": "pr:44#review_comment:2001",
+          "opened": "2026-09-09T08:30:00Z",
+          "resolved": null
+        },
+        {
+          "text": "Add a test for the empty cart case",
+          "source": "pr:44#review_comment:2002",
+          "opened": "2026-09-09T08:31:00Z",
+          "resolved": null
+        }
+      ]
+    },
+    {
+      "id": "payment",
+      "title": "Card payment with Stripe",
+      "milestone": "m1",
+      "status": "blocked",
+      "note": "Waiting for the Stripe sandbox account.",
+      "updated": "2026-09-07T16:00:00Z",
+      "prs": [43]
+    },
+    {
+      "id": "order-queue",
+      "title": "Order queue for the warehouse screen",
+      "milestone": "m2",
+      "status": "active",
+      "updated": "2026-08-20T10:00:00Z"
+    },
+    {
+      "id": "printer",
+      "title": "Packing slip printer support",
+      "milestone": "m2",
+      "status": "todo"
+    },
+    {
+      "id": "notifications",
+      "title": "Notify the customer when the order ships",
+      "milestone": "m2",
+      "status": "todo",
+      "note": "SMS first, push later."
+    },
+    {
+      "id": "landing-page",
+      "title": "Landing page",
+      "milestone": "m3",
+      "status": "done",
+      "updated": "2026-09-05T11:00:00Z"
+    },
+    {
+      "id": "analytics",
+      "title": "Basic analytics",
+      "milestone": "m3",
+      "status": "done",
+      "updated": "2026-09-04T11:00:00Z"
+    },
+    {
+      "id": "legal",
+      "title": "Terms and privacy pages",
+      "milestone": "m3",
+      "status": "done",
+      "updated": "2026-09-03T11:00:00Z"
+    },
+    {
+      "id": "seo",
+      "title": "Search engine basics",
+      "milestone": "m3",
+      "status": "done",
+      "updated": "2026-09-02T11:00:00Z"
+    },
+    {
+      "id": "app-store",
+      "title": "App store listing",
+      "milestone": "m3",
+      "status": "todo"
+    }
+  ],
+  "unplanned": [
+    { "title": "Wishlist alerts", "prs": [41], "first_seen": "2026-09-06T09:00:00Z" }
+  ],
+  "sync": { "last_run": "2026-09-09T10:00:00Z", "repo": "acme/storefront" }
+}

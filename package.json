@@ -1,7 +1,7 @@
 {
   "name": "roadmap-live",
-  "version": "0.1.0",
-  "description": "Live browser view of a roadmap.json maintained by coding agents",
+  "version": "0.2.0",
+  "description": "Live browser view of a roadmap.json maintained by coding agents, synced with GitHub pull requests",
   "license": "MIT",
   "bin": {
     "roadmap-live": "roadmap-live.js"
@@ -9,13 +9,17 @@
   "main": "roadmap-live.js",
   "files": [
     "roadmap-live.js",
+    "src/",
+    "action.yml",
+    "examples/",
     "AGENTS.md",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
     "start": "node roadmap-live.js",
-    "check": "node roadmap-live.js --check"
+    "check": "node roadmap-live.js --check",
+    "test": "node --test test/*.test.js"
   },
   "engines": {
     "node": ">=18"
@@ -25,6 +29,8 @@
     "coding-agents",
     "claude-code",
     "codex",
+    "github-actions",
+    "pull-requests",
     "sse",
     "kanban"
   ]
