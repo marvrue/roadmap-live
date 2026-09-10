@@ -68,3 +68,87 @@ test('store snapshot carries git state and addComment notifies listeners', async
     store.stop();
   }
 });
+
+const http = require('http');
+const { startServer } = require('../src/server');
+
+function listen(file) {
+  return new Promise((resolve) => {
+    const server = startServer({ file, port: 0, theme: null }, { LANG: 'C', PATH: process.env.PATH });
+    server.once('listening', () => resolve({ server, port: server.address().port }));
+  });
+}
+
+function post(port, body, raw = false) {
+  return new Promise((resolve, reject) => {
+    const data = raw ? body : JSON.stringify(body);
+    const req = http.request({ host: '127.0.0.1', port, path: '/comment', method: 'POST', headers: { 'content-type': 'application/json' } }, (res) => {
+      let out = '';
+      res.on('data', (d) => { out += d; });
+      res.on('end', () => resolve({ status: res.statusCode, body: out }));
+    });
+    req.on('error', reject);
+    req.end(data);
+  });
+}
+
+function nextEvent(port) {
+  return new Promise((resolve, reject) => {
+    const req = http.get({ host: '127.0.0.1', port, path: '/events' }, (res) => {
+      let buf = '';
+      res.on('data', (d) => {
+        buf += d;
+        const m = /event: update\ndata: (.*)\n\n/g;
+        let last = null, x;
+        while ((x = m.exec(buf))) last = x[1];
+        if (last && buf.split('event: update').length > 2) { req.destroy(); resolve(JSON.parse(last)); }
+      });
+    });
+    req.on('error', (e) => { if (e.code !== 'ECONNRESET') reject(e); });
+  });
+}
+
+test('POST /comment appends and the SSE stream receives the new snapshot', async () => {
+  const file = roadmapFile();
+  const { server, port } = await listen(file);
+  try {
+    const waiting = nextEvent(port);
+    const r = await post(port, { id: 'checkout', text: 'Please debounce the buttons' });
+    assert.strictEqual(r.status, 204);
+    const snap = await waiting;
+    const item = snap.data.items.find((it) => it.id === 'checkout');
+    assert.strictEqual(item.comments[0].from, 'human');
+    assert.strictEqual(item.comments[0].text, 'Please debounce the buttons');
+    assert.ok('git' in snap);
+  } finally {
+    await new Promise((r) => server.close(r));
+  }
+});
+
+test('POST /comment rejects bad input', async () => {
+  const file = roadmapFile();
+  const { server, port } = await listen(file);
+  try {
+    assert.strictEqual((await post(port, { id: 'checkout', text: '' })).status, 400);
+    assert.strictEqual((await post(port, { id: 'nope', text: 'x' })).status, 400);
+    assert.strictEqual((await post(port, 'not json', true)).status, 400);
+    assert.strictEqual((await post(port, { id: 'checkout', text: 'x'.repeat(2001) })).status, 413);
+    fs.writeFileSync(file, '{ broken');
+    await new Promise((r) => setTimeout(r, 300));
+    assert.strictEqual((await post(port, { id: 'checkout', text: 'x' })).status, 409);
+  } finally {
+    await new Promise((r) => server.close(r));
+  }
+});
+
+test('concurrent posts do not lose comments', async () => {
+  const file = roadmapFile();
+  const { server, port } = await listen(file);
+  try {
+    await Promise.all([1, 2, 3, 4, 5].map((n) => post(port, { id: 'checkout', text: `comment ${n}` })));
+    const item = JSON.parse(fs.readFileSync(file, 'utf8')).items.find((it) => it.id === 'checkout');
+    assert.strictEqual(item.comments.length, 5);
+  } finally {
+    await new Promise((r) => server.close(r));
+  }
+});

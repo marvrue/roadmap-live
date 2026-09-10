@@ -55,8 +55,33 @@ function startServer(opts, env = process.env) {
     return renderPage(snap, { themeCss: theme.css, lang, langFixed: snap.fixedLang, live: true });
   };
 
+  const MAX_BODY = 16 * 1024;
+  const json = (res, status, body) => {
+    res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+    res.end(body === undefined ? '' : JSON.stringify(body));
+  };
+
+  const handleComment = (req, res) => {
+    let raw = '';
+    req.on('data', (d) => {
+      raw += d;
+      if (raw.length > MAX_BODY) { json(res, 413, { error: 'body too large' }); req.destroy(); }
+    });
+    req.on('end', () => {
+      if (res.writableEnded) return;
+      let body;
+      try { body = JSON.parse(raw); } catch { return json(res, 400, { error: 'invalid JSON' }); }
+      if (!body || typeof body !== 'object' || typeof body.id !== 'string') return json(res, 400, { error: 'id must be a string' });
+      const r = store.addComment(body.id, body.text);
+      if (!r.ok) return json(res, r.status, { error: r.error });
+      res.writeHead(204, { 'Cache-Control': 'no-store' });
+      res.end();
+    });
+  };
+
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://localhost');
+    if (req.method === 'POST' && url.pathname === '/comment') return handleComment(req, res);
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       res.writeHead(405, { 'Content-Type': 'text/plain' });
       return res.end('method not allowed');
@@ -98,15 +123,20 @@ function startServer(opts, env = process.env) {
     console.log(t('cli.server.stop'));
   });
 
+  const stopAll = () => {
+    clearInterval(heartbeat);
+    store.stop();
+    for (const res of clients) res.end();
+    clients.clear();
+  };
+  const originalClose = server.close.bind(server);
+  server.close = (cb) => { stopAll(); return originalClose(cb); };
+
   let stopping = false;
   const shutdown = () => {
     if (stopping) return;
     stopping = true;
     console.log(`\n${t('cli.server.stopped')}`);
-    clearInterval(heartbeat);
-    store.stop();
-    for (const res of clients) res.end();
-    clients.clear();
     server.close(() => process.exit(0));
     setTimeout(() => process.exit(0), 500).unref();
   };
