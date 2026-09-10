@@ -58,6 +58,7 @@
     "invalidPort": "ungültiger Port: {port}",
     "checkOk": "{file}: ok ({milestones} Meilensteine, {items} Items, {done} erledigt, {active} in Arbeit)",
     "checkParallel": "Hinweis: {n} Items sind gleichzeitig in Arbeit",
+    "checkLarge": "Hinweis: {file} ist {kb} KB groß, kürze alte Kommentare und Notizen, damit der Agent weniger liest",
     "checkProblems": { "one": "{file}: 1 Problem", "other": "{file}: {n} Probleme" },
     "invalidFile": "{file} ist ungültig:",
     "server": {

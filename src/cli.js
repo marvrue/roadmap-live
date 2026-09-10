@@ -5,7 +5,7 @@
 
 const path = require('path');
 const i18n = require('./i18n');
-const { loadRoadmap, displayName } = require('./validate');
+const { loadRoadmap, displayName, LARGE_FILE_BYTES } = require('./validate');
 
 const DEFAULT_FILE = 'roadmap.json';
 const DEFAULT_PORT = 4242;
@@ -75,6 +75,8 @@ function runCheck(file, env = process.env) {
     const done = result.data.items.filter((it) => it.status === 'done').length;
     console.log(t('cli.checkOk', { file: name, milestones: result.data.milestones.length, items: result.data.items.length, done, active }));
     if (active > 1) console.log(t('cli.checkParallel', { n: active }));
+    const bytes = Buffer.byteLength(result.raw, 'utf8');
+    if (bytes > LARGE_FILE_BYTES) console.log(t('cli.checkLarge', { file: name, kb: Math.round(bytes / 1024) }));
     return 0;
   }
   console.error(t('cli.checkProblems', { file: name, n: result.errors.length }));
