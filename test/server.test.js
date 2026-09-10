@@ -37,6 +37,22 @@ test('appendComment rejects empty text, unknown ids, long text and invalid files
   assert.strictEqual(appendComment(file, 'menu-editor', 'hi', NOW).status, 409);
 });
 
+test('appendComment returns 500 and removes the temp file when the write fails', { skip: process.platform === 'win32' }, () => {
+  const dir = tmpDir();
+  const file = path.join(dir, 'roadmap.json');
+  fs.writeFileSync(file, `${JSON.stringify(fixture('roadmap-base.json'), null, 2)}\n`);
+  fs.chmodSync(dir, 0o500);
+  try {
+    const result = appendComment(file, 'menu-editor', 'Should not persist', NOW);
+    assert.strictEqual(result.status, 500);
+    assert.ok(result.error);
+  } finally {
+    fs.chmodSync(dir, 0o700);
+    const leftovers = fs.readdirSync(dir).filter((f) => f.endsWith('.tmp'));
+    assert.deepStrictEqual(leftovers, []);
+  }
+});
+
 test('store snapshot carries git state and addComment notifies listeners', async () => {
   const file = roadmapFile();
   const store = createStore(file, { gitDir: path.dirname(file) });

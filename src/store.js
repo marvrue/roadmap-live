@@ -109,8 +109,13 @@ function appendComment(file, id, text, now = new Date().toISOString()) {
   if (!Array.isArray(item.comments)) item.comments = [];
   item.comments.push({ from: 'human', text: text.trim(), at: now });
   const tmp = `${file}.${process.pid}.tmp`;
-  fs.writeFileSync(tmp, `${JSON.stringify(result.data, null, 2)}\n`);
-  fs.renameSync(tmp, file);
+  try {
+    fs.writeFileSync(tmp, `${JSON.stringify(result.data, null, 2)}\n`);
+    fs.renameSync(tmp, file);
+  } catch (e) {
+    try { fs.unlinkSync(tmp); } catch { /* ignore */ }
+    return { ok: false, status: 500, error: e.message };
+  }
   return { ok: true };
 }
 
