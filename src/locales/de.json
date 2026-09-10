@@ -22,7 +22,8 @@
       "unplanned": "{title}",
       "notOnRoadmap": "Nicht auf der Roadmap",
       "stale": "ruht",
-      "staleText": { "one": "{title}: seit 1 Tag keine Aktivität", "other": "{title}: seit {n} Tagen keine Aktivität" }
+      "staleText": { "one": "{title}: seit 1 Tag keine Aktivität", "other": "{title}: seit {n} Tagen keine Aktivität" },
+      "agent": "Agent"
     },
     "now": {
       "inProgress": "In Arbeit",
@@ -49,7 +50,22 @@
     "invalid": "{file} ist ungültig, der letzte gültige Stand wird angezeigt.",
     "noData": "noch keine gültigen Daten",
     "justNow": "gerade eben",
-    "unplannedTitle": "Ungeplant"
+    "unplannedTitle": "Ungeplant",
+    "waiting": { "title": "Wartet auf dich", "hint": "Antworten geht auf der Live-Seite" },
+    "comments": {
+      "count": { "one": "1 Kommentar", "other": "{n} Kommentare" },
+      "placeholder": "Dem Agenten etwas sagen…",
+      "send": "Senden",
+      "sent": "gesendet",
+      "you": "du",
+      "agent": "Agent",
+      "show": "anzeigen",
+      "hide": "ausblenden"
+    },
+    "git": {
+      "ahead": { "one": "1 vor main", "other": "{n} vor main" },
+      "changed": { "one": "1 geändert", "other": "{n} geändert" }
+    }
   },
   "cli": {
     "usage": "Aufruf: roadmap-live [Befehl] [Datei] [Optionen]\n\nBefehle:\n  (keiner)               Live-Server starten (Standard)\n  sync                   Pull-Request-Aktivität von GitHub lesen und die Roadmap aktualisieren\n  render                 statische HTML-Seite aus dem aktuellen Stand schreiben\n  init                   roadmap.json, AGENTS.md und die Workflow-Datei anlegen\n  auth                   im Browser bei GitHub anmelden (--logout entfernt das Token)\n  doctor                 erklären, welche GitHub-Anmeldung und welcher Provider verwendet würden\n\nOptionen:\n  Datei                  Pfad zur roadmap.json (Standard: ./roadmap.json)\n  --port <n>             HTTP-Port für den Live-Server (Standard: 4242)\n  --check                Datei prüfen und mit 0 (ok) oder 1 (Probleme) beenden\n  --repo owner/name      Repository für sync (Standard: sync.repo, GITHUB_REPOSITORY oder das Git-Remote)\n  --dry-run              sync: geplante Änderungen anzeigen, nichts schreiben\n  --apply                sync: .roadmap-live/result.json vom Coding-Agenten übernehmen\n  --provider <name>      sync: anthropic, claude-cli, codex-cli, gemini-cli oder agent\n  --public               auth: nur den Scope public_repo anfordern\n  --out <Pfad>           render: Ausgabedatei (Standard: roadmap/index.html)\n  --theme <name>         render: neutral, paper, mono oder eine Datei in roadmap-themes/\n  --mode light|dark      render: Farbmodus festlegen statt dem System zu folgen\n  -h, --help             diese Hilfe anzeigen",
