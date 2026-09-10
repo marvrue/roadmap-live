@@ -79,10 +79,10 @@ function listen(file) {
   });
 }
 
-function post(port, body, raw = false) {
+function post(port, body, raw = false, headers = {}) {
   return new Promise((resolve, reject) => {
     const data = raw ? body : JSON.stringify(body);
-    const req = http.request({ host: '127.0.0.1', port, path: '/comment', method: 'POST', headers: { 'content-type': 'application/json' } }, (res) => {
+    const req = http.request({ host: '127.0.0.1', port, path: '/comment', method: 'POST', headers: { 'content-type': 'application/json', ...headers } }, (res) => {
       let out = '';
       res.on('data', (d) => { out += d; });
       res.on('end', () => resolve({ status: res.statusCode, body: out }));
@@ -148,6 +148,47 @@ test('concurrent posts do not lose comments', async () => {
     await Promise.all([1, 2, 3, 4, 5].map((n) => post(port, { id: 'checkout', text: `comment ${n}` })));
     const item = JSON.parse(fs.readFileSync(file, 'utf8')).items.find((it) => it.id === 'checkout');
     assert.strictEqual(item.comments.length, 5);
+  } finally {
+    await new Promise((r) => server.close(r));
+  }
+});
+
+test('POST /comment delivers 413 reliably for oversized bodies', async () => {
+  const file = roadmapFile();
+  const { server, port } = await listen(file);
+  try {
+    for (let i = 0; i < 5; i++) {
+      const r = await post(port, { id: 'checkout', text: 'x'.repeat(20000) });
+      assert.strictEqual(r.status, 413);
+      assert.ok(JSON.parse(r.body).error);
+    }
+  } finally {
+    await new Promise((r) => server.close(r));
+  }
+});
+
+test('POST /comment rejects foreign origins and accepts the server\'s own', async () => {
+  const file = roadmapFile();
+  const { server, port } = await listen(file);
+  try {
+    const foreign = await post(port, { id: 'checkout', text: 'from evil' }, false, { origin: 'https://evil.example' });
+    assert.strictEqual(foreign.status, 403);
+    const afterForeign = JSON.parse(fs.readFileSync(file, 'utf8')).items.find((it) => it.id === 'checkout');
+    assert.ok(!afterForeign.comments || afterForeign.comments.length === 0);
+
+    const ok = await post(port, { id: 'checkout', text: 'from self' }, false, { origin: `http://127.0.0.1:${port}` });
+    assert.strictEqual(ok.status, 204);
+  } finally {
+    await new Promise((r) => server.close(r));
+  }
+});
+
+test('POST /comment rejects non-JSON content-type', async () => {
+  const file = roadmapFile();
+  const { server, port } = await listen(file);
+  try {
+    const r = await post(port, { id: 'checkout', text: 'x' }, false, { 'content-type': 'text/plain' });
+    assert.strictEqual(r.status, 415);
   } finally {
     await new Promise((r) => server.close(r));
   }
