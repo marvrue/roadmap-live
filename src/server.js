@@ -62,15 +62,30 @@ function startServer(opts, env = process.env) {
   };
 
   const handleComment = (req, res) => {
-    let raw = '';
+    const contentType = (req.headers['content-type'] || '').split(';')[0].trim();
+    if (contentType !== 'application/json') return json(res, 415, { error: 'content-type must be application/json' });
+    const origin = req.headers.origin;
+    if (origin) {
+      const port = server.address().port;
+      const allowed = new Set([`http://127.0.0.1:${port}`, `http://localhost:${port}`]);
+      if (!allowed.has(origin)) return json(res, 403, { error: 'forbidden origin' });
+    }
+    const chunks = [];
+    let size = 0;
+    let overLimit = false;
     req.on('data', (d) => {
-      raw += d;
-      if (raw.length > MAX_BODY) { json(res, 413, { error: 'body too large' }); req.destroy(); }
+      if (overLimit) return;
+      chunks.push(d);
+      size += d.length;
+      if (size > MAX_BODY) {
+        overLimit = true;
+        json(res, 413, { error: 'body too large' });
+      }
     });
     req.on('end', () => {
       if (res.writableEnded) return;
       let body;
-      try { body = JSON.parse(raw); } catch { return json(res, 400, { error: 'invalid JSON' }); }
+      try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { return json(res, 400, { error: 'invalid JSON' }); }
       if (!body || typeof body !== 'object' || typeof body.id !== 'string') return json(res, 400, { error: 'id must be a string' });
       const r = store.addComment(body.id, body.text);
       if (!r.ok) return json(res, r.status, { error: r.error });
