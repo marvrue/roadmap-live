@@ -3,11 +3,15 @@
 // File watching and the in-memory state of the live server.
 
 const fs = require('fs');
+const path = require('path');
 const { loadRoadmap, displayName } = require('./validate');
+const { gitState } = require('./git-state');
 
 const DEBOUNCE_MS = 100;
 const POLL_MS = 2000;
 const MAX_CHANGES = 40;
+const MAX_COMMENT_CHARS = 2000;
+const GIT_POLL_MS = 5000;
 
 function statKey(file) {
   try {
@@ -93,13 +97,39 @@ function diffChanges(prev, next, at) {
   return changes;
 }
 
-function createStore(file, { log = () => {}, t = (k) => k } = {}) {
-  const state = { mode: 'live', ok: false, data: null, error: null, updatedAt: null, changes: [], file: displayName(file) };
+// Appends a human comment to an item. Re-reads the file so a concurrent
+// change by the agent is not lost, then writes atomically (temp + rename).
+function appendComment(file, id, text, now = new Date().toISOString()) {
+  if (typeof text !== 'string' || !text.trim()) return { ok: false, status: 400, error: 'text must be a non-empty string' };
+  if (text.length > MAX_COMMENT_CHARS) return { ok: false, status: 413, error: `text must be at most ${MAX_COMMENT_CHARS} characters` };
+  const result = loadRoadmap(file);
+  if (!result.ok) return { ok: false, status: 409, error: result.errors.join('; ') };
+  const item = result.data.items.find((it) => it.id === id);
+  if (!item) return { ok: false, status: 400, error: `unknown item: ${id}` };
+  if (!Array.isArray(item.comments)) item.comments = [];
+  item.comments.push({ from: 'human', text: text.trim(), at: now });
+  const tmp = `${file}.${process.pid}.tmp`;
+  fs.writeFileSync(tmp, `${JSON.stringify(result.data, null, 2)}\n`);
+  fs.renameSync(tmp, file);
+  return { ok: true };
+}
+
+function createStore(file, { log = () => {}, t = (k) => k, gitDir = path.dirname(file) } = {}) {
+  const state = { mode: 'live', ok: false, data: null, error: null, updatedAt: null, changes: [], file: displayName(file), git: null };
   const listeners = new Set();
   let lastRaw;
   let lastOk;
 
   const snapshot = () => ({ ...state });
+
+  const notify = () => { for (const fn of listeners) fn(snapshot()); };
+
+  const refreshGit = () => {
+    const next = gitState(gitDir);
+    if (JSON.stringify(next) === JSON.stringify(state.git)) return false;
+    state.git = next;
+    return true;
+  };
 
   const reload = () => {
     const result = loadRoadmap(file);
@@ -120,17 +150,28 @@ function createStore(file, { log = () => {}, t = (k) => k } = {}) {
       log(`${t('cli.server.invalid')}\n  - ${result.errors.join('\n  - ')}`);
     }
     state.ok = result.ok;
-    for (const fn of listeners) fn(snapshot());
+    refreshGit();
+    notify();
   };
 
   reload();
   const stop = watchFile(file, reload);
 
+  refreshGit();
+  const gitTimer = setInterval(() => { if (refreshGit()) notify(); }, GIT_POLL_MS);
+  gitTimer.unref();
+
   return {
     snapshot,
     subscribe: (fn) => { listeners.add(fn); return () => listeners.delete(fn); },
-    stop,
+    addComment: (id, text) => {
+      const r = appendComment(file, id, text);
+      if (r.ok) reload();
+      return r;
+    },
+    refreshGit,
+    stop: () => { clearInterval(gitTimer); stop(); },
   };
 }
 
-module.exports = { watchFile, diffChanges, createStore, statKey };
+module.exports = { watchFile, diffChanges, createStore, statKey, appendComment, MAX_COMMENT_CHARS };
