@@ -1,0 +1,47 @@
+/* mono: cool grays, everything monospace, tighter spacing. */
+:root {
+  color-scheme: light dark;
+  --bg: #f3f4f6;
+  --surface: #f9fafb;
+  --text: #16181d;
+  --text-2: #4f5560;
+  --text-3: #676d78;
+  --line: #dcdfe4;
+  --line-strong: #b9bec7;
+  --attention: #b23a1a;
+  --attention-bg: rgba(178, 58, 26, 0.08);
+  --done: #363a42;
+  --font-heading: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --font-body: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 0px;
+  --measure: 72ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --bg: #111318;
+    --surface: #171a20;
+    --text: #e6e8ec;
+    --text-2: #a0a6b0;
+    --text-3: #878d98;
+    --line: #262a32;
+    --line-strong: #3a3f4a;
+    --attention: #f29066;
+    --attention-bg: rgba(242, 144, 102, 0.12);
+    --done: #c4c8d0;
+  }
+}
+:root[data-mode="dark"] {
+  --bg: #111318;
+  --surface: #171a20;
+  --text: #e6e8ec;
+  --text-2: #a0a6b0;
+  --text-3: #878d98;
+  --line: #262a32;
+  --line-strong: #3a3f4a;
+  --attention: #f29066;
+  --attention-bg: rgba(242, 144, 102, 0.12);
+  --done: #c4c8d0;
+}
+:root[data-mode="light"] { color-scheme: light; }
+:root[data-mode="dark"] { color-scheme: dark; }

@@ -1,0 +1,47 @@
+/* neutral: near-white and near-black, system sans, mono for labels. Default. */
+:root {
+  color-scheme: light dark;
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --text: #1a1a1c;
+  --text-2: #55555b;
+  --text-3: #6f6f75;
+  --line: #e4e4e6;
+  --line-strong: #c6c6ca;
+  --attention: #b1381f;
+  --attention-bg: rgba(177, 56, 31, 0.08);
+  --done: #3a3a3e;
+  --font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 3px;
+  --measure: 64ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --bg: #131315;
+    --surface: #1a1a1d;
+    --text: #ebebec;
+    --text-2: #a4a4aa;
+    --text-3: #8b8b91;
+    --line: #29292d;
+    --line-strong: #3e3e44;
+    --attention: #f09070;
+    --attention-bg: rgba(240, 144, 112, 0.12);
+    --done: #c8c8cc;
+  }
+}
+:root[data-mode="dark"] {
+  --bg: #131315;
+  --surface: #1a1a1d;
+  --text: #ebebec;
+  --text-2: #a4a4aa;
+  --text-3: #8b8b91;
+  --line: #29292d;
+  --line-strong: #3e3e44;
+  --attention: #f09070;
+  --attention-bg: rgba(240, 144, 112, 0.12);
+  --done: #c8c8cc;
+}
+:root[data-mode="light"] { color-scheme: light; }
+:root[data-mode="dark"] { color-scheme: dark; }
