@@ -19,6 +19,15 @@
 
 `roadmap-live sync` writes these and you must not edit them: the status `blocked`, `prs`, `open_points`, `unplanned` and `sync`. You keep using `todo`, `active` and `done`. If an item is `blocked` and you finish it, set it to `done` as usual.
 
+## Comments and questions
+
+The human can write to you from the page. Each item may have `comments` (a conversation) and you may set a `question`.
+
+- Before you start an item and after every change, read the `comments` of open items (`todo`, `active`, `blocked`). Reply to every `human` comment without a later `agent` reply: append `{ "from": "agent", "text": "one sentence", "at": "<now>" }`, then act on it.
+- When you need a decision, set `"question": { "text": "...", "options": ["a", "b"], "asked": "<now>" }` (2 to 4 options when possible), and continue with another item. When a `human` comment answers it, remove `question` and act.
+- When you set an item to `active`, set `"branch"` to the git branch you work on.
+- Never edit or delete existing comments. Keep your replies to one sentence.
+
 ## If `.roadmap-live/inbox.json` exists
 
 Sync could not classify pull requests itself and left them for you.
@@ -62,4 +71,5 @@ Exit code 0 means the file is valid. Exit code 1 prints the problems; fix them b
 - `status` is one of `todo`, `active`, `done` for you. `blocked` is set by sync only.
 - `milestone` must reference an existing milestone `id`.
 - `note` and `updated` are optional.
+- `comments`, `question` and `branch` are optional, see above.
 - `theme`, `language` and `stale_after_days` at the top level are optional settings for the page; leave them as they are.
