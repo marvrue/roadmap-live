@@ -85,6 +85,7 @@
     var s = Math.max(0, Math.floor((now - t) / 1000));
     var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
     var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    if (h >= 48) return Math.floor(h / 24) + 'd ' + (h % 24) + 'h';
     return (h ? h + ':' + pad(m) : m) + ':' + pad(sec);
   }
 
@@ -404,7 +405,7 @@
     out += renderFeed(state, opts);
     var now = renderNow(state, opts);
     if (state.mode === 'live') out += '<section class="live">' + now + renderHistory(state, opts) + '</section>';
-    else if (now) out += '<section class="live"><div>' + now + '</div></section>';
+    else if (now) out += '<section class="live single">' + now + '</section>';
     out += renderBoard(state, opts);
     out += renderUnplanned(state, opts);
     if (state.mode !== 'live') out += renderChangelog(state, opts);
