@@ -1,0 +1,47 @@
+/* paper: warm off-white, warm dark text, serif headings, sans body. */
+:root {
+  color-scheme: light dark;
+  --bg: #f6f1e8;
+  --surface: #fbf8f2;
+  --text: #2b2420;
+  --text-2: #645a52;
+  --text-3: #736860;
+  --line: #e2dacd;
+  --line-strong: #c9bfaf;
+  --attention: #a8441d;
+  --attention-bg: rgba(168, 68, 29, 0.09);
+  --done: #4a423b;
+  --font-heading: Charter, "Bitstream Charter", "Iowan Old Style", "Source Serif Pro", Georgia, serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 2px;
+  --measure: 62ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --bg: #211d1a;
+    --surface: #282320;
+    --text: #ece5da;
+    --text-2: #b0a698;
+    --text-3: #978d80;
+    --line: #363029;
+    --line-strong: #4d453c;
+    --attention: #eb9a6c;
+    --attention-bg: rgba(235, 154, 108, 0.12);
+    --done: #cfc6b9;
+  }
+}
+:root[data-mode="dark"] {
+  --bg: #211d1a;
+  --surface: #282320;
+  --text: #ece5da;
+  --text-2: #b0a698;
+  --text-3: #978d80;
+  --line: #363029;
+  --line-strong: #4d453c;
+  --attention: #eb9a6c;
+  --attention-bg: rgba(235, 154, 108, 0.12);
+  --done: #cfc6b9;
+}
+:root[data-mode="light"] { color-scheme: light; }
+:root[data-mode="dark"] { color-scheme: dark; }

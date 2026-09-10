@@ -1,114 +1,158 @@
 # roadmap-live
 
-A live browser view of a project's roadmap while coding agents (Claude Code, Codex, etc.) work on it. The agent maintains a `roadmap.json`; a small Node script watches the file and serves a page that updates without reloading.
+Your coding agent keeps a `roadmap.json`. roadmap-live turns it into a page you can look at: a progress bar per milestone, what is being worked on right now, what reviewers still want, and what happened that nobody planned. It works live on your machine while agents work, and it works from GitHub pull requests for a page that stays current without anyone editing it.
 
-No dependencies, no build step, one script file. Requires Node 18 or newer.
+![Rendered roadmap page in the paper theme](docs/screenshot.png)
 
-<!-- screenshot placeholder: docs/screenshot.png -->
-*Screenshot: `docs/screenshot.png` (to be added)*
+No dependencies, no build step. Node 18 or newer.
 
-## Installation in an existing project
+## Two ways to use it
 
-Copy three files into the project root:
+**Live, while agents work.** Start `npx roadmap-live` in your project. The agent updates `roadmap.json` as it goes; the page at http://localhost:4242 follows without a reload, with a timer on the item in progress and a history of status changes.
 
-1. `roadmap-live.js` from this repository
-2. `AGENTS.md` from this repository (or merge its content into your existing `AGENTS.md`)
-3. A new `roadmap.json` with this content:
+**Synced from GitHub pull requests.** Run `npx roadmap-live sync` now and then, or let the included GitHub Action run it on every pull request event. It reads comments, reviews and merges, matches them to the roadmap items, and updates the same file. `npx roadmap-live render` writes a static page from it, ready for GitHub Pages or a link in a chat.
 
-```json
-{
-  "project": "My Project",
-  "milestones": [
-    { "id": "m1", "title": "MVP" }
-  ],
-  "items": []
-}
+Both views show the same page. The static one has no live parts.
+
+## No API key needed
+
+The matching step ("which item does this pull request belong to") is done by a language model. roadmap-live does not ship one and does not need a key for it. It uses the coding agent you already have, in this order:
+
+1. `ANTHROPIC_API_KEY`, if it is set.
+2. Claude Code, if `claude` is installed. Uses your subscription.
+3. Codex CLI, if `codex` is installed.
+4. Gemini CLI, if `gemini` is installed.
+5. None of the above: sync writes what it found into `.roadmap-live/inbox.json`, and your agent classifies it on its next run by following the rule in `AGENTS.md`. Then you run `npx roadmap-live sync --apply`.
+
+Only the GitHub Action needs a key, because nothing else is installed on the runner.
+
+GitHub login works the same way. If you use the GitHub CLI, you are already logged in. Otherwise the first `sync` shows a short code and a link; you confirm in the browser once, and the token is stored in your user folder. `npx roadmap-live doctor` tells you which login and which model would be used, and why.
+
+## Install in three steps
+
+1. In your project folder:
+
+   ```
+   npx roadmap-live init
+   ```
+
+   This writes `roadmap.json`, `AGENTS.md` and `.github/workflows/roadmap.yml`. Existing files are kept.
+
+2. Tell your agent to read the rules. Codex reads `AGENTS.md` by itself. For Claude Code, add this line to `CLAUDE.md` (create the file if needed); for Cursor, Gemini CLI or Copilot put it in their rules file:
+
+   ```
+   Read AGENTS.md and follow its rules for maintaining roadmap.json.
+   ```
+
+3. Ask the agent to plan: "Read AGENTS.md. Break the next feature into items in roadmap.json, assign them to milestones and run the check." Then start the page:
+
+   ```
+   npx roadmap-live
+   ```
+
+For the pull request sync on GitHub, add one secret to the repository: `ANTHROPIC_API_KEY` under Settings, Secrets and variables, Actions. The workflow from step 1 does the rest and commits `roadmap.json`, `roadmap/index.html` and `CHANGELOG.md` when something changed. Turn on GitHub Pages for the `roadmap/` folder if you want a public link.
+
+## Commands
+
+```
+npx roadmap-live                       live page for ./roadmap.json on port 4242
+npx roadmap-live path/to/roadmap.json  another file
+npx roadmap-live --port 5000           another port
+npx roadmap-live --check               validate the file, exit code 0 or 1
+npx roadmap-live sync                  pull in GitHub activity
+npx roadmap-live sync --dry-run        show what sync would change, write nothing
+npx roadmap-live sync --repo owner/name
+npx roadmap-live render                write roadmap/index.html
+npx roadmap-live render --theme paper --out docs/index.html
+npx roadmap-live init                  set up a project
+npx roadmap-live auth                  log in to GitHub in the browser
+npx roadmap-live auth --logout         remove the stored token
+npx roadmap-live doctor                explain which login and which model would be used
 ```
 
-Then tell your coding agent about it, see [Using it with Claude Code, Codex and others](#using-it-with-claude-code-codex-and-others).
-
-## Start
-
-```
-node roadmap-live.js
-```
-
-Open http://localhost:4242. Options:
-
-```
-node roadmap-live.js path/to/roadmap.json   # another file
-node roadmap-live.js --port 5000            # another port
-node roadmap-live.js --check                # validate only, exit code 0 or 1
-```
-
-The page shows the project name, a progress bar segmented by milestone, the item that is in progress with a running timer, a history of status changes, and a Todo / Active / Done board. Clicking a milestone in the progress bar filters the board (Escape clears the filter). The tab title and favicon show the overall progress. Light and dark follow the system; the switch in the top right overrides it.
-
-The server serves three routes: `/` is the page, `/data` returns the current state as JSON, `/events` is a Server-Sent Events stream that sends an event on every change.
-
-The file is watched with `fs.watch` (debounced) plus mtime polling every two seconds as a fallback. Editors that replace the file by rename are handled. An invalid file never stops the server: the page keeps showing the last valid state and displays a red banner with the error until the file is valid again.
-
-## Using it with Claude Code, Codex and others
-
-The agent only needs to read `AGENTS.md`. How it finds that file depends on the tool.
-
-**Codex** reads `AGENTS.md` in the project root on its own. Nothing else to do.
-
-**Claude Code** reads `CLAUDE.md`. Add this line to the project's `CLAUDE.md` (create the file if it does not exist):
-
-```
-Read AGENTS.md and follow its rules for maintaining roadmap.json.
-```
-
-**Other agents** (Cursor, Gemini CLI, Copilot, Aider, ...) read their own rules file, for example `.cursor/rules`, `GEMINI.md` or `.github/copilot-instructions.md`. Put the same line there.
-
-Then, in the project:
-
-1. Start the page in a second terminal: `node roadmap-live.js`, open http://localhost:4242.
-2. Ask the agent to plan, for example: "Read AGENTS.md. Break the next feature into items in roadmap.json, assign them to milestones and run the check."
-3. Ask the agent to work: "Work through the open items in roadmap.json one by one, following AGENTS.md."
-
-The agent sets each item to `active` before it starts and to `done` when it is finished. The page follows along without a reload.
+`node roadmap-live.js` works the same if you copied the repository instead of using npx.
 
 ## Data format
 
 ```json
 {
-  "project": "Project name",
-  "milestones": [
-    { "id": "m1", "title": "MVP" },
-    { "id": "m2", "title": "Launch" }
-  ],
+  "project": "abholbereit",
+  "theme": "neutral",
+  "language": "en",
+  "stale_after_days": 7,
+  "milestones": [{ "id": "m1", "title": "Ordering flow" }],
   "items": [
     {
-      "id": "auth-login",
-      "title": "Login with magic link",
+      "id": "menu-editor",
+      "title": "Menu editor",
       "milestone": "m1",
-      "status": "todo",
-      "note": "optional, one short sentence",
-      "updated": "2026-09-08T10:00:00Z"
+      "status": "done",
+      "note": "optional, one sentence",
+      "updated": "2026-09-10T14:02:00Z",
+      "prs": [42],
+      "open_points": [
+        {
+          "text": "Reviewer asked for image size validation",
+          "source": "pr:42#comment:1893",
+          "opened": "2026-09-10T13:40:00Z",
+          "resolved": null
+        }
+      ]
     }
-  ]
+  ],
+  "unplanned": [
+    { "title": "Customer loyalty", "prs": [41], "first_seen": "2026-09-08T09:00:00Z" }
+  ],
+  "sync": { "last_run": "2026-09-10T14:02:00Z", "repo": "marvrue/abholbereit" }
 }
 ```
 
-- `status` is exactly one of `todo`, `active`, `done`.
-- The order of milestones is the order in the array.
-- Every item belongs to exactly one milestone. A milestone is complete when all of its items are `done`.
-- The current milestone is the first one in order that is not complete.
-- Normally exactly one item is `active`. Several are allowed (parallel agents), the page shows a small hint. Zero is allowed as well.
-- `id` is stable and never changes. `done` items are not deleted.
-- `note` is optional, one sentence for the human watching.
-- `updated` is optional, ISO 8601.
+- The agent writes `project`, `milestones`, `items` with `id`, `title`, `milestone`, `status` (`todo`, `active`, `done`), `note` and `updated`.
+- Sync writes `prs`, `open_points`, `unplanned`, `sync` and the status `blocked`. The agent leaves those alone.
+- `theme`, `language` and `stale_after_days` are optional settings. Files without them, and files from older versions, work unchanged.
+- Milestones are in array order. A milestone is complete when all of its items are done. The current milestone is the first one that is not.
 
-## Rules for agents
+## What "Since you last looked" shows
 
-The full rules are in `AGENTS.md`. In short:
+The block above the board is the short version of what changed, newest first, at most eight rows:
 
-- Before starting an item, set `status` to `active` and `updated` to now. After finishing, set `done` and `updated`.
-- Normally only one item is active at a time.
-- New items get a stable kebab-case `id` and a milestone. Items are never deleted, ids never change, milestone order changes only after asking.
-- After every change, run `node roadmap-live.js --check`.
+- Status changes, with the pull request that caused them.
+- New open points: things a reviewer asked for, in the reviewer's words, so you do not have to open the pull request to know what is holding it up.
+- Work that is not on the roadmap, marked as such. It is pulled from pull requests that match no item.
+- Items that went quiet: in progress or linked to a pull request, but no activity for `stale_after_days` (default 7).
+
+Quiet, unplanned and blocked share the one attention color on the page. Everything else is gray, so those three are the only things that stand out.
+
+## Themes
+
+Three come built in: `neutral` (default), `paper` (warm, serif headings) and `mono` (everything monospace). Set `"theme": "paper"` in `roadmap.json` or pass `--theme paper` to `render`. Every theme has a light and a dark mode; the page follows the system and the toggle in the top right overrides it.
+
+To make your own, put `roadmap-themes/<name>.css` in your repository and set `"theme": "<name>"`. A theme is only a list of custom properties; copy `src/page/themes/neutral.css` as a starting point.
+
+## Languages
+
+English by default. The page and the command line switch to German when your system or browser is German. `"language": "de"` in `roadmap.json` or `ROADMAP_LANG=de` fixes it; `?lang=de` on the page overrides everything. Anything without a translation falls back to English. Item titles and notes are your own text and are never translated.
+
+## How sync decides things
+
+- A merged pull request that clearly belongs to an item sets the item to done.
+- An open pull request sets the item to in progress. If a reviewer requested changes and nobody approved afterwards, the item shows as blocked.
+- An open point is one concrete request from a reviewer. It closes when a later comment or the merge shows it was handled.
+- A pull request that matches no item well enough goes to "Not on the roadmap". Sync never creates or deletes items.
+- Sync never touches titles, notes, ids or milestones. Running it twice on the same activity changes nothing.
+- Every status change adds one line to `CHANGELOG.md` with the date, the item, the change and the pull request.
+- The model only sorts. It returns a strict, checked JSON answer. Anything malformed is retried once and then skipped, and the file is only written after every pull request was handled.
+
+## Limits
+
+- One repository per roadmap. Monorepos with several roadmaps need several files and several workflow runs.
+- Sync looks at pull requests only, not at issues or commits on main.
+- Classification is a judgment call by a language model. Check the plan with `--dry-run` if you want to see it before it writes.
+- The browser login needs a public OAuth app; until one is registered for this project, use the GitHub CLI or `GITHUB_TOKEN`.
+- The GitHub Action commits to the default branch. Branch protection rules that block the built-in token need a different token in `github_token`.
 
 ## License
 
 MIT, see `LICENSE`.
+
+A hosted version, where you paste a repository link and get the page, is planned.

@@ -1,0 +1,5 @@
+{
+  "matches": [ { "item_id": "menu-editor", "confidence": 0.92, "status_hint": "done" } ],
+  "open_points": [ { "item_id": "menu-editor", "text": "Please validate the image size before upload", "source": "pr:42#comment:1893", "resolved": true } ],
+  "unplanned": []
+}

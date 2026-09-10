@@ -1,0 +1,33 @@
+# This repository runs the Action on itself. On pull requests it only checks
+# that sync and render work; commits happen on the default branch.
+name: roadmap
+
+on:
+  pull_request:
+    types: [opened, synchronize, closed]
+  pull_request_review:
+  pull_request_review_comment:
+  issue_comment:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: roadmap-live
+  cancel-in-progress: false
+
+jobs:
+  roadmap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.event.repository.default_branch }}
+      - uses: ./
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          commit: ${{ github.event_name != 'pull_request' }}

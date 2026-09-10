@@ -1,0 +1,29 @@
+name: roadmap-live
+description: Sync roadmap.json with pull request activity, render a static page and commit both.
+author: marvrue
+branding:
+  icon: map
+  color: gray-dark
+inputs:
+  anthropic_api_key:
+    description: Anthropic API key. The Action can only classify with the anthropic provider.
+    required: true
+  github_token:
+    description: Token used to read pull requests and push the commit.
+    required: false
+    default: ${{ github.token }}
+  roadmap_path:
+    description: Path to roadmap.json.
+    required: false
+    default: roadmap.json
+  output_path:
+    description: Where the rendered page is written.
+    required: false
+    default: roadmap/index.html
+  commit:
+    description: Commit and push roadmap.json, the page and CHANGELOG.md when they changed.
+    required: false
+    default: "true"
+runs:
+  using: node24
+  main: src/action.js

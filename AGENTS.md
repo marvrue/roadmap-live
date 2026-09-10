@@ -1,6 +1,6 @@
 # Instructions for coding agents
 
-`roadmap.json` in the project root is the project's roadmap. It is maintained only by you, the coding agent. A human watches it live with `node roadmap-live.js`; nobody edits it in a UI.
+`roadmap.json` in the project root is the project's roadmap. You, the coding agent, maintain the items. A human watches it live with `node roadmap-live.js` or on a rendered page; nobody edits it in a UI. `roadmap-live sync` adds pull request activity from GitHub to the same file.
 
 ## When you work on an item
 
@@ -14,6 +14,19 @@
 - Never delete items, never change an `id`. Finished items stay in the file with `status: "done"`.
 - Change the order of milestones only after asking the human. The array order is the milestone order.
 - `note` is one sentence for the human who is watching, not a log. Keep it short and replace it when it is outdated.
+
+## Fields written by sync
+
+`roadmap-live sync` writes these and you must not edit them: the status `blocked`, `prs`, `open_points`, `unplanned` and `sync`. You keep using `todo`, `active` and `done`. If an item is `blocked` and you finish it, set it to `done` as usual.
+
+## If `.roadmap-live/inbox.json` exists
+
+Sync could not classify pull requests itself and left them for you.
+
+1. Read `.roadmap-live/inbox.json`. It holds `items`, a `schema` and one `prompt` per pull request in `prs`.
+2. For every pull request, answer the prompt with one JSON object in the shape of `schema`: `matches` (item ids with a confidence between 0 and 1), `open_points` (requests from reviewers that are still open, in the reviewer's words, with the comment reference as `source`) and `unplanned` (work that matches no item). Use only ids from `items`.
+3. Write `.roadmap-live/result.json` as an object keyed by pull request number, for example `{ "42": { "matches": [...], "open_points": [...], "unplanned": [...] } }`.
+4. Delete `.roadmap-live/inbox.json`, then run `roadmap-live sync --apply` (or `node roadmap-live.js sync --apply`).
 
 ## After every change
 
@@ -46,6 +59,7 @@ Exit code 0 means the file is valid. Exit code 1 prints the problems; fix them b
 }
 ```
 
-- `status` is exactly one of `todo`, `active`, `done`.
+- `status` is one of `todo`, `active`, `done` for you. `blocked` is set by sync only.
 - `milestone` must reference an existing milestone `id`.
 - `note` and `updated` are optional.
+- `theme`, `language` and `stale_after_days` at the top level are optional settings for the page; leave them as they are.

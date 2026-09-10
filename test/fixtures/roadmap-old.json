@@ -8,10 +8,6 @@
     {
       "id": "m2",
       "title": "Release"
-    },
-    {
-      "id": "m3",
-      "title": "PR sync"
     }
   ],
   "items": [
@@ -79,9 +75,9 @@
       "id": "screenshot",
       "title": "Screenshot for the README",
       "milestone": "m2",
-      "status": "done",
-      "note": "docs/screenshot.png, paper theme.",
-      "updated": "2026-09-10T16:18:00Z"
+      "status": "active",
+      "note": "Replacing the placeholder in the README with a real screenshot.",
+      "updated": "2026-09-08T09:40:00Z"
     },
     {
       "id": "windows-check",
@@ -124,78 +120,6 @@
       "milestone": "m2",
       "status": "done",
       "updated": "2026-09-08T10:25:00Z"
-    },
-    {
-      "id": "src-split",
-      "title": "Split into src/ modules with template page and themes",
-      "milestone": "m3",
-      "status": "done",
-      "note": "roadmap-live.js stays the entry.",
-      "updated": "2026-09-10T14:05:00Z"
-    },
-    {
-      "id": "i18n",
-      "title": "English and German UI strings with automatic language detection",
-      "milestone": "m3",
-      "status": "done",
-      "updated": "2026-09-10T14:05:00Z"
-    },
-    {
-      "id": "github-auth",
-      "title": "GitHub credential chain: token, gh, device flow",
-      "milestone": "m3",
-      "status": "done",
-      "updated": "2026-09-10T14:30:00Z"
-    },
-    {
-      "id": "provider-chain",
-      "title": "Classification providers: API key, Claude, Codex, Gemini, agent inbox",
-      "milestone": "m3",
-      "status": "done",
-      "updated": "2026-09-10T14:30:00Z"
-    },
-    {
-      "id": "pr-sync",
-      "title": "sync: classify pull request activity and update the roadmap",
-      "milestone": "m3",
-      "status": "done",
-      "note": "Idempotent, writes CHANGELOG.md.",
-      "updated": "2026-09-10T14:30:00Z"
-    },
-    {
-      "id": "static-render",
-      "title": "render: static page with three themes for GitHub Pages",
-      "milestone": "m3",
-      "status": "done",
-      "updated": "2026-09-10T16:18:00Z"
-    },
-    {
-      "id": "github-action",
-      "title": "GitHub Action and example workflow",
-      "milestone": "m3",
-      "status": "done",
-      "updated": "2026-09-10T14:30:00Z"
-    },
-    {
-      "id": "tests",
-      "title": "Test suite with recorded fixtures and render snapshots",
-      "milestone": "m3",
-      "status": "done",
-      "updated": "2026-09-10T15:40:00Z"
-    },
-    {
-      "id": "readme-rewrite",
-      "title": "README for readers who steer agents but do not code",
-      "milestone": "m3",
-      "status": "done",
-      "updated": "2026-09-10T16:25:00Z"
-    },
-    {
-      "id": "oauth-app",
-      "title": "Register the public GitHub OAuth app for the browser login",
-      "milestone": "m3",
-      "status": "todo",
-      "note": "Needs a GitHub account; the code path is ready."
     }
   ]
 }

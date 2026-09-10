@@ -1,0 +1,13 @@
+{
+  "project": "abholbereit",
+  "milestones": [
+    { "id": "m1", "title": "Ordering flow" },
+    { "id": "m2", "title": "Kitchen" }
+  ],
+  "items": [
+    { "id": "menu-editor", "title": "Menu editor", "milestone": "m1", "status": "active", "updated": "2026-09-01T10:00:00Z" },
+    { "id": "checkout", "title": "Checkout with pickup time", "milestone": "m1", "status": "todo" },
+    { "id": "payment", "title": "Card payment with Stripe", "milestone": "m1", "status": "todo" },
+    { "id": "order-queue", "title": "Order queue for the kitchen screen", "milestone": "m2", "status": "todo" }
+  ]
+}

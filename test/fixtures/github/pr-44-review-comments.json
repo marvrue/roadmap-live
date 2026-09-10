@@ -1,0 +1,4 @@
+[
+  { "id": 2001, "user": { "login": "anna" }, "body": "Please debounce the quantity buttons, double taps add two items.", "path": "src/cart.js", "created_at": "2026-09-09T08:30:00Z", "updated_at": "2026-09-09T08:30:00Z", "html_url": "https://github.com/acme/abholbereit/pull/44#discussion_r2001" },
+  { "id": 2002, "user": { "login": "anna" }, "body": "Add a test for the empty cart case.", "path": "test/cart.test.js", "created_at": "2026-09-09T08:31:00Z", "updated_at": "2026-09-09T08:31:00Z", "html_url": "https://github.com/acme/abholbereit/pull/44#discussion_r2002" }
+]
