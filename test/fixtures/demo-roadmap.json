@@ -15,6 +15,7 @@
       "status": "done",
       "note": "Images are resized on upload.",
       "updated": "2026-09-08T14:02:00Z",
+      "branch": "feat/menu-editor",
       "prs": [42],
       "open_points": [
         {
@@ -23,6 +24,9 @@
           "opened": "2026-09-08T13:40:00Z",
           "resolved": "2026-09-08T14:02:00Z"
         }
+      ],
+      "comments": [
+        { "from": "agent", "text": "Images are resized on upload now.", "at": "2026-09-08T14:00:00Z" }
       ]
     },
     {
@@ -31,6 +35,7 @@
       "milestone": "m1",
       "status": "active",
       "updated": "2026-09-09T09:00:00Z",
+      "branch": "feat/checkout",
       "prs": [44],
       "open_points": [
         {
@@ -45,7 +50,12 @@
           "opened": "2026-09-09T08:31:00Z",
           "resolved": null
         }
-      ]
+      ],
+      "comments": [
+        { "from": "human", "text": "Finish the cart first, the checkout can wait", "at": "2026-09-09T09:30:00Z" },
+        { "from": "agent", "text": "Ok, cart first, checkout after that.", "at": "2026-09-09T09:41:00Z" }
+      ],
+      "question": { "text": "Pickup time in 15 or 30 minute steps?", "options": ["15", "30"], "asked": "2026-09-09T09:41:00Z" }
     },
     {
       "id": "payment",
@@ -61,7 +71,10 @@
       "title": "Order queue for the kitchen screen",
       "milestone": "m2",
       "status": "active",
-      "updated": "2026-08-20T10:00:00Z"
+      "updated": "2026-08-20T10:00:00Z",
+      "comments": [
+        { "from": "human", "text": "Is this still needed for the launch?", "at": "2026-09-08T12:00:00Z" }
+      ]
     },
     {
       "id": "printer",
