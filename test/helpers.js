@@ -55,14 +55,19 @@ function fakeProvider({ log = [] } = {}) {
   };
 }
 
+// ICU versions differ in the spaces they put into formatted times (U+202F,
+// U+00A0 or a plain space), so those are normalized before comparing.
+const normalize = (s) => s.replace(/[\u202f\u00a0]/g, ' ');
+
 function assertSnapshot(name, content) {
+  content = normalize(content);
   const file = path.join(SNAPSHOTS, name);
   if (process.env.UPDATE_SNAPSHOTS || !fs.existsSync(file)) {
     fs.mkdirSync(SNAPSHOTS, { recursive: true });
     fs.writeFileSync(file, content);
     return;
   }
-  const expected = fs.readFileSync(file, 'utf8');
+  const expected = normalize(fs.readFileSync(file, 'utf8'));
   assert.strictEqual(content, expected, `snapshot ${name} differs (run with UPDATE_SNAPSHOTS=1 after a deliberate change)`);
 }
 
