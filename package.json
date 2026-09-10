@@ -19,7 +19,7 @@
   "scripts": {
     "start": "node roadmap-live.js",
     "check": "node roadmap-live.js --check",
-    "test": "node --test test/"
+    "test": "node --test \"test/**/*.test.js\""
   },
   "engines": {
     "node": ">=18"

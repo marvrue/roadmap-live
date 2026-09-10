@@ -1,0 +1,4 @@
+[
+  { "id": 901, "user": { "login": "anna" }, "state": "CHANGES_REQUESTED", "body": "The webhook secret is hardcoded, please read it from the environment.", "submitted_at": "2026-09-07T16:00:00Z" },
+  { "id": 902, "user": { "login": "anna" }, "state": "APPROVED", "body": "Thanks, good now.", "submitted_at": "2026-09-08T11:00:00Z" }
+]

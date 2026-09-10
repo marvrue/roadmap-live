@@ -1,0 +1,37 @@
+[
+  {
+    "number": 44, "title": "Checkout with pickup time", "state": "open", "draft": false,
+    "body": "Implements the checkout step with a pickup time picker.\n\nCloses the checkout item on the roadmap.",
+    "user": { "login": "mara" }, "html_url": "https://github.com/acme/abholbereit/pull/44",
+    "created_at": "2026-09-09T07:00:00Z", "updated_at": "2026-09-09T09:00:00Z", "merged_at": null, "closed_at": null,
+    "head": { "ref": "feat/checkout" }
+  },
+  {
+    "number": 42, "title": "Menu editor with image upload", "state": "closed", "draft": false,
+    "body": "Menu editor for the restaurant owner. Images are resized on upload.",
+    "user": { "login": "mara" }, "html_url": "https://github.com/acme/abholbereit/pull/42",
+    "created_at": "2026-09-08T09:00:00Z", "updated_at": "2026-09-08T14:02:00Z", "merged_at": "2026-09-08T14:02:00Z", "closed_at": "2026-09-08T14:02:00Z",
+    "head": { "ref": "feat/menu-editor" }
+  },
+  {
+    "number": 43, "title": "Stripe card payment", "state": "open", "draft": false,
+    "body": "Card payment through Stripe Checkout.",
+    "user": { "login": "jonas" }, "html_url": "https://github.com/acme/abholbereit/pull/43",
+    "created_at": "2026-09-07T10:00:00Z", "updated_at": "2026-09-08T11:00:00Z", "merged_at": null, "closed_at": null,
+    "head": { "ref": "feat/payment" }
+  },
+  {
+    "number": 41, "title": "Customer loyalty points", "state": "open", "draft": false,
+    "body": "Adds a points balance to the customer profile. Every order earns points.",
+    "user": { "login": "jonas" }, "html_url": "https://github.com/acme/abholbereit/pull/41",
+    "created_at": "2026-09-06T09:00:00Z", "updated_at": "2026-09-06T09:30:00Z", "merged_at": null, "closed_at": null,
+    "head": { "ref": "feat/loyalty" }
+  },
+  {
+    "number": 40, "title": "Old housekeeping", "state": "closed", "draft": false,
+    "body": "Before the sync window.",
+    "user": { "login": "jonas" }, "html_url": "https://github.com/acme/abholbereit/pull/40",
+    "created_at": "2026-07-01T09:00:00Z", "updated_at": "2026-07-02T09:30:00Z", "merged_at": "2026-07-02T09:30:00Z", "closed_at": "2026-07-02T09:30:00Z",
+    "head": { "ref": "chore/old" }
+  }
+]

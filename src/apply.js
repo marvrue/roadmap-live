@@ -79,8 +79,7 @@ function applyClassification(roadmap, pr, result, now = new Date().toISOString()
     const item = itemById(roadmap, p.item_id);
     if (!item) continue;
     const source = p.source || `pr:${pr.number}#text:${p.text.slice(0, 40)}`;
-    if (!Array.isArray(item.open_points)) item.open_points = [];
-    const existing = item.open_points.find((x) => x.source === source);
+    const existing = (item.open_points || []).find((x) => x.source === source);
     if (existing) {
       if (p.resolved && !existing.resolved) {
         existing.resolved = at;
@@ -88,6 +87,7 @@ function applyClassification(roadmap, pr, result, now = new Date().toISOString()
         changes.push({ kind: 'resolved', id: item.id, title: item.title, text: existing.text, pr: pr.number, url: pr.url });
       }
     } else if (!p.resolved) {
+      if (!Array.isArray(item.open_points)) item.open_points = [];
       item.open_points.push({ text: p.text, source, opened: commentTime(pr, source) || at, resolved: null });
       item.updated = at;
       changes.push({ kind: 'open_point', id: item.id, title: item.title, text: p.text, pr: pr.number, url: pr.url });

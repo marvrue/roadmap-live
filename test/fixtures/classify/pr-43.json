@@ -1,0 +1,5 @@
+{
+  "matches": [ { "item_id": "payment", "confidence": 0.9, "status_hint": "active" } ],
+  "open_points": [ { "item_id": "payment", "text": "The webhook secret is hardcoded, please read it from the environment", "source": "pr:43#review:901", "resolved": true } ],
+  "unplanned": []
+}
