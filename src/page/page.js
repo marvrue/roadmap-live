@@ -68,7 +68,13 @@
     var hadContent = old.length > 0;
 
     var focused = document.activeElement;
-    var keep = focused && focused.matches && focused.matches('.comment-form input') ? { id: focused.closest('form').getAttribute('data-id'), value: focused.value, pos: focused.selectionStart } : null;
+    var keep = null;
+    if (focused && focused.matches && focused.matches('.comment-form input')) {
+      var focusedForm = focused.closest('form');
+      var focusedId = focusedForm.getAttribute('data-id');
+      var sameIdForms = app.querySelectorAll('form.comment-form[data-id="' + focusedId.replace(/"/g, '\\"') + '"]');
+      keep = { id: focusedId, value: focused.value, pos: focused.selectionStart, index: Array.prototype.indexOf.call(sameIdForms, focusedForm) };
+    }
 
     app.innerHTML = V.renderApp(state, opts(changed));
 
@@ -100,7 +106,9 @@
       }
     }
     if (keep) {
-      var again = app.querySelector('form.comment-form[data-id="' + keep.id.replace(/"/g, '\\"') + '"] input');
+      var keepForms = app.querySelectorAll('form.comment-form[data-id="' + keep.id.replace(/"/g, '\\"') + '"]');
+      var keepForm = keepForms[keep.index] || keepForms[0];
+      var again = keepForm ? keepForm.querySelector('input') : null;
       if (again) { again.value = keep.value; again.focus(); try { again.setSelectionRange(keep.pos, keep.pos); } catch (err) { /* ignore */ } }
     }
     setTitle();
@@ -196,8 +204,9 @@
     if (!form) return;
     e.preventDefault();
     var input = form.querySelector('input[name="text"]');
-    sendComment(form.getAttribute('data-id'), input.value);
+    var value = input.value;
     input.value = '';
+    sendComment(form.getAttribute('data-id'), value);
   });
   app.addEventListener('keydown', function (e) {
     var el = e.target.closest('[role="button"][data-action]');
