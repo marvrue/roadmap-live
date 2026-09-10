@@ -44,6 +44,24 @@ function resolveTheme(name, baseDir) {
   return null;
 }
 
+// All themes the page can switch between: the built-in ones plus the
+// requested custom theme. The active one comes first.
+function collectThemes(name, baseDir) {
+  const active = resolveTheme(name, baseDir);
+  if (!active) return null;
+  const list = [active];
+  for (const n of BUILTIN_THEMES) {
+    if (n === active.name) continue;
+    const t = resolveTheme(n, baseDir);
+    if (t) list.push(t);
+  }
+  return list;
+}
+
+function themeStyles(themes) {
+  return themes.map((t, i) => `<style data-theme="${view.esc(t.name)}" media="${i === 0 ? 'all' : 'not all'}">\n${t.css.trim()}\n</style>`).join('\n');
+}
+
 function jsonForHtml(value) {
   return JSON.stringify(value).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
 }
@@ -72,17 +90,17 @@ function renderPage(state, opts = {}) {
   const locales = i18n.loadLocales();
   const lang = opts.lang && locales[opts.lang] ? opts.lang : i18n.DEFAULT_LANG;
   const t = view.makeT(locales[lang], locales[i18n.DEFAULT_LANG], lang);
-  const theme = opts.themeCss !== undefined ? { css: opts.themeCss } : resolveTheme(opts.theme, opts.baseDir);
-  if (!theme) throw new Error(`unknown theme: ${opts.theme}`);
+  const themes = collectThemes(opts.theme, opts.baseDir);
+  if (!themes) throw new Error(`unknown theme: ${opts.theme}`);
   const now = opts.now || Date.now();
-  const fullState = { ...state, fixedLang: opts.langFixed || null };
-  const body = view.renderApp(fullState, { t, lang, now, filter: null, colorMode: opts.mode || 'system', showAllDone: false, changed: null });
+  const fullState = { ...state, fixedLang: opts.langFixed || null, theme: themes[0].name, themes: themes.map((x) => x.name) };
+  const body = view.renderApp(fullState, { t, lang, now, filter: null, colorMode: opts.mode || 'system', theme: themes[0].name, showAllDone: false, changed: null });
   const title = opts.title || (state.data ? `${view.progressPercent(state.data)} % · ${state.data.project}` : 'roadmap-live');
   const vars = {
     lang,
     mode_attr: opts.mode ? ` data-mode="${opts.mode}" data-mode-fixed="1"` : '',
     title: view.esc(title),
-    theme_css: theme.css.trim(),
+    theme_styles: themeStyles(themes),
     page_css: a.pageCss.trim(),
     body,
     state_json: jsonForHtml(fullState),
@@ -146,4 +164,4 @@ function runRender(opts, env = process.env) {
   return 0;
 }
 
-module.exports = { renderPage, staticState, resolveTheme, readChangelog, repoUrl, runRender, BUILTIN_THEMES, DEFAULT_THEME, DEFAULT_OUT };
+module.exports = { renderPage, staticState, resolveTheme, collectThemes, readChangelog, repoUrl, runRender, BUILTIN_THEMES, DEFAULT_THEME, DEFAULT_OUT };

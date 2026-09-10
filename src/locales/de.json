@@ -7,6 +7,7 @@
     "prs": "PRs {list}",
     "theme": { "system": "System", "light": "Hell", "dark": "Dunkel" },
     "themeTitle": "Zwischen hell, dunkel und System wechseln",
+    "pickTheme": "Theme wechseln ({list})",
     "connected": "verbunden",
     "disconnected": "getrennt",
     "progress": "{done} von {total} erledigt",

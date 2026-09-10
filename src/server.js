@@ -51,8 +51,8 @@ function startServer(opts, env = process.env) {
     const { lang } = i18n.resolveLanguage({ roadmap: snap.data, env });
     const baseDir = path.dirname(opts.file);
     const themeName = opts.theme || (snap.data && snap.data.theme) || DEFAULT_THEME;
-    const theme = resolveTheme(themeName, baseDir) || resolveTheme(DEFAULT_THEME);
-    return renderPage(snap, { themeCss: theme.css, lang, langFixed: snap.fixedLang, live: true });
+    const theme = resolveTheme(themeName, baseDir) ? themeName : DEFAULT_THEME;
+    return renderPage(snap, { theme, baseDir, lang, langFixed: snap.fixedLang, live: true });
   };
 
   const server = http.createServer((req, res) => {
