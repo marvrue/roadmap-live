@@ -182,7 +182,7 @@
       },
       "empty": "No open points. Reviewers have nothing outstanding."
     },
-    "prs": {
+    "pullRequests": {
       "items": {
         "one": "1 item",
         "other": "{n} items"
