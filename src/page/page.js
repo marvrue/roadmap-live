@@ -158,19 +158,30 @@
   setInterval(tick, 1000);
 
   // ---- comments ---------------------------------------------------------------
+  // The static page never writes: bail out before touching pending/network.
   function sendComment(id, text) {
     text = String(text || '').trim();
     if (!id || !text) return Promise.resolve(false);
+    if (state.mode !== 'live') return Promise.resolve(false);
+    // A retry with the same text replaces the earlier failed entry instead
+    // of stacking another one below it.
+    pending = pending.filter(function (p) { return !(p.failed && p.id === id && p.text === text); });
     var entry = { id: id, text: text, at: new Date().toISOString() };
     pending.push(entry);
     expanded[id] = true;
     render();
+    var fail = function (body) {
+      entry.failed = true;
+      entry.error = body && body.error;
+      render();
+      return false;
+    };
     return fetch('/comment', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: id, text: text }) })
       .then(function (r) {
-        if (!r.ok) { pending = pending.filter(function (p) { return p !== entry; }); render(); }
-        return r.ok;
+        if (r.ok) return true;
+        return r.json().then(fail, function () { return fail(); });
       })
-      .catch(function () { pending = pending.filter(function (p) { return p !== entry; }); render(); return false; });
+      .catch(function () { return fail(); });
   }
 
   // Drop pending entries once the snapshot contains them.
@@ -206,7 +217,13 @@
     var input = form.querySelector('input[name="text"]');
     var value = input.value;
     input.value = '';
-    sendComment(form.getAttribute('data-id'), value);
+    var id = form.getAttribute('data-id');
+    var last = { id: id, text: value };
+    sendComment(id, value).then(function (ok) {
+      if (ok) return;
+      var again = app.querySelector('form.comment-form[data-id="' + last.id.replace(/"/g, '\\"') + '"] input[name="text"]');
+      if (again && !again.value) again.value = last.text;
+    });
   });
   app.addEventListener('keydown', function (e) {
     var el = e.target.closest('[role="button"][data-action]');

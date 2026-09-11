@@ -55,8 +55,10 @@
     "comments": {
       "count": { "one": "1 Kommentar", "other": "{n} Kommentare" },
       "placeholder": "Dem Agenten etwas sagen…",
+      "add": "kommentieren",
       "send": "Senden",
       "sent": "gesendet",
+      "failed": "nicht gesendet, noch einmal versuchen",
       "you": "du",
       "agent": "Agent",
       "show": "anzeigen",
@@ -74,7 +76,7 @@
     "invalidPort": "ungültiger Port: {port}",
     "checkOk": "{file}: ok ({milestones} Meilensteine, {items} Items, {done} erledigt, {active} in Arbeit)",
     "checkParallel": "Hinweis: {n} Items sind gleichzeitig in Arbeit",
-    "checkLarge": "Hinweis: {file} ist {kb} KB groß, kürze alte Kommentare und Notizen, damit der Agent weniger liest",
+    "checkLarge": "Hinweis: {file} ist {kb} KB groß, kürze alte Kommentare und Notizen selbst (der Agent löscht nie Kommentare), damit der Agent weniger liest",
     "checkProblems": { "one": "{file}: 1 Problem", "other": "{file}: {n} Probleme" },
     "invalidFile": "{file} ist ungültig:",
     "server": {

@@ -141,6 +141,7 @@ test('waiting block: only with a question, buttons on the live page, hint on the
   assert.ok(stat.includes('class="waiting"'));
   assert.ok(stat.includes('Answering works on the live page'));
   assert.ok(!/<input|<textarea|<form/.test(stat), 'static page has no fields');
+  assert.ok(!stat.includes('data-action="answer"'), 'static page has no write path');
   const noQuestion = demoState();
   noQuestion.data.items.forEach((it) => { delete it.question; });
   assert.ok(!body(renderPage(noQuestion, { theme: 'neutral', lang: 'en', live: false, now: NOW })).includes('class="waiting"'));
