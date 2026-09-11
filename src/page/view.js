@@ -423,7 +423,7 @@
     if (it.branch) sub.push('<span>' + esc(it.branch) + '</span>');
     var pts = openPoints(it).length;
     if (pts) sub.push('<span>' + esc(t('page.openPoints', { n: pts })) + '</span>');
-    if (!it.prs || !it.prs.length) sub.push('<span>' + esc(titles[it.milestone] || it.milestone) + '</span>');
+    if ((!it.prs || !it.prs.length) && !opts.statusLabel) sub.push('<span>' + esc(titles[it.milestone] || it.milestone) + '</span>');
     if (it.updated && it.status !== 'active') sub.push(time(it.updated, opts.now, opts.lang));
     if (it.note) sub.push('<span class="note">' + esc(it.note) + '</span>');
     var comments = commentsOf(it, opts);
