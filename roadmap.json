@@ -213,8 +213,10 @@
       "id": "lib-exports",
       "title": "Export sync, render and validate as a library",
       "milestone": "m4",
-      "status": "todo",
-      "note": "So roadmap-live-cloud can call them without the CLI."
+      "status": "done",
+      "note": "require(\"roadmap-live\") gives syncRoadmap, renderPage, addComment without files.",
+      "updated": "2026-09-11T09:27:53Z",
+      "branch": "feat/lib-exports"
     },
     {
       "id": "page-base-url",
@@ -243,6 +245,14 @@
       "milestone": "m4",
       "status": "todo",
       "note": "Node container, SQLite volume, sync worker, page hosting."
+    },
+    {
+      "id": "cloud-overview",
+      "title": "Several roadmaps per account with an overview page",
+      "milestone": "m4",
+      "status": "todo",
+      "note": "Add more than one repository and see all of them at a glance.",
+      "updated": "2026-09-11T09:24:47Z"
     },
     {
       "id": "cloud-billing",

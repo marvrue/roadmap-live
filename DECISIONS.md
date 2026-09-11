@@ -9,6 +9,8 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **`src/i18n.js` reuses `makeT` and `relativeTime` from `view.js`.** One implementation of string lookup and relative times serves both the CLI and the page instead of two that could disagree.
 - **Validator error messages stay English.** They are read by the coding agent, which works in English, and translating them would make the agent's job harder for no gain to the human.
 - **`roadmap-live.js` keeps exporting `validate`, `loadRoadmap`, `parseArgs`, `diffChanges`.** Anyone who required the old single file keeps working.
+- **Sync is split into a core without file access (`syncRoadmap`) and the CLI that reads and writes the files around it.** The hosted service keeps roadmaps in a database and must run the same rules without a working copy; one code path for both keeps them from drifting.
+- **The library entry exports the building blocks, not a second API.** `renderPage`, `syncRoadmap`, `addComment` and the pieces they are made of are the functions the CLI already uses, so a service and the CLI cannot disagree.
 
 ## Data model and rules
 

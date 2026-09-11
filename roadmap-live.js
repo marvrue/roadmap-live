@@ -15,12 +15,22 @@
  *   node roadmap-live.js sync            # pull in GitHub pull request activity
  *   node roadmap-live.js render          # write roadmap/index.html
  *   node roadmap-live.js init            # set up a project
+ *
+ * As a library, require('roadmap-live') gives the same pieces without the
+ * CLI and without file access: validate, renderPage, syncRoadmap, addComment
+ * and the building blocks they are made of. See README, "As a library".
  */
 
-const { main } = require('./src/cli');
+const { main, parseArgs } = require('./src/cli');
 const { validate, loadRoadmap } = require('./src/validate');
-const { parseArgs } = require('./src/cli');
-const { diffChanges } = require('./src/store');
+const { diffChanges, addComment } = require('./src/store');
+const { renderPage, staticState, resolveTheme, BUILTIN_THEMES, DEFAULT_THEME } = require('./src/render');
+const { syncRoadmap, fetchActivity, classifyAll, applyAll, changelogLines, describeChange, nextLastRun } = require('./src/sync');
+const { applyClassification } = require('./src/apply');
+const { classifyPr, buildPrompt, validateClassification, extractJson, SCHEMA_EXAMPLE } = require('./src/classify');
+const github = require('./src/github');
+const providers = require('./src/providers');
+const i18n = require('./src/i18n');
 
 if (require.main === module) {
   main().catch((e) => {
@@ -29,4 +39,37 @@ if (require.main === module) {
   });
 }
 
-module.exports = { validate, loadRoadmap, parseArgs, diffChanges };
+module.exports = {
+  // kept from earlier versions
+  validate,
+  loadRoadmap,
+  parseArgs,
+  diffChanges,
+  // page
+  renderPage,
+  staticState,
+  resolveTheme,
+  BUILTIN_THEMES,
+  DEFAULT_THEME,
+  // sync without files
+  syncRoadmap,
+  fetchActivity,
+  classifyAll,
+  applyAll,
+  applyClassification,
+  changelogLines,
+  describeChange,
+  nextLastRun,
+  // classification
+  classifyPr,
+  buildPrompt,
+  validateClassification,
+  extractJson,
+  SCHEMA_EXAMPLE,
+  // comments
+  addComment,
+  // building blocks
+  github,
+  providers,
+  i18n,
+};

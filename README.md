@@ -72,6 +72,30 @@ npx roadmap-live doctor                explain which login and which model would
 
 `node roadmap-live.js` works the same if you copied the repository instead of using npx.
 
+## As a library
+
+Everything the commands do is also available with `require('roadmap-live')`, without the command line and without touching files. That is how a service that keeps roadmaps in a database can use the same rules.
+
+```js
+const rl = require('roadmap-live');
+
+// validate: { ok, errors }
+rl.validate(data);
+
+// sync without files: fetch pull request activity, classify, apply the rules
+const r = await rl.syncRoadmap({ roadmap: data, repo: 'owner/name', token, provider: rl.providers.byName('anthropic') });
+// r.roadmap is the new roadmap, r.changes what changed, r.prs what was read;
+// r.roadmap is the input when there was nothing new
+
+// page as HTML from state
+const html = rl.renderPage({ mode: 'static', ok: true, data: r.roadmap }, { theme: 'paper', lang: 'en' });
+
+// one human comment into the data
+rl.addComment(data, 'listing-editor', 'Finish the cart first');
+```
+
+`syncRoadmap` never mutates its input and never writes; the caller stores `r.roadmap` and appends `rl.changelogLines(r.changes, r.t, 'en')` wherever a changelog lives. The building blocks are exported too: `github` (client and pull request fetching), `providers` (the classification chain), `classifyPr`, `applyClassification`, `changelogLines`, `staticState`.
+
 ## Data format
 
 ```json
