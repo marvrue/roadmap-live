@@ -99,7 +99,7 @@ Zahlenformat überall gleich: `current/target` ohne Leerzeichen, so wie die Kopf
 - Für die Stale-Erkennung zählt `changed` nicht als Aktivität. Ein Item, das nur gemessen wird, ist trotzdem still. Die Feed-Zeile ist eine Meldung, keine Aktivität im Sinne von `lastActivity`.
 - Das Progress-Bar-Segment misst weiterhin Items, nie Ziele.
 - **Current-Milestone-Regel** (CEO-Review D2): `milestoneStats` in `src/page/view.js` wählt heute den ersten Milestone mit Items, der nicht abgeschlossen ist. Neu: der erste Milestone in Reihenfolge, der nicht abgeschlossen ist, wobei ein Milestone ohne Items als nicht begonnen gilt, nicht als abgeschlossen. Ein frisches Projekt mit leerem MVP und gesätem Launch zeigt dann MVP als current, nicht Launch. Snapshot-Diff prüfen; die Demo-Fixture hat keinen leeren Milestone.
-- `statusLabel` bekommt die Ziel-Fälle als eigene Funktion `goalLabel`, damit die Verzweigung unter fünf bleibt.
+- Umgesetzt (T2) als `formatCount`, `goalText`, `goalReached`, `measured` und `hasGoal` in `view.js` plus eine dreiteilige Verzweigung in `renderItem`; `statusLabel` ist auf main ein Options-Flag, keine Funktion. Rundung, die auf 1000 einer Einheit landet, springt eine Einheit hoch (999.950 ist `1M`). Die Views Focus, Conversations, List, Pull requests und Timeline existieren auf main nicht; ihre Zeilen in der Tabelle gelten, sobald sie landen.
 - Locale-Strings in `page.*` für die Feed-Zeile und den "noch nicht gemessen"-Titel; das Label selbst kommt aus der Datei.
 
 ### 3. Befehl `roadmap-live pulse` (Phase 1: `github-stars`; Phase 2: `npm-downloads`)
@@ -282,11 +282,11 @@ Jeder Schritt ein eigener PR auf `main`, nie gestapelt. PRs, die Snapshots anfas
 Synthesized from the CEO review's findings. Each task derives from a specific finding. Run with Claude Code or Codex; checkbox as you ship. One PR per task, based on `main`.
 
 **Phase 1**
-- [ ] **T1 (P1, human: ~4h / CC: ~20min)** — validate — `goal` on items only, `warnings(data)` with (a) unsourced goals only, (b), (c) tagline over 140; AGENTS.md "Goals"
+- [x] **T1 (P1, human: ~4h / CC: ~20min)** — validate — `goal` on items only, `warnings(data)` with (a) unsourced goals only, (b), (c) tagline over 140; AGENTS.md "Goals"
   - Surfaced by: Section 1 and 4, outside voice — milestone goals contradict completion; windowed sources make warning (a) fire forever
   - Files: `src/validate.js`, `test/validate.test.js`, `AGENTS.md`, `src/locales/en.json`, `src/locales/de.json`
   - Verify: `npm test`; `node roadmap-live.js --check` on a fixture with a done item under target and no source prints the warning
-- [ ] **T2 (P1, human: ~1d / CC: ~45min)** — renderer — `formatCount` export, `goalLabel`, label column and `.sub`, `–/100`, one goal feed row, current-milestone rule, tagline in the header; fixture and six snapshots
+- [x] **T2 (P1, human: ~1d / CC: ~45min)** — renderer — `formatCount` export, goal label column and `.sub`, `–/100`, one goal feed row, current-milestone rule, tagline in the header; fixture and six snapshots
   - Surfaced by: Section 4 and 11, outside voice — feed becomes a ticker; a fresh init shows Launch as current
   - Files: `src/page/view.js`, `src/page/page.css`, both locales, `test/fixtures/demo-roadmap.json`, `test/render.test.js`
   - Verify: `UPDATE_SNAPSHOTS=1 node --test test/render.test.js`, `npm test`, page at 380 px by hand

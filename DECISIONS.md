@@ -49,6 +49,7 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **Goal numbers are formatted by hand: plain up to 9,999, then `12.3k`, `1.5M`.** `Intl.NumberFormat` with compact notation prints `12.000` in German, which does not fit the label column and reads as a different number.
 - **An unmeasured goal shows `–/100` with a "not measured yet" title, never `0/100`.** Zero is a measurement; a dash is the honest absence of one.
 - **The feed carries at most one goal row, the latest change, and the timeline none.** A daily pulse would otherwise make numbers the newest rows every day and push status changes out of the four visible rows; the timeline has only the last value, so a moving point is not a timeline.
+- **The progress bar measures items, never goals.** Two kinds of progress in one bar cannot be read; the goal has its own place next to the item.
 - **A goal's `changed` is not activity.** Stale detection and the header's "updated" time ignore it; an item that is only measured is still quiet.
 - **The current milestone is the first in order that is not complete, and a milestone without items is not started rather than finished.** A fresh project with an empty first milestone and a seeded Launch milestone would otherwise open with "Launch: current".
 - **The tagline sits under the project name in the header, one tone lighter, wrapping at the measure.** It is the one sentence a stranger needs; links to site, install and repository belong in the footer, not in a header menu.

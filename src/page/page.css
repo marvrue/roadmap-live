@@ -140,7 +140,7 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
 .item .sub { display: flex; align-items: baseline; gap: 10px; margin-top: 3px; font-family: var(--font-mono); font-size: 12px; color: var(--text-3); flex-wrap: wrap; }
 .item .sub .note { font-family: var(--font-body); font-size: 13px; color: var(--text-2); overflow-wrap: anywhere; }
 /* a goal reads one tone louder than the PR and branch entries beside it; reached, it dims like a done item */
-.item .sub .goal { color: var(--text-2); }
+.item .sub .goal { color: var(--text-2); overflow-wrap: anywhere; }
 .item .sub .goal.reached { color: var(--text-3); }
 .col.done .item { padding: 7px 0; }
 .col.done .item .title { color: var(--text-2); }
