@@ -292,9 +292,9 @@
     else if (action === 'sort') {
       var k = el.getAttribute('data-key');
       // Same column again flips the direction; a new column starts with the
-      // direction that is useful for it (newest, highest first).
+      // direction the renderer marked on the header (newest, highest first).
       if (sort && sort.key === k) sort = { key: k, dir: sort.dir === 'asc' ? 'desc' : 'asc' };
-      else sort = { key: k, dir: /^(updated|pr|points)$/.test(k) ? 'desc' : 'asc' };
+      else sort = { key: k, dir: el.getAttribute('data-dir') === 'desc' ? 'desc' : 'asc' };
       render();
     }
     else if (action === 'expand') { var id = el.getAttribute('data-id'); if (expanded[id]) delete expanded[id]; else expanded[id] = true; render(); }

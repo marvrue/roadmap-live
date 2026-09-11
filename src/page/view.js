@@ -30,6 +30,8 @@
   var DONE_VISIBLE = 3;
   var TIMELINE_SHORT = 40;
   var LIST_COLS = ['status', 'title', 'milestone', 'pr', 'updated', 'points'];
+  // Columns whose first click sorts descending (newest, highest first).
+  var LIST_DESC_FIRST = { updated: true, pr: true, points: true };
   var STATUS_ORDER = { blocked: 0, active: 1, todo: 2, done: 3 };
 
   // ---- small helpers ------------------------------------------------------
@@ -68,13 +70,24 @@
     return t;
   }
 
+  // Intl formatters are the expensive part of a render; one per language
+  // and option set serves every row.
+  var formatters = {};
+  function formatter(kind, lang, options) {
+    var key = kind + ':' + (lang || 'en') + ':' + JSON.stringify(options);
+    if (!formatters[key]) {
+      var Ctor = Intl[kind];
+      try { formatters[key] = new Ctor(lang || 'en', options); } catch (e) { formatters[key] = new Ctor('en', options); }
+    }
+    return formatters[key];
+  }
+
   function relativeTime(iso, now, lang) {
     var t = Date.parse(iso);
     if (isNaN(t)) return '';
     var diff = (t - now) / 1000;
     var abs = Math.abs(diff);
-    var rtf;
-    try { rtf = new Intl.RelativeTimeFormat(lang || 'en', { numeric: 'auto' }); } catch (e) { rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' }); }
+    var rtf = formatter('RelativeTimeFormat', lang, { numeric: 'auto' });
     if (abs < 45) return rtf.format(0, 'second');
     if (abs < 3600) return rtf.format(Math.round(diff / 60), 'minute');
     if (abs < 86400) return rtf.format(Math.round(diff / 3600), 'hour');
@@ -86,7 +99,7 @@
   function formatDateTime(iso, lang) {
     var d = new Date(iso);
     if (isNaN(d.getTime())) return '';
-    try { return new Intl.DateTimeFormat(lang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(d); } catch (e) { return d.toISOString(); }
+    try { return formatter('DateTimeFormat', lang, { dateStyle: 'medium', timeStyle: 'short' }).format(d); } catch (e) { return d.toISOString(); }
   }
 
   function elapsed(iso, now) {
@@ -128,10 +141,15 @@
     return url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text);
   }
 
+  // "#44, #45", each a link when the repository is known.
+  function prLinks(state, prs) {
+    return prs.map(function (n) { var u = prUrl(state, n); return u ? '<a href="' + esc(u) + '">#' + n + '</a>' : '#' + n; }).join(', ');
+  }
+
   // "PR #44", or "PRs #44, #45" for items with several pull requests.
   function prList(state, t, it) {
     if (it.prs.length === 1) return prLabel(state, t, it.prs[0]);
-    return esc(t('page.prs', { list: '' })).trim() + ' ' + it.prs.map(function (n) { var u = prUrl(state, n); return u ? '<a href="' + esc(u) + '">#' + n + '</a>' : '#' + n; }).join(', ');
+    return esc(t('page.prs', { list: '' })).trim() + ' ' + prLinks(state, it.prs);
   }
 
   // The GitHub address of the comment an open point came from. Sources look
@@ -169,13 +187,13 @@
     if (isSameDay(iso, y.getTime())) return t('page.timeline.yesterday');
     var o = { weekday: 'short', day: 'numeric', month: 'short' };
     if (d.getFullYear() !== n.getFullYear()) o.year = 'numeric';
-    try { return new Intl.DateTimeFormat(lang || 'en', o).format(d); } catch (e) { return d.toDateString(); }
+    try { return formatter('DateTimeFormat', lang, o).format(d); } catch (e) { return d.toDateString(); }
   }
 
   function formatClock(iso, lang) {
     var d = new Date(iso);
     if (isNaN(d.getTime())) return '';
-    try { return new Intl.DateTimeFormat(lang || 'en', { hour: '2-digit', minute: '2-digit' }).format(d); } catch (e) { return ''; }
+    try { return formatter('DateTimeFormat', lang, { hour: '2-digit', minute: '2-digit' }).format(d); } catch (e) { return ''; }
   }
 
   // The views this roadmap can show. Pull requests and open points only
@@ -199,6 +217,25 @@
 
   function isOpen(opts, key) {
     return !!(opts.open && opts.open[key]);
+  }
+
+  // A folded list that remembers being open across re-renders by its key.
+  function fold(opts, key, summary, body, cls, attrs) {
+    return '<details class="' + (cls ? cls + ' ' : '') + 'fold" data-key="' + esc(key) + '"' + (attrs || '') + (isOpen(opts, key) ? ' open' : '') + '><summary>' + summary + '</summary>' + body + '</details>';
+  }
+
+  function hasQuestion(it) {
+    return !!(it.question && it.question.text && openItem(it));
+  }
+
+  function milestoneIndex(data) {
+    var order = {}, titles = {};
+    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
+    return { order: order, titles: titles };
+  }
+
+  function sortedUnplanned(data) {
+    return (data.unplanned || []).slice().sort(function (a, b) { return (Date.parse(b.first_seen) || 0) - (Date.parse(a.first_seen) || 0); });
   }
 
   // One row of the shared grammar: mono label, text, mono time on the right.
@@ -323,7 +360,7 @@
       });
     });
     (data.unplanned || []).forEach(function (u) {
-      rest.push({ kind: 'unplanned', at: u.first_seen, pr: u.prs && u.prs.length ? u.prs[u.prs.length - 1] : null, label: null, text: t('page.feed.unplanned', { title: u.title }), tag: t('page.feed.notOnRoadmap'), attention: true });
+      rest.push({ kind: 'unplanned', at: u.first_seen, pr: lastPr(u), label: null, text: t('page.feed.unplanned', { title: u.title }), tag: t('page.feed.notOnRoadmap'), attention: true });
     });
     // At most one goal row, the latest change: a daily pulse must not turn the
     // feed into a ticker. A moving number is a message, not an attention signal.
@@ -448,7 +485,7 @@
 
   function renderWaiting(state, opts) {
     var t = opts.t;
-    var asking = state.data.items.filter(function (it) { return it.question && it.question.text && openItem(it); });
+    var asking = state.data.items.filter(hasQuestion);
     if (!asking.length) return '';
     var rows = asking.map(function (it) {
       return '<li><span class="label attention">' + esc(it.title) + '</span><div class="q">' + renderQuestionBody(state, opts, it, false) + '</div></li>';
@@ -475,7 +512,7 @@
 
   // A question inside an item block (focus, conversations).
   function renderQuestion(state, opts, it) {
-    if (!it.question || !it.question.text || !openItem(it)) return '';
+    if (!hasQuestion(it)) return '';
     return '<div class="q"><span class="label attention">' + esc(opts.t('page.signals.question')) + '</span>' + renderQuestionBody(state, opts, it, true) + '</div>';
   }
 
@@ -506,8 +543,7 @@
 
   function renderNow(state, opts) {
     var t = opts.t, data = state.data;
-    var titles = {};
-    data.milestones.forEach(function (m) { titles[m.id] = m.title; });
+    var titles = milestoneIndex(data).titles;
     var active = data.items.filter(function (it) { return it.status === 'active'; });
     if (state.mode !== 'live' && !active.length) return '';
     var out = '<div id="now" class="now' + (active.length ? ' has-active' : '') + '">';
@@ -563,14 +599,17 @@
       (items.length ? items.join('') : '<li class="none">' + esc(t('page.history.empty')) + '</li>') + '</ul></aside>';
   }
 
-  function sortItems(items, order, status) {
+  // mode: a board column ('todo', 'active', 'done') or 'focus'. Done sorts
+  // newest first, the active column puts blocked first, focus puts active
+  // first; everything else follows the milestone order.
+  function sortItems(items, order, mode) {
     return items.slice().sort(function (a, b) {
-      if (status === 'done') {
+      if (mode === 'done') {
         var ta = Date.parse(a.updated) || 0, tb = Date.parse(b.updated) || 0;
         if (ta !== tb) return tb - ta;
       }
-      if (status === 'active' && a.status !== b.status) return a.status === 'blocked' ? -1 : 1;
-      if (status === 'focus' && a.status !== b.status) return a.status === 'active' ? -1 : 1;
+      if (mode === 'active' && a.status !== b.status) return a.status === 'blocked' ? -1 : 1;
+      if (mode === 'focus' && a.status !== b.status) return a.status === 'active' ? -1 : 1;
       return (order[a.milestone] || 0) - (order[b.milestone] || 0);
     });
   }
@@ -615,9 +654,8 @@
 
   function renderBoard(state, opts) {
     var t = opts.t, data = state.data;
-    var order = {}, titles = {};
-    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
-    var visible = opts.filter ? data.items.filter(function (it) { return it.milestone === opts.filter; }) : data.items;
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
+    var visible = visibleItems(data, opts);
     var cols = [
       { key: 'todo', match: function (it) { return it.status === 'todo'; } },
       { key: 'active', match: function (it) { return it.status === 'active' || it.status === 'blocked'; } },
@@ -646,8 +684,7 @@
   // items collapsed. Answers "where are we" without clicking.
   function renderMilestones(state, opts) {
     var t = opts.t, data = state.data;
-    var order = {}, titles = {};
-    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
     var info = milestoneStats(data);
     var itemOpts = Object.assign({}, opts, { statusLabel: true });
     var sections = info.stats.filter(function (s) { return !opts.filter || s.m.id === opts.filter; }).map(function (s) {
@@ -660,8 +697,7 @@
       if (open.length) out += '<div class="items">' + open.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>';
       else if (!done.length) out += '<div class="empty">' + esc(t('page.empty')) + '</div>';
       if (done.length) {
-        var openAttr = isOpen(opts, 'ms:' + s.m.id) ? ' open' : '';
-        out += '<details class="ms-done fold" data-key="ms:' + esc(s.m.id) + '" data-milestone="' + esc(s.m.id) + '"' + openAttr + '><summary>' + esc(t('page.doneCount', { n: done.length })) + '</summary><div class="items">' + done.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div></details>';
+        out += fold(opts, 'ms:' + s.m.id, esc(t('page.doneCount', { n: done.length })), '<div class="items">' + done.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>', 'ms-done', ' data-milestone="' + esc(s.m.id) + '"');
       }
       return out + '</section>';
     });
@@ -673,8 +709,7 @@
   // ones with the blocked label where the timer would be.
   function renderFocus(state, opts) {
     var t = opts.t, data = state.data;
-    var order = {}, titles = {};
-    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
     var list = sortItems(visibleItems(data, opts).filter(function (it) { return it.status === 'active' || it.status === 'blocked'; }), order, 'focus');
     if (!list.length) return '<main class="focus"><div class="now">' + renderIdle(state, opts, opts.filter ? visibleItems(data, opts) : null) + '</div></main>';
     var out = list.map(function (it) {
@@ -715,13 +750,13 @@
       (it.comments || []).forEach(function (c) {
         rows.push({ kind: 'comment', at: c.at, label: esc(t(c.from === 'agent' ? 'page.comments.agent' : 'page.comments.you')), text: esc(it.title + ': ' + c.text), quiet: c.from === 'agent', id: it.id });
       });
-      if (it.question && it.question.text && it.question.asked && openItem(it)) {
+      if (hasQuestion(it) && it.question.asked) {
         rows.push({ kind: 'question', at: it.question.asked, label: esc(t('page.signals.question')), attention: true, text: esc(it.title + ': ' + it.question.text), id: it.id });
       }
     });
     if (!opts.filter) {
       (data.unplanned || []).forEach(function (u) {
-        var pr = u.prs && u.prs.length ? u.prs[u.prs.length - 1] : null;
+        var pr = lastPr(u);
         rows.push({ kind: 'unplanned', at: u.first_seen, label: pr ? prLabel(state, t, pr) : esc(t('page.unplannedTitle')), attention: true, text: esc(u.title), tag: t('page.feed.notOnRoadmap') });
       });
       if (data.sync && data.sync.last_run) {
@@ -768,10 +803,8 @@
   // the key, the remaining open items fold away below to start a thread.
   function renderConversations(state, opts) {
     var t = opts.t, data = state.data;
-    var titles = {};
-    data.milestones.forEach(function (m) { titles[m.id] = m.title; });
+    var titles = milestoneIndex(data).titles;
     var open = visibleItems(data, opts).filter(openItem);
-    var hasQuestion = function (it) { return !!(it.question && it.question.text); };
     var withThread = open.filter(function (it) { return commentsOf(it, opts).length || hasQuestion(it); });
     var rank = function (it) {
       if (hasQuestion(it)) return 0;
@@ -803,7 +836,7 @@
       var others = open.filter(function (it) { return withThread.indexOf(it) < 0; });
       if (others.length) {
         var itemOpts = Object.assign({}, opts, { statusLabel: true });
-        body += '<details class="fold" data-key="conv:others"' + (isOpen(opts, 'conv:others') ? ' open' : '') + '><summary>' + esc(t('page.conversations.others', { n: others.length })) + '</summary><div class="items">' + others.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div></details>';
+        body += fold(opts, 'conv:others', esc(t('page.conversations.others', { n: others.length })), '<div class="items">' + others.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>');
       }
     }
     return '<main class="conversations">' + body + '</main>';
@@ -813,8 +846,7 @@
   // open point on top; resolved points fold away per item.
   function renderPoints(state, opts) {
     var t = opts.t, data = state.data;
-    var titles = {};
-    data.milestones.forEach(function (m) { titles[m.id] = m.title; });
+    var titles = milestoneIndex(data).titles;
     var items = visibleItems(data, opts).filter(function (it) { return it.open_points && it.open_points.length; });
     var oldestOpen = function (it) {
       var o = openPoints(it).map(function (p) { return Date.parse(p.opened) || 0; });
@@ -834,7 +866,7 @@
       var h = '<section class="group' + (open.length ? '' : ' is-done') + '" data-id="' + esc(it.id) + '"><header><h2>' + esc(it.title) + '</h2><span class="meta">' + esc(titles[it.milestone] || it.milestone) + '</span>' + (open.length ? '<span class="meta">' + esc(t('page.points.open', { n: open.length })) + '</span>' : '') + '</header>';
       if (open.length) h += '<ul class="rows pts">' + open.map(function (p) { return row(opts, pointLabel(state, t, p), esc(p.text), p.opened); }).join('') + '</ul>';
       if (resolved.length) {
-        h += '<details class="fold" data-key="pt:' + esc(it.id) + '"' + (isOpen(opts, 'pt:' + it.id) ? ' open' : '') + '><summary>' + esc(t('page.points.resolved', { n: resolved.length })) + '</summary><ul class="rows pts resolved">' + resolved.map(function (p) { return row(opts, pointLabel(state, t, p), esc(p.text), p.resolved); }).join('') + '</ul></details>';
+        h += fold(opts, 'pt:' + it.id, esc(t('page.points.resolved', { n: resolved.length })), '<ul class="rows pts resolved">' + resolved.map(function (p) { return row(opts, pointLabel(state, t, p), esc(p.text), p.resolved); }).join('') + '</ul>');
       }
       return h + '</section>';
     });
@@ -846,8 +878,7 @@
   // work it brought. The page knows no PR state and claims none.
   function renderPrs(state, opts) {
     var t = opts.t, data = state.data;
-    var titles = {};
-    data.milestones.forEach(function (m) { titles[m.id] = m.title; });
+    var titles = milestoneIndex(data).titles;
     var groups = {};
     var group = function (n) { return groups[n] || (groups[n] = { items: [], points: [], unplanned: [] }); };
     visibleItems(data, opts).forEach(function (it) {
@@ -871,7 +902,7 @@
       if (g.unplanned.length) h += '<ul class="rows">' + g.unplanned.map(function (u) { return row(opts, esc(t('page.unplannedTitle')), esc(u.title) + '<span class="tag">' + esc(t('page.feed.notOnRoadmap')) + '</span>', u.first_seen, 'attention'); }).join('') + '</ul>';
       if (open.length) h += '<ul class="rows pts">' + open.map(function (x) { return row(opts, esc(t('page.pullRequests.review')), esc(x.it.title + ': ' + x.p.text), x.p.opened); }).join('') + '</ul>';
       if (resolved.length) {
-        h += '<details class="fold" data-key="pr:' + n + '"' + (isOpen(opts, 'pr:' + n) ? ' open' : '') + '><summary>' + esc(t('page.points.resolved', { n: resolved.length })) + '</summary><ul class="rows pts resolved">' + resolved.map(function (x) { return row(opts, esc(t('page.pullRequests.review')), esc(x.it.title + ': ' + x.p.text), x.p.resolved); }).join('') + '</ul></details>';
+        h += fold(opts, 'pr:' + n, esc(t('page.points.resolved', { n: resolved.length })), '<ul class="rows pts resolved">' + resolved.map(function (x) { return row(opts, esc(t('page.pullRequests.review')), esc(x.it.title + ': ' + x.p.text), x.p.resolved); }).join('') + '</ul>');
       }
       return h + '</section>';
     });
@@ -885,14 +916,14 @@
     var staleAfter = data.stale_after_days || DEFAULT_STALE_DAYS;
     var items = visibleItems(data, opts);
     var lists = [];
-    var asking = items.filter(function (it) { return it.question && it.question.text && openItem(it); });
+    var asking = items.filter(hasQuestion);
     if (asking.length) lists.push({ key: 'questions', rows: asking.map(function (it) { return row(opts, esc(t('page.signals.question')), esc(it.title + ': ' + it.question.text), it.question.asked, 'attention'); }) });
     var blocked = items.filter(function (it) { return it.status === 'blocked'; });
     if (blocked.length) lists.push({ key: 'blocked', rows: blocked.map(function (it) { var pr = lastPr(it); return row(opts, pr ? prLabel(state, t, pr) : esc(t('page.blocked')), esc(it.title) + (it.note ? '<span class="note">' + esc(it.note) + '</span>' : ''), it.updated, 'attention'); }) });
     var stale = items.map(function (it) { return { it: it, days: staleDays(it, opts.now, staleAfter) }; }).filter(function (x) { return x.days; }).sort(function (a, b) { return b.days - a.days; });
     if (stale.length) lists.push({ key: 'stale', rows: stale.map(function (x) { return row(opts, esc(t('page.feed.stale')), esc(t('page.feed.staleText', { n: x.days, title: x.it.title })), new Date(lastActivity(x.it)).toISOString(), 'attention'); }) });
-    var unplanned = opts.filter ? [] : (data.unplanned || []).slice().sort(function (a, b) { return (Date.parse(b.first_seen) || 0) - (Date.parse(a.first_seen) || 0); });
-    if (unplanned.length) lists.push({ key: 'unplanned', rows: unplanned.map(function (u) { var pr = u.prs && u.prs.length ? u.prs[u.prs.length - 1] : null; return row(opts, pr ? prLabel(state, t, pr) : esc(t('page.unplannedTitle')), esc(u.title), u.first_seen, 'attention'); }) });
+    var unplanned = opts.filter ? [] : sortedUnplanned(data);
+    if (unplanned.length) lists.push({ key: 'unplanned', rows: unplanned.map(function (u) { var pr = lastPr(u); return row(opts, pr ? prLabel(state, t, pr) : esc(t('page.unplannedTitle')), esc(u.title), u.first_seen, 'attention'); }) });
     if (!lists.length) {
       var count = function (s) { return items.filter(function (it) { return it.status === s; }).length; };
       return '<main class="signals"><div class="calm"><p class="big">' + esc(t('page.signals.calm')) + '</p><p class="counts">' + esc(t('page.signals.counts', { active: count('active'), open: count('todo'), done: count('done') })) + '</p></div></main>';
@@ -906,8 +937,7 @@
   // in progress, open, done. A column header sorts; opts.sort = { key, dir }.
   function renderList(state, opts) {
     var t = opts.t, data = state.data;
-    var order = {}, titles = {};
-    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
     var items = visibleItems(data, opts).slice();
     if (!items.length) return '<main class="list-view"><div class="empty">' + esc(t('page.empty')) + '</div></main>';
     var sort = opts.sort && LIST_COLS.indexOf(opts.sort.key) >= 0 ? opts.sort : null;
@@ -929,7 +959,7 @@
     });
     var head = LIST_COLS.map(function (c) {
       var active = sort && sort.key === c;
-      return '<th class="c-' + c + '"' + (active ? ' aria-sort="' + (sort.dir === 'desc' ? 'descending' : 'ascending') + '"' : '') + '><button type="button" data-action="sort" data-key="' + c + '" title="' + esc(t('page.list.sortTitle', { col: t('page.list.' + c) })) + '">' + esc(t('page.list.' + c)) + '</button></th>';
+      return '<th class="c-' + c + '"' + (active ? ' aria-sort="' + (sort.dir === 'desc' ? 'descending' : 'ascending') + '"' : '') + '><button type="button" data-action="sort" data-key="' + c + '" data-dir="' + (LIST_DESC_FIRST[c] ? 'desc' : 'asc') + '" title="' + esc(t('page.list.sortTitle', { col: t('page.list.' + c) })) + '">' + esc(t('page.list.' + c)) + '</button></th>';
     }).join('');
     var rows = items.map(function (it) {
       var pts = openPoints(it).length;
@@ -937,7 +967,7 @@
         '<td class="c-status mono' + (it.status === 'blocked' ? ' attention' : '') + '">' + esc(t('page.status.' + it.status)) + '</td>' +
         '<td class="c-title">' + esc(it.title) + '</td>' +
         '<td class="c-milestone mono">' + esc(titles[it.milestone] || it.milestone) + '</td>' +
-        '<td class="c-pr mono">' + (it.prs && it.prs.length ? it.prs.map(function (n) { var u = prUrl(state, n); return u ? '<a href="' + esc(u) + '">#' + n + '</a>' : '#' + n; }).join(', ') : '') + '</td>' +
+        '<td class="c-pr mono">' + (it.prs && it.prs.length ? prLinks(state, it.prs) : '') + '</td>' +
         '<td class="c-updated mono">' + (it.updated ? time(it.updated, opts.now, opts.lang) : '') + '</td>' +
         '<td class="c-points mono">' + (pts || '') + '</td></tr>';
     });
@@ -969,10 +999,10 @@
 
   function renderUnplanned(state, opts) {
     var t = opts.t;
-    var list = (state.data.unplanned || []).slice().sort(function (a, b) { return (Date.parse(b.first_seen) || 0) - (Date.parse(a.first_seen) || 0); });
+    var list = sortedUnplanned(state.data);
     if (!list.length) return '';
     var rows = list.map(function (u) {
-      var pr = u.prs && u.prs.length ? u.prs[u.prs.length - 1] : null;
+      var pr = lastPr(u);
       return '<li><span class="label attention">' + (pr ? prLabel(state, t, pr) : esc(t('page.feed.notOnRoadmap'))) + '</span><span class="text">' + esc(u.title) + '</span><span class="when">' + time(u.first_seen, opts.now, opts.lang) + '</span></li>';
     });
     return '<section class="unplanned"><h2 class="section">' + esc(t('page.unplannedTitle')) + ' &middot; ' + esc(t('page.feed.notOnRoadmap')) + '</h2><ul>' + rows.join('') + '</ul></section>';

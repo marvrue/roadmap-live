@@ -223,6 +223,8 @@ test('share button: live page only with a link or with Pages off, static page al
 });
 
 const BASE_OPTS = () => ({ t: i18n.translator('en'), lang: 'en', now: NOW, filter: null, colorMode: 'system', showAllDone: false, changed: null });
+// The <main> block of one view, without the constant blocks around it.
+const mainOf = (html, cls) => html.match(new RegExp('<main class="' + cls + '">[\\s\\S]*?</main>'))[0];
 
 test('views: milestones is the default, board via opts, the row above the content links every view', () => {
   const base = BASE_OPTS();
@@ -266,13 +268,13 @@ test('focus: active items at full size, blocked after them, now block folded in'
   const html = view.renderApp(live, { ...BASE_OPTS(), view: 'focus', canWrite: true });
   assert.ok(html.includes('<main class="focus">'));
   assert.ok(!html.includes('id="now"') && !html.includes('id="history"'), 'the now block is the view itself');
-  const ids = html.match(/<main class="focus">[\s\S]*?<\/main>/)[0].match(/<article class="item" data-id="([a-z-]+)"/g);
+  const ids = mainOf(html, 'focus').match(/<article class="item" data-id="([a-z-]+)"/g);
   assert.deepStrictEqual(ids, ['<article class="item" data-id="checkout"', '<article class="item" data-id="order-queue"', '<article class="item" data-id="payment"']);
   assert.ok(/<h2 class="title">Checkout with pickup time<\/h2><div class="elapsed" data-since="2026-09-09T09:00:00Z">/.test(html));
   assert.ok(/<h2 class="title">Card payment with Stripe<\/h2><span class="label attention state">blocked<\/span>/.test(html));
   assert.ok(html.includes('href="https://github.com/acme/abholbereit/pull/44#discussion_r2001"'), 'open points link to the review comment');
   assert.ok(html.includes('Pickup time in 15 or 30 minute steps?') && html.includes('data-action="answer" data-id="checkout" data-text="15"'));
-  const focusMain = html.match(/<main class="focus">[\s\S]*?<\/main>/)[0];
+  const focusMain = mainOf(html, 'focus');
   assert.strictEqual((focusMain.match(/<form class="comment-form" data-id="checkout"/g) || []).length, 1, 'question and thread share one field');
   assert.ok(html.includes('Finish the cart first, the checkout can wait'), 'the thread is open');
   const idle = demoState();
@@ -305,7 +307,7 @@ test('conversations: questions first, unanswered threads marked, waiting block f
   const html = view.renderApp(live, { ...BASE_OPTS(), view: 'conversations', canWrite: true });
   assert.ok(html.includes('<main class="conversations">'));
   assert.ok(!html.includes('class="waiting"'), 'questions live in the threads here');
-  const main = html.match(/<main class="conversations">[\s\S]*?<\/main>/)[0];
+  const main = mainOf(html, 'conversations');
   const ids = main.split('<details')[0].match(/<article class="item" data-id="([a-z-]+)"/g);
   assert.deepStrictEqual(ids, ['<article class="item" data-id="checkout"', '<article class="item" data-id="order-queue"']);
   assert.ok(/data-id="order-queue"[\s\S]*?<span class="label">unanswered<\/span>/.test(main));
@@ -317,7 +319,7 @@ test('conversations: questions first, unanswered threads marked, waiting block f
 
 test('open points: grouped by item, open first, resolved folded, linked to the comment', () => {
   const html = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'points' });
-  const main = html.match(/<main class="points">[\s\S]*?<\/main>/)[0];
+  const main = mainOf(html, 'points');
   const ids = main.match(/<section class="group[^"]*" data-id="([a-z-]+)"/g);
   assert.deepStrictEqual(ids, ['<section class="group" data-id="checkout"', '<section class="group is-done" data-id="menu-editor"']);
   assert.ok(main.includes('<span class="meta">2 open</span>'));
@@ -328,7 +330,7 @@ test('open points: grouped by item, open first, resolved folded, linked to the c
 
 test('pull requests: newest first with items, review points and unplanned work', () => {
   const html = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'prs' });
-  const main = html.match(/<main class="prs">[\s\S]*?<\/main>/)[0];
+  const main = mainOf(html, 'prs');
   const nums = main.match(/data-pr="(\d+)"/g);
   assert.deepStrictEqual(nums, ['data-pr="44"', 'data-pr="43"', 'data-pr="42"', 'data-pr="41"']);
   assert.ok(/data-pr="43">[\s\S]*?<span class="label attention">blocked<\/span><span class="text">Card payment with Stripe<\/span>/.test(main));
@@ -339,7 +341,7 @@ test('pull requests: newest first with items, review points and unplanned work',
 
 test('signals: only questions, blocked, stale and unplanned; calm sentence when there is nothing', () => {
   const html = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'signals' });
-  const main = html.match(/<main class="signals">[\s\S]*?<\/main>/)[0];
+  const main = mainOf(html, 'signals');
   assert.deepStrictEqual(main.match(/data-kind="([a-z]+)"/g), ['data-kind="questions"', 'data-kind="blocked"', 'data-kind="stale"', 'data-kind="unplanned"']);
   assert.ok(main.includes('<h2 class="section attention">Gone quiet</h2>'));
   assert.ok(!html.includes('class="unplanned"'), 'unplanned block below is folded into the view');
@@ -353,12 +355,13 @@ test('signals: only questions, blocked, stale and unplanned; calm sentence when 
 
 test('list: one table row per item, default order by milestone then status, headers sort', () => {
   const html = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'list' });
-  const main = html.match(/<main class="list-view">[\s\S]*?<\/main>/)[0];
+  const main = mainOf(html, 'list-view');
   const ids = main.match(/<tr data-id="([a-z-]+)"/g).map((m) => m.slice(13, -1));
   assert.deepStrictEqual(ids.slice(0, 3), ['payment', 'checkout', 'menu-editor']);
   assert.ok(main.includes('<td class="c-status mono attention">blocked</td>'));
   assert.ok(main.includes('<tr data-id="menu-editor" class="is-done">'));
-  assert.ok(main.includes('<button type="button" data-action="sort" data-key="updated" title="Sort by Updated">Updated</button>'));
+  assert.ok(main.includes('<button type="button" data-action="sort" data-key="updated" data-dir="desc" title="Sort by Updated">Updated</button>'));
+  assert.ok(main.includes('data-key="title" data-dir="asc"'), 'text columns start ascending');
   const sorted = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'list', sort: { key: 'title', dir: 'asc' } });
   const byTitle = sorted.match(/<tr data-id="([a-z-]+)"/g).map((m) => m.slice(13, -1));
   assert.deepStrictEqual(byTitle.slice(0, 2), ['app-store', 'analytics']);
@@ -645,18 +648,16 @@ test('German: the unmeasured goal title is translated', () => {
   assert.ok(/<span class="label status goal" title="noch nicht gemessen">–\/5<\/span><span>Receipt printer support<\/span>/.test(html));
 });
 
-const mainOf = (html, cls) => html.match(new RegExp('<main class="' + cls + '">[\\s\\S]*?</main>'))[0];
-
 test('focus: a filter without active items shows the idle block; all done and no items have their own sentence', () => {
   const filtered = mainOf(view.renderApp(demoState(), { ...BASE_OPTS(), view: 'focus', filter: 'm3' }), 'focus');
   assert.ok(!filtered.includes('<article'), 'Launch has nothing in progress');
   assert.ok(filtered.includes('<div class="now"><div class="eyebrow">'), 'the idle block stands in for the list');
-  assert.ok(filtered.includes('Everything is done.') && filtered.includes('3 milestones, 11 items.'), 'the idle block ignores the filter: Ordering flow is current and has no open item left');
+  assert.ok(filtered.includes('Nothing in progress right now.') && filtered.includes('<b>App store listing</b>'), 'the idle block follows the filter: Launch still has one open item');
   const next = demoState();
   next.data.items.find((it) => it.id === 'checkout').status = 'todo';
   next.data.items.find((it) => it.id === 'payment').status = 'todo';
   const idle = mainOf(view.renderApp(next, { ...BASE_OPTS(), view: 'focus', filter: 'm3' }), 'focus');
-  assert.ok(idle.includes('Nothing in progress right now.') && idle.includes('Next up: <b>Checkout with pickup time</b>'));
+  assert.ok(idle.includes('Nothing in progress right now.') && idle.includes('Next up: <b>App store listing</b>'), 'the filtered milestone names the next item');
   const done = demoState();
   done.data.items.forEach((it) => { it.status = 'done'; delete it.question; });
   const allDone = mainOf(view.renderApp(done, { ...BASE_OPTS(), view: 'focus' }), 'focus');
@@ -837,4 +838,16 @@ test('focus idle text follows the milestone filter', () => {
   assert.ok(launch.includes('<b>App store listing</b>'), 'next up comes from the filtered milestone');
   const unfiltered = view.renderApp(state, { ...BASE_OPTS(), view: 'focus' });
   assert.ok(unfiltered.includes('<b>Checkout with pickup time</b>'), 'without a filter the current milestone leads');
+});
+
+test('timeline: rows without a parseable time are dropped, nothing else breaks', () => {
+  const state = demoState();
+  const checkout = state.data.items.find((it) => it.id === 'checkout');
+  checkout.comments.push({ from: 'agent', text: 'no time', at: undefined });
+  checkout.open_points.push({ text: 'bad date', source: 'pr:44', opened: 'not-a-date', resolved: null });
+  const rows = view.computeTimeline(state, BASE_OPTS());
+  assert.ok(!rows.some((r) => r.text.includes('no time') || r.text.includes('bad date')));
+  assert.ok(rows.some((r) => r.kind === 'comment'), 'the dated comments stay');
+  const html = mainOf(view.renderApp(state, { ...BASE_OPTS(), view: 'timeline' }), 'timeline');
+  assert.ok(!/Invalid Date|NaN/.test(html));
 });
