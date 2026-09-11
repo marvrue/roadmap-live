@@ -20,6 +20,10 @@
 
   var DEFAULT_STALE_DAYS = 7;
   var FEED_MAX = 8;
+  var FEED_SHORT = 4;
+  // Views the button in the header cycles through. Adding one: a render
+  // function, an entry here, a label under page.views.<name> in the locales.
+  var VIEWS = ['milestones', 'board'];
   var DONE_VISIBLE = 3;
 
   // ---- small helpers ------------------------------------------------------
@@ -250,6 +254,10 @@
       var pr = latestPr(data);
       if (pr) parts.push('<span class="sep">&middot;</span><span>' + prLabel(state, t, pr) + '</span>');
     }
+    if (VIEWS.length > 1) {
+      var v = VIEWS.indexOf(opts.view) >= 0 ? opts.view : VIEWS[0];
+      parts.push('<button type="button" class="theme" data-action="view" title="' + esc(t('page.viewTitle')) + '">' + esc(t('page.views.' + v)) + '</button>');
+    }
     if (opts.theme && state.themes && state.themes.length > 1) {
       parts.push('<button type="button" class="theme" data-action="theme-name" title="' + esc(t('page.pickTheme', { list: state.themes.join(', ') })) + '">' + esc(opts.theme) + '</button>');
     }
@@ -297,8 +305,13 @@
         '<span class="text">' + esc(e.text) + (e.tag ? '<span class="tag">' + esc(e.tag) + '</span>' : '') + '</span>' +
         '<span class="when">' + time(e.at, opts.now, opts.lang) + '</span></li>';
     });
+    var more = '';
+    if (!opts.showAllFeed && rows.length > FEED_SHORT) {
+      more = '<div class="more"><button type="button" data-action="more-feed">' + esc(t('page.since.showAll', { n: rows.length })) + '</button></div>';
+      rows = rows.slice(0, FEED_SHORT);
+    }
     return '<section class="since"><h2 class="section">' + esc(t('page.since.title')) + '</h2>' +
-      (rows.length ? '<ul>' + rows.join('') + '</ul>' : '<div class="none">' + esc(t('page.since.empty')) + '</div>') + '</section>';
+      (rows.length ? '<ul>' + rows.join('') + '</ul>' + more : '<div class="none">' + esc(t('page.since.empty')) + '</div>') + '</section>';
   }
 
   function renderWaiting(state, opts) {
@@ -410,7 +423,7 @@
     if (it.branch) sub.push('<span>' + esc(it.branch) + '</span>');
     var pts = openPoints(it).length;
     if (pts) sub.push('<span>' + esc(t('page.openPoints', { n: pts })) + '</span>');
-    if (!it.prs || !it.prs.length) sub.push('<span>' + esc(titles[it.milestone] || it.milestone) + '</span>');
+    if ((!it.prs || !it.prs.length) && !opts.statusLabel) sub.push('<span>' + esc(titles[it.milestone] || it.milestone) + '</span>');
     if (it.updated && it.status !== 'active') sub.push(time(it.updated, opts.now, opts.lang));
     if (it.note) sub.push('<span class="note">' + esc(it.note) + '</span>');
     var comments = commentsOf(it, opts);
@@ -423,7 +436,7 @@
     }
     var thread = expanded && openItem(it) ? renderConversation(state, opts, it) : '';
     return '<article class="item' + (changed ? ' flash' : '') + '" data-id="' + esc(it.id) + '" data-status="' + esc(it.status) + '">' +
-      '<div class="title"><span>' + esc(it.title) + '</span>' + (it.status === 'blocked' ? '<span class="label attention">' + esc(t('page.blocked')) + '</span>' : '') + '</div>' +
+      '<div class="title">' + (opts.statusLabel ? '<span class="label status' + (it.status === 'blocked' ? ' attention' : '') + '">' + esc(t('page.status.' + it.status)) + '</span>' : '') + '<span>' + esc(it.title) + '</span>' + (!opts.statusLabel && it.status === 'blocked' ? '<span class="label attention">' + esc(t('page.blocked')) + '</span>' : '') + '</div>' +
       (sub.length ? '<div class="sub">' + sub.join('') + '</div>' : '') + thread + '</article>';
   }
 
@@ -454,6 +467,37 @@
       return '<section class="col ' + col.key + '" data-status="' + col.key + '"><header><h2>' + esc(t('page.columns.' + col.key)) + '</h2><span class="count">' + items.length + '</span>' + hint + '</header><div class="items">' + body + more + '</div></section>';
     });
     return '<main class="board">' + html.join('') + '</main>';
+  }
+
+  // One list per milestone: open items first with a status label, done
+  // items collapsed. Answers "where are we" without clicking.
+  function renderMilestones(state, opts) {
+    var t = opts.t, data = state.data;
+    var order = {}, titles = {};
+    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
+    var info = milestoneStats(data);
+    var itemOpts = Object.assign({}, opts, { statusLabel: true });
+    var sections = info.stats.filter(function (s) { return !opts.filter || s.m.id === opts.filter; }).map(function (s) {
+      var items = data.items.filter(function (it) { return it.milestone === s.m.id; });
+      var open = sortItems(items.filter(function (it) { return it.status !== 'done'; }), order, 'active');
+      var done = sortItems(items.filter(function (it) { return it.status === 'done'; }), order, 'done');
+      var cls = 'ms' + (s === info.current ? ' is-current' : '') + (s.complete ? ' is-done' : '');
+      var tag = s === info.current ? t('page.milestoneCurrent') : s.complete ? t('page.milestoneComplete') : '';
+      var out = '<section class="' + cls + '" data-milestone="' + esc(s.m.id) + '"><header><h2>' + esc(s.m.title) + '</h2><span class="count">' + s.done + '/' + s.total + '</span>' + (tag ? '<span class="label">' + esc(tag) + '</span>' : '') + '</header>';
+      if (open.length) out += '<div class="items">' + open.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>';
+      else if (!done.length) out += '<div class="empty">' + esc(t('page.empty')) + '</div>';
+      if (done.length) {
+        var openAttr = opts.expandedMilestones && opts.expandedMilestones[s.m.id] ? ' open' : '';
+        out += '<details class="ms-done" data-milestone="' + esc(s.m.id) + '"' + openAttr + '><summary>' + esc(t('page.doneCount', { n: done.length })) + '</summary><div class="items">' + done.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div></details>';
+      }
+      return out + '</section>';
+    });
+    return '<main class="milestones">' + sections.join('') + '</main>';
+  }
+
+  function renderView(state, opts) {
+    var v = VIEWS.indexOf(opts.view) >= 0 ? opts.view : VIEWS[0];
+    return v === 'board' ? renderBoard(state, opts) : renderMilestones(state, opts);
   }
 
   function renderUnplanned(state, opts) {
@@ -497,7 +541,7 @@
     var now = renderNow(state, opts);
     if (state.mode === 'live') out += '<section class="live">' + now + renderHistory(state, opts) + '</section>';
     else if (now) out += '<section class="live single">' + now + '</section>';
-    out += renderBoard(state, opts);
+    out += renderView(state, opts);
     out += renderUnplanned(state, opts);
     if (state.mode !== 'live') out += renderChangelog(state, opts);
     out += renderFooter(state, opts);
@@ -512,6 +556,7 @@
 
   return {
     renderApp: renderApp,
+    VIEWS: VIEWS,
     computeFeed: computeFeed,
     milestoneStats: milestoneStats,
     staleDays: staleDays,

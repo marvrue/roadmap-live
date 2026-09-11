@@ -25,7 +25,8 @@
     "filterClear": "alle anzeigen",
     "since": {
       "title": "Seit dem letzten Blick",
-      "empty": "Nichts Neues."
+      "empty": "Nichts Neues.",
+      "showAll": "alle {n} anzeigen"
     },
     "feed": {
       "statusChange": "{title} ist jetzt {status}",
@@ -138,6 +139,16 @@
       "enabled": "Eingeschaltet. Die Seite ist in etwa einer Minute erreichbar.",
       "error": "Einschalten fehlgeschlagen: {message}",
       "title": "Öffentlichen Link kopieren"
+    },
+    "views": {
+      "milestones": "Meilensteine",
+      "board": "Board"
+    },
+    "viewTitle": "Ansicht wechseln",
+    "milestoneCurrent": "aktueller Meilenstein",
+    "doneCount": {
+      "one": "1 erledigt",
+      "other": "{n} erledigt"
     }
   },
   "cli": {
