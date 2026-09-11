@@ -222,8 +222,10 @@
       "id": "page-base-url",
       "title": "Render the page for any base address",
       "milestone": "m4",
-      "status": "todo",
-      "note": "Links and assets must work under a hosted URL."
+      "status": "done",
+      "note": "renderPage takes basePath; the page calls data, events and comment relative to it.",
+      "updated": "2026-09-11T09:30:24Z",
+      "branch": "feat/page-base-url"
     },
     {
       "id": "page-write-token",

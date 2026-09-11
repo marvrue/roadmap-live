@@ -6,6 +6,7 @@
   'use strict';
   var connected = false;
   var t = window.RoadmapPage.t;
+  var base = window.RoadmapPage.base;
 
   function showConnection() {
     var c = document.getElementById('conn');
@@ -21,11 +22,11 @@
 
   window.RoadmapLive = { afterRender: showConnection };
 
-  fetch('/data').then(function (r) { return r.json(); }).then(function (snap) {
+  fetch(base + 'data').then(function (r) { return r.json(); }).then(function (snap) {
     window.RoadmapPage.setState(snap);
   }).catch(function () {});
 
-  var es = new EventSource('/events');
+  var es = new EventSource(base + 'events');
   es.onopen = function () { setConnected(true); };
   es.onerror = function () { setConnected(false); };
   es.addEventListener('update', function (e) {

@@ -18,6 +18,10 @@
   var THEME_KEY = 'roadmap-live-theme';
   var themes = Array.isArray(state.themes) ? state.themes : [];
   var theme = state.theme || themes[0] || null;
+  // Where the page's own routes live (data, events, comment). The server
+  // sets it when it renders the page; a host serving under /p/<id>/ passes
+  // that path. Always ends with a slash.
+  var base = typeof state.base === 'string' && state.base.charAt(0) === '/' ? state.base : '/';
   var MODES = ['system', 'light', 'dark'];
 
   // ---- language: ?lang, then roadmap.json / ROADMAP_LANG, then the browser
@@ -190,7 +194,7 @@
       render();
       return false;
     };
-    return fetch('/comment', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: id, text: text }) })
+    return fetch(base + 'comment', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: id, text: text }) })
       .then(function (r) { return r.ok ? true : fail(); })
       .catch(fail);
   }
@@ -253,6 +257,7 @@
       state = next;
       state.themes = themes;
       state.theme = theme;
+      state.base = base;
       settlePending();
       var changed = null;
       if (state.data) {
@@ -271,6 +276,7 @@
     render: render,
     lang: lang,
     t: t,
+    base: base,
     sendComment: sendComment,
   };
 
