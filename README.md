@@ -103,6 +103,7 @@ rl.addComment(data, 'menu-editor', 'Finish the cart first');
 ```json
 {
   "project": "abholbereit",
+  "tagline": "Order ahead, pick up without waiting.",
   "theme": "neutral",
   "language": "en",
   "stale_after_days": 7,
@@ -116,6 +117,12 @@ rl.addComment(data, 'menu-editor', 'Finish the cart first');
       "note": "optional, one sentence",
       "updated": "2026-09-10T14:02:00Z",
       "branch": "feat/menu-editor",
+      "goal": {
+        "label": "Restaurants with a menu",
+        "target": 10,
+        "current": 3,
+        "changed": "2026-09-09T08:00:00Z"
+      },
       "comments": [
         {
           "from": "human",
@@ -153,9 +160,12 @@ rl.addComment(data, 'menu-editor', 'Finish the cart first');
 
 - The agent writes `project`, `milestones`, `items` with `id`, `title`, `milestone`, `status` (`todo`, `active`, `done`), `note` and `updated`.
 - Sync writes `prs`, `open_points`, `unplanned`, `sync` and the status `blocked`. The agent leaves those alone.
-- `theme`, `language` and `stale_after_days` are optional settings. Files without them, and files from older versions, work unchanged.
+- `theme`, `language`, `stale_after_days` and `tagline` are optional settings. `tagline` is one sentence about the project, 140 characters or fewer. Files without them, and files from older versions, work unchanged.
 - Milestones are in array order. A milestone is complete when all of its items are done. The current milestone is the first one that is not.
 - The human writes `comments` from the page; the agent answers there, sets and clears `question` and records `branch`.
+- An item may carry a `goal`, a number it works towards: `label` and `target`, plus `current`, `changed` (when `current` last changed) and `source` when known. `source` names where the number comes from, as `kind:argument`: `github-stars:owner/name` or `npm-downloads:package`. Goals go on items, never on milestones. The page does not show goals or the tagline yet; `--check` validates both.
+
+`--check` may print notes after the ok line: a done item whose goal is under its target, an open item that already reached its goal, or a tagline longer than 140 characters. Notes are hints, not errors; the exit code stays 0.
 
 ## Two views
 
