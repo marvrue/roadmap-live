@@ -119,12 +119,17 @@ test('--check warns above 200 KB', () => {
   assert.ok(logs.some((l) => l.includes('KB, trim old comments')));
 });
 
-test('view setting: milestones or board', () => {
+test('view setting: every view name the renderer knows is accepted, anything else named in the error', () => {
+  const { VIEWS } = require('../src/page/view');
+  assert.ok(VIEWS.length >= 9);
+  for (const v of VIEWS) {
+    const data = fixture('roadmap-base.json');
+    data.view = v;
+    assert.deepStrictEqual(validate(data), [], v);
+  }
   const data = fixture('roadmap-base.json');
-  data.view = 'board';
-  assert.deepStrictEqual(validate(data), []);
   data.view = 'kanban';
-  assert.ok(validate(data).some((e) => e.includes('"view" must be one of milestones, board')));
+  assert.ok(validate(data).some((e) => e.endsWith(`"view" must be one of ${VIEWS.join(', ')}`)));
 });
 
 // Goals
