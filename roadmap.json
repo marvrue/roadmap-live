@@ -240,8 +240,9 @@
       "id": "github-app",
       "title": "Register the GitHub App and OAuth app",
       "milestone": "m4",
-      "status": "todo",
-      "note": "Needed for login, repo selection and the browser device flow."
+      "status": "done",
+      "note": "GitHub App gtm-roadmap registered on 2026-09-11; the device-flow OAuth app for the CLI is still open (oauth-app).",
+      "updated": "2026-09-11T14:44:56Z"
     },
     {
       "id": "cloud-repo",
