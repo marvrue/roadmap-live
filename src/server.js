@@ -11,6 +11,22 @@ const i18n = require('./i18n');
 const { displayName } = require('./validate');
 
 const HEARTBEAT_MS = 25000;
+const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
+
+// Accepts a request whose Origin is loopback (any port: covers forwarded
+// setups like `ssh -L`, Codespaces, VS Code port forwarding) or matches the
+// request's own Host header. Rejects everything else, including a malformed
+// Origin.
+function originAllowed(origin, host) {
+  let o;
+  try {
+    o = new URL(origin);
+  } catch {
+    return false;
+  }
+  if (LOOPBACK_HOSTS.has(o.hostname)) return true;
+  return !!host && o.host.toLowerCase() === String(host).toLowerCase();
+}
 
 function log(msg) {
   const t = new Date().toTimeString().slice(0, 8);
@@ -62,14 +78,10 @@ function startServer(opts, env = process.env) {
   };
 
   const handleComment = (req, res) => {
-    const contentType = (req.headers['content-type'] || '').split(';')[0].trim();
+    const contentType = (req.headers['content-type'] || '').split(';')[0].trim().toLowerCase();
     if (contentType !== 'application/json') return json(res, 415, { error: 'content-type must be application/json' });
     const origin = req.headers.origin;
-    if (origin) {
-      const port = server.address().port;
-      const allowed = new Set([`http://127.0.0.1:${port}`, `http://localhost:${port}`]);
-      if (!allowed.has(origin)) return json(res, 403, { error: 'forbidden origin' });
-    }
+    if (origin && !originAllowed(origin, req.headers.host)) return json(res, 403, { error: 'forbidden origin' });
     const chunks = [];
     let size = 0;
     let overLimit = false;
