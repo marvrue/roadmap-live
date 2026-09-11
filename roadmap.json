@@ -12,6 +12,10 @@
     {
       "id": "m3",
       "title": "PR sync"
+    },
+    {
+      "id": "m4",
+      "title": "Hosted version"
     }
   ],
   "items": [
@@ -204,6 +208,61 @@
       "milestone": "m3",
       "status": "todo",
       "note": "Needs a GitHub account; the code path is ready."
+    },
+    {
+      "id": "lib-exports",
+      "title": "Export sync, render and validate as a library",
+      "milestone": "m4",
+      "status": "todo",
+      "note": "So roadmap-live-cloud can call them without the CLI."
+    },
+    {
+      "id": "page-base-url",
+      "title": "Render the page for any base address",
+      "milestone": "m4",
+      "status": "todo",
+      "note": "Links and assets must work under a hosted URL."
+    },
+    {
+      "id": "page-write-token",
+      "title": "Per-page token for the comment route",
+      "milestone": "m4",
+      "status": "todo",
+      "note": "Closes the DNS-rebinding gap and is the login for the hosted page."
+    },
+    {
+      "id": "github-app",
+      "title": "Register the GitHub App and OAuth app",
+      "milestone": "m4",
+      "status": "todo",
+      "note": "Needed for login, repo selection and the browser device flow."
+    },
+    {
+      "id": "cloud-repo",
+      "title": "Private roadmap-live-cloud service on Hetzner/CapRover",
+      "milestone": "m4",
+      "status": "todo",
+      "note": "Node container, SQLite volume, sync worker, page hosting."
+    },
+    {
+      "id": "cloud-billing",
+      "title": "Stripe subscription with our API key included",
+      "milestone": "m4",
+      "status": "todo",
+      "note": "Customers may add their own key instead."
+    },
+    {
+      "id": "digest",
+      "title": "Daily summary by mail or Slack via n8n",
+      "milestone": "m4",
+      "status": "todo",
+      "note": "Same content as the since-you-last-looked block."
+    },
+    {
+      "id": "landing",
+      "title": "Landing page and sign-up",
+      "milestone": "m4",
+      "status": "todo"
     }
   ]
 }
