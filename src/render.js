@@ -83,8 +83,19 @@ function repoUrl(repo) {
   return repo && /^[\w.-]+\/[\w.-]+$/.test(repo) ? `https://github.com/${repo}` : null;
 }
 
+// The path the page's own routes (data, events, comment) hang off. A host
+// that serves the page at /p/<id>/ passes that; the live server uses /.
+// Must be an absolute path without host, and is normalized to end in "/".
+function normalizeBasePath(value) {
+  if (value === undefined || value === null || value === '') return '/';
+  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//') || /[?#\s]/.test(value)) {
+    throw new Error(`basePath must be an absolute path like /p/abc/, got: ${value}`);
+  }
+  return value.endsWith('/') ? value : `${value}/`;
+}
+
 // Renders a complete HTML document.
-// opts: { theme, lang, langFixed, mode ('light'|'dark'|null), live, now, title }
+// opts: { theme, lang, langFixed, mode ('light'|'dark'|null), live, now, title, basePath }
 function renderPage(state, opts = {}) {
   const a = loadAssets();
   const locales = i18n.loadLocales();
@@ -93,7 +104,7 @@ function renderPage(state, opts = {}) {
   const themes = collectThemes(opts.theme, opts.baseDir);
   if (!themes) throw new Error(`unknown theme: ${opts.theme}`);
   const now = opts.now || Date.now();
-  const fullState = { ...state, fixedLang: opts.langFixed || null, theme: themes[0].name, themes: themes.map((x) => x.name) };
+  const fullState = { ...state, fixedLang: opts.langFixed || null, theme: themes[0].name, themes: themes.map((x) => x.name), base: normalizeBasePath(opts.basePath) };
   const body = view.renderApp(fullState, { t, lang, now, filter: null, colorMode: opts.mode || 'system', theme: themes[0].name, showAllDone: false, changed: null });
   const title = opts.title || (state.data ? `${view.progressPercent(state.data)} % · ${state.data.project}` : 'roadmap-live');
   const vars = {
@@ -164,4 +175,4 @@ function runRender(opts, env = process.env) {
   return 0;
 }
 
-module.exports = { renderPage, staticState, resolveTheme, collectThemes, readChangelog, repoUrl, runRender, BUILTIN_THEMES, DEFAULT_THEME, DEFAULT_OUT };
+module.exports = { renderPage, staticState, resolveTheme, collectThemes, readChangelog, repoUrl, normalizeBasePath, runRender, BUILTIN_THEMES, DEFAULT_THEME, DEFAULT_OUT };

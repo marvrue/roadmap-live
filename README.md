@@ -87,8 +87,9 @@ const r = await rl.syncRoadmap({ roadmap: data, repo: 'owner/name', token, provi
 // r.roadmap is the new roadmap, r.changes what changed, r.prs what was read;
 // r.roadmap is the input when there was nothing new
 
-// page as HTML from state
-const html = rl.renderPage({ mode: 'static', ok: true, data: r.roadmap }, { theme: 'paper', lang: 'en' });
+// page as HTML from state; basePath is where the page's own routes
+// (data, events, comment) live when it is served under a path
+const html = rl.renderPage({ mode: 'live', ok: true, data: r.roadmap }, { theme: 'paper', lang: 'en', live: true, basePath: '/p/abc/' });
 
 // one human comment into the data
 rl.addComment(data, 'listing-editor', 'Finish the cart first');
