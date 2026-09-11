@@ -93,6 +93,11 @@
   // ---- render ----------------------------------------------------------------
   var filter = null;
   var showAllDone = false;
+  var showAllFeed = false;
+  var VIEW_KEY = 'roadmap-live-view';
+  var VIEWS = V.VIEWS;
+  var expandedMilestones = {};
+  var view = pickView();
   var share = null;      // { note: 'copied' | 'off' | 'enabling' | 'enabled' | 'error', message }
   var shareTimer = null;
   var expanded = {};     // item id -> true
@@ -100,8 +105,25 @@
   var prevStatus = null;
   var unseen = false;
 
+  // ---- view: ?view, then the browser's memory, then roadmap.json, then the first
+  function pickView() {
+    var q = null;
+    try { q = new URLSearchParams(location.search).get('view'); } catch (e) { q = null; }
+    if (q && VIEWS.indexOf(q) >= 0) return q;
+    var stored = null;
+    try { stored = localStorage.getItem(VIEW_KEY); } catch (e) { stored = null; }
+    if (stored && VIEWS.indexOf(stored) >= 0) return stored;
+    if (state.data && VIEWS.indexOf(state.data.view) >= 0) return state.data.view;
+    return VIEWS[0];
+  }
+  function setView(v) {
+    view = v;
+    try { localStorage.setItem(VIEW_KEY, v); } catch (e) { /* ignore */ }
+    render();
+  }
+
   function opts(changed) {
-    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending, share: share, canWrite: state.mode === 'live' && !!key };
+    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, view: view, showAllFeed: showAllFeed, expandedMilestones: expandedMilestones, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending, share: share, canWrite: state.mode === 'live' && !!key };
   }
 
   function render(changed) {
@@ -256,9 +278,18 @@
     else if (action === 'filter') setFilter(filter === el.getAttribute('data-id') ? null : el.getAttribute('data-id'));
     else if (action === 'clear-filter') setFilter(null);
     else if (action === 'more-done') showAllDone = true, render();
+    else if (action === 'more-feed') showAllFeed = true, render();
+    else if (action === 'view') setView(VIEWS[(VIEWS.indexOf(view) + 1) % VIEWS.length]);
     else if (action === 'expand') { var id = el.getAttribute('data-id'); if (expanded[id]) delete expanded[id]; else expanded[id] = true; render(); }
     else if (action === 'answer') sendComment(el.getAttribute('data-id'), el.getAttribute('data-text'));
   });
+  // Remember which milestones' done lists are open across re-renders.
+  app.addEventListener('toggle', function (e) {
+    var d = e.target;
+    if (!d.matches || !d.matches('details.ms-done')) return;
+    var id = d.getAttribute('data-milestone');
+    if (d.open) expandedMilestones[id] = true; else delete expandedMilestones[id];
+  }, true);
   app.addEventListener('submit', function (e) {
     var form = e.target.closest('form.comment-form');
     if (!form) return;
