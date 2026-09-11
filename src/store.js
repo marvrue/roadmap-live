@@ -129,11 +129,20 @@ function createStore(file, { log = () => {}, t = (k) => k, gitDir = path.dirname
 
   const notify = () => { for (const fn of listeners) fn(snapshot()); };
 
-  const refreshGit = () => {
-    const next = gitState(gitDir);
-    if (JSON.stringify(next) === JSON.stringify(state.git)) return false;
-    state.git = next;
-    return true;
+  // Async (execFile, not spawnSync) so a slow git call never blocks the
+  // event loop. Guarded against overlapping runs with inFlight.
+  let gitInFlight = false;
+  const refreshGit = async () => {
+    if (gitInFlight) return false;
+    gitInFlight = true;
+    try {
+      const next = await gitState(gitDir);
+      if (JSON.stringify(next) === JSON.stringify(state.git)) return false;
+      state.git = next;
+      return true;
+    } finally {
+      gitInFlight = false;
+    }
   };
 
   const reload = () => {
@@ -155,15 +164,16 @@ function createStore(file, { log = () => {}, t = (k) => k, gitDir = path.dirname
       log(`${t('cli.server.invalid')}\n  - ${result.errors.join('\n  - ')}`);
     }
     state.ok = result.ok;
-    refreshGit();
+    // The snapshot goes out with the previous git value; a changed git state
+    // triggers its own notify once the (async) refresh resolves.
     notify();
+    refreshGit().then((changed) => { if (changed) notify(); });
   };
 
   reload();
   const stop = watchFile(file, reload);
 
-  refreshGit();
-  const gitTimer = setInterval(() => { if (refreshGit()) notify(); }, GIT_POLL_MS);
+  const gitTimer = setInterval(() => { refreshGit().then((changed) => { if (changed) notify(); }); }, GIT_POLL_MS);
   gitTimer.unref();
 
   return {
