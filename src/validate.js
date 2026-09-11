@@ -58,6 +58,33 @@ function validateOpenPoints(errors, points, where) {
   });
 }
 
+const COMMENT_AUTHORS = ['human', 'agent'];
+const LARGE_FILE_BYTES = 200 * 1024;
+
+function validateComments(errors, comments, where) {
+  if (comments === undefined) return;
+  if (!Array.isArray(comments)) return errors.push(`${where} must be an array`);
+  comments.forEach((c, i) => {
+    const w = `${where}[${i}]`;
+    if (!isObject(c)) return errors.push(`${w} must be an object`);
+    if (!COMMENT_AUTHORS.includes(c.from)) errors.push(`${w}.from must be "human" or "agent"`);
+    if (!isText(c.text)) errors.push(`${w}.text must be a non-empty string`);
+    checkDate(errors, c.at, `${w}.at`, false);
+  });
+}
+
+function validateQuestion(errors, q, where) {
+  if (q === undefined) return;
+  if (!isObject(q)) return errors.push(`${where} must be an object`);
+  if (!isText(q.text)) errors.push(`${where}.text must be a non-empty string`);
+  if (q.options !== undefined) {
+    if (!Array.isArray(q.options) || q.options.length < 1 || q.options.length > 4 || !q.options.every(isText)) {
+      errors.push(`${where}.options must have 1 to 4 entries, each a non-empty string`);
+    }
+  }
+  checkDate(errors, q.asked, `${where}.asked`, false);
+}
+
 function validate(data) {
   const errors = [];
   if (!isObject(data)) return ['root must be a JSON object'];
@@ -110,6 +137,9 @@ function validate(data) {
       checkDate(errors, it.updated, `${label}.updated`);
       checkPrs(errors, it.prs, `${label}.prs`);
       validateOpenPoints(errors, it.open_points, `${label}.open_points`);
+      if (it.branch !== undefined && !isText(it.branch)) errors.push(`${label}.branch must be a non-empty string`);
+      validateComments(errors, it.comments, `${label}.comments`);
+      validateQuestion(errors, it.question, `${label}.question`);
     });
   }
 
@@ -175,4 +205,6 @@ module.exports = {
   ID_RE,
   REPO_RE,
   DEFAULT_STALE_DAYS,
+  LARGE_FILE_BYTES,
+  COMMENT_AUTHORS,
 };

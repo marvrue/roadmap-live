@@ -11,6 +11,22 @@ const i18n = require('./i18n');
 const { displayName } = require('./validate');
 
 const HEARTBEAT_MS = 25000;
+const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
+
+// Accepts a request whose Origin is loopback (any port: covers forwarded
+// setups like `ssh -L`, Codespaces, VS Code port forwarding) or matches the
+// request's own Host header. Rejects everything else, including a malformed
+// Origin.
+function originAllowed(origin, host) {
+  let o;
+  try {
+    o = new URL(origin);
+  } catch {
+    return false;
+  }
+  if (LOOPBACK_HOSTS.has(o.hostname)) return true;
+  return !!host && o.host.toLowerCase() === String(host).toLowerCase();
+}
 
 function log(msg) {
   const t = new Date().toTimeString().slice(0, 8);
@@ -55,8 +71,44 @@ function startServer(opts, env = process.env) {
     return renderPage(snap, { themeCss: theme.css, lang, langFixed: snap.fixedLang, live: true });
   };
 
+  const MAX_BODY = 16 * 1024;
+  const json = (res, status, body) => {
+    res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+    res.end(body === undefined ? '' : JSON.stringify(body));
+  };
+
+  const handleComment = (req, res) => {
+    const contentType = (req.headers['content-type'] || '').split(';')[0].trim().toLowerCase();
+    if (contentType !== 'application/json') return json(res, 415, { error: 'content-type must be application/json' });
+    const origin = req.headers.origin;
+    if (origin && !originAllowed(origin, req.headers.host)) return json(res, 403, { error: 'forbidden origin' });
+    const chunks = [];
+    let size = 0;
+    let overLimit = false;
+    req.on('data', (d) => {
+      if (overLimit) return;
+      chunks.push(d);
+      size += d.length;
+      if (size > MAX_BODY) {
+        overLimit = true;
+        json(res, 413, { error: 'body too large' });
+      }
+    });
+    req.on('end', () => {
+      if (res.writableEnded) return;
+      let body;
+      try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { return json(res, 400, { error: 'invalid JSON' }); }
+      if (!body || typeof body !== 'object' || typeof body.id !== 'string') return json(res, 400, { error: 'id must be a string' });
+      const r = store.addComment(body.id, body.text);
+      if (!r.ok) return json(res, r.status, { error: r.error });
+      res.writeHead(204, { 'Cache-Control': 'no-store' });
+      res.end();
+    });
+  };
+
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://localhost');
+    if (req.method === 'POST' && url.pathname === '/comment') return handleComment(req, res);
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       res.writeHead(405, { 'Content-Type': 'text/plain' });
       return res.end('method not allowed');
@@ -98,15 +150,20 @@ function startServer(opts, env = process.env) {
     console.log(t('cli.server.stop'));
   });
 
+  const stopAll = () => {
+    clearInterval(heartbeat);
+    store.stop();
+    for (const res of clients) res.end();
+    clients.clear();
+  };
+  const originalClose = server.close.bind(server);
+  server.close = (cb) => { stopAll(); return originalClose(cb); };
+
   let stopping = false;
   const shutdown = () => {
     if (stopping) return;
     stopping = true;
     console.log(`\n${t('cli.server.stopped')}`);
-    clearInterval(heartbeat);
-    store.stop();
-    for (const res of clients) res.end();
-    clients.clear();
     server.close(() => process.exit(0));
     setTimeout(() => process.exit(0), 500).unref();
   };

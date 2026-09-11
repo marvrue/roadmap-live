@@ -130,3 +130,63 @@ test('runRender writes the file and honours the theme in roadmap.json and roadma
   assert.ok(html.includes('<html lang="de"'));
   assert.ok(logs[0].includes('custom'));
 });
+
+test('waiting block: only with a question, buttons on the live page, hint on the static one', () => {
+  const live = body(renderPage({ ...demoState(), mode: 'live' }, { theme: 'neutral', lang: 'en', live: true, now: NOW }));
+  assert.ok(live.includes('class="waiting"'));
+  assert.ok(live.includes('Hold copies for 15 or 30 minutes?'));
+  assert.ok(live.includes('data-action="answer" data-id="checkout" data-text="15"'));
+  assert.ok(live.includes('<form class="comment-form" data-id="checkout"'));
+  const stat = body(renderPage(demoState(), { theme: 'neutral', lang: 'en', live: false, now: NOW }));
+  assert.ok(stat.includes('class="waiting"'));
+  assert.ok(stat.includes('Answering works on the live page'));
+  assert.ok(!/<input|<textarea|<form/.test(stat), 'static page has no fields');
+  assert.ok(!stat.includes('data-action="answer"'), 'static page has no write path');
+  const noQuestion = demoState();
+  noQuestion.data.items.forEach((it) => { delete it.question; });
+  assert.ok(!body(renderPage(noQuestion, { theme: 'neutral', lang: 'en', live: false, now: NOW })).includes('class="waiting"'));
+});
+
+test('conversations: count collapsed, thread when expanded, pending marker, done items hidden', () => {
+  const state = { ...demoState(), mode: 'live' };
+  const collapsed = body(renderPage(state, { theme: 'neutral', lang: 'en', live: true, now: NOW }));
+  assert.ok(collapsed.includes('2 comments'));
+  assert.ok(collapsed.includes('data-action="expand" data-id="checkout"'));
+  assert.ok(!collapsed.includes('Finish the cart first, the checkout can wait'));
+  const t = i18n.translator('en');
+  const expanded = view.renderApp(state, { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', theme: 'neutral', showAllDone: false, changed: null, expanded: { checkout: true, 'listing-editor': true }, pending: [{ id: 'checkout', text: 'Use 15', at: new Date(NOW).toISOString() }] });
+  assert.ok(expanded.includes('Finish the cart first, the checkout can wait'));
+  assert.ok(/class="conv"[\s\S]*<li class="agent">[\s\S]*Ok, cart first/.test(expanded));
+  assert.ok(/Use 15[\s\S]*?<span class="when">sent<\/span>/.test(expanded));
+  assert.ok(!expanded.includes('Images are resized on upload now.'), 'done item conversation is not rendered');
+});
+
+test('a failed pending comment shows the attention marker', () => {
+  const state = { ...demoState(), mode: 'live' };
+  const t = i18n.translator('en');
+  const html = view.renderApp(state, { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', theme: 'neutral', showAllDone: false, changed: null, expanded: { checkout: true }, pending: [{ id: 'checkout', text: 'x', at: new Date(NOW).toISOString(), failed: true }] });
+  assert.ok(html.includes('class="when attention"'));
+  assert.ok(html.includes('not sent, try again'));
+});
+
+test('git state in the header and branch in the subline', () => {
+  const state = { ...demoState(), mode: 'live', git: { branch: 'feat/checkout', ahead: 3, changed: 2 } };
+  const html = body(renderPage(state, { theme: 'neutral', lang: 'en', live: true, now: NOW }));
+  assert.ok(html.includes('feat/checkout'));
+  assert.ok(html.includes('3 ahead of main'));
+  assert.ok(html.includes('2 changed'));
+  assert.ok(/<a href="https:\/\/github.com\/acme\/storefront\/pull\/44">PR #44<\/a>[\s\S]{0,80}feat\/checkout/.test(html));
+  const clean = body(renderPage({ ...state, git: { branch: 'main', ahead: 0, changed: 0 } }, { theme: 'neutral', lang: 'en', live: true, now: NOW }));
+  assert.ok(!clean.includes('ahead of main') && !clean.includes('changed'));
+  const stat = body(renderPage({ ...demoState(), git: { branch: 'x', ahead: 1, changed: 1 } }, { theme: 'neutral', lang: 'en', live: false, now: NOW }));
+  assert.ok(!stat.includes('ahead of main'), 'static page shows no git state');
+});
+
+test('feed has a row per agent comment', () => {
+  const t = i18n.translator('en');
+  const feed = view.computeFeed(fixture('demo-roadmap.json'), NOW, t);
+  const row = feed.find((e) => e.kind === 'comment');
+  assert.ok(row);
+  assert.strictEqual(row.label, 'agent');
+  assert.ok(row.text.startsWith('Checkout with reserved copies: Ok, cart first'));
+});

@@ -51,11 +51,13 @@
   // ---- render ----------------------------------------------------------------
   var filter = null;
   var showAllDone = false;
+  var expanded = {};     // item id -> true
+  var pending = [];      // comments sent but not yet in a snapshot
   var prevStatus = null;
   var unseen = false;
 
   function opts(changed) {
-    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, showAllDone: showAllDone, changed: changed || null };
+    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending };
   }
 
   function render(changed) {
@@ -64,6 +66,15 @@
     var old = app.querySelectorAll('.item[data-id]');
     for (var i = 0; i < old.length; i++) before[old[i].getAttribute('data-id')] = old[i].getBoundingClientRect();
     var hadContent = old.length > 0;
+
+    var focused = document.activeElement;
+    var keep = null;
+    if (focused && focused.matches && focused.matches('.comment-form input')) {
+      var focusedForm = focused.closest('form');
+      var focusedId = focusedForm.getAttribute('data-id');
+      var sameIdForms = app.querySelectorAll('form.comment-form[data-id="' + focusedId.replace(/"/g, '\\"') + '"]');
+      keep = { id: focusedId, value: focused.value, pos: focused.selectionStart, index: Array.prototype.indexOf.call(sameIdForms, focusedForm) };
+    }
 
     app.innerHTML = V.renderApp(state, opts(changed));
 
@@ -93,6 +104,12 @@
         requestAnimationFrame(release);
         setTimeout(release, 50);
       }
+    }
+    if (keep) {
+      var keepForms = app.querySelectorAll('form.comment-form[data-id="' + keep.id.replace(/"/g, '\\"') + '"]');
+      var keepForm = keepForms[keep.index] || keepForms[0];
+      var again = keepForm ? keepForm.querySelector('input') : null;
+      if (again) { again.value = keep.value; again.focus(); try { again.setSelectionRange(keep.pos, keep.pos); } catch (err) { /* ignore */ } }
     }
     setTitle();
     if (window.RoadmapLive && window.RoadmapLive.afterRender) window.RoadmapLive.afterRender();
@@ -140,6 +157,38 @@
   }
   setInterval(tick, 1000);
 
+  // ---- comments ---------------------------------------------------------------
+  // The static page never writes: bail out before touching pending/network.
+  function sendComment(id, text) {
+    text = String(text || '').trim();
+    if (!id || !text) return Promise.resolve(false);
+    if (state.mode !== 'live') return Promise.resolve(false);
+    // A retry with the same text replaces the earlier failed entry instead
+    // of stacking another one below it.
+    pending = pending.filter(function (p) { return !(p.failed && p.id === id && p.text === text); });
+    var entry = { id: id, text: text, at: new Date().toISOString() };
+    pending.push(entry);
+    expanded[id] = true;
+    render();
+    var fail = function () {
+      entry.failed = true;
+      render();
+      return false;
+    };
+    return fetch('/comment', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: id, text: text }) })
+      .then(function (r) { return r.ok ? true : fail(); })
+      .catch(fail);
+  }
+
+  // Drop pending entries once the snapshot contains them.
+  function settlePending() {
+    if (!pending.length || !state.data) return;
+    pending = pending.filter(function (p) {
+      var it = state.data.items.filter(function (x) { return x.id === p.id; })[0];
+      return !(it && (it.comments || []).some(function (c) { return c.from === 'human' && c.text === p.text; }));
+    });
+  }
+
   // ---- interaction -----------------------------------------------------------
   function setFilter(id) {
     filter = id;
@@ -154,6 +203,26 @@
     else if (action === 'filter') setFilter(filter === el.getAttribute('data-id') ? null : el.getAttribute('data-id'));
     else if (action === 'clear-filter') setFilter(null);
     else if (action === 'more-done') showAllDone = true, render();
+    else if (action === 'expand') { var id = el.getAttribute('data-id'); if (expanded[id]) delete expanded[id]; else expanded[id] = true; render(); }
+    else if (action === 'answer') sendComment(el.getAttribute('data-id'), el.getAttribute('data-text'));
+  });
+  app.addEventListener('submit', function (e) {
+    var form = e.target.closest('form.comment-form');
+    if (!form) return;
+    e.preventDefault();
+    var input = form.querySelector('input[name="text"]');
+    var value = input.value;
+    input.value = '';
+    var id = form.getAttribute('data-id');
+    var sameIdForms = app.querySelectorAll('form.comment-form[data-id="' + id.replace(/"/g, '\\"') + '"]');
+    var last = { id: id, text: value, index: Array.prototype.indexOf.call(sameIdForms, form) };
+    sendComment(id, value).then(function (ok) {
+      if (ok) return;
+      var forms = app.querySelectorAll('form.comment-form[data-id="' + last.id.replace(/"/g, '\\"') + '"]');
+      var target = forms[last.index] || forms[0];
+      var again = target ? target.querySelector('input[name="text"]') : null;
+      if (again && !again.value) again.value = last.text;
+    });
   });
   app.addEventListener('keydown', function (e) {
     var el = e.target.closest('[role="button"][data-action]');
@@ -166,6 +235,7 @@
     getState: function () { return state; },
     setState: function (next) {
       state = next;
+      settlePending();
       var changed = null;
       if (state.data) {
         var status = {};
@@ -183,6 +253,7 @@
     render: render,
     lang: lang,
     t: t,
+    sendComment: sendComment,
   };
 
   render();
