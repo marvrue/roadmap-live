@@ -16,6 +16,10 @@
     {
       "id": "m4",
       "title": "Hosted version"
+    },
+    {
+      "id": "m5",
+      "title": "Goals and pulse"
     }
   ],
   "items": [
@@ -278,6 +282,39 @@
       "id": "landing",
       "title": "Landing page and sign-up",
       "milestone": "m4",
+      "status": "todo"
+    },
+    {
+      "id": "goal-field",
+      "title": "Goals on items with --check notes",
+      "milestone": "m5",
+      "status": "done",
+      "note": "goal: label, target, current, source, changed; notes instead of errors.",
+      "updated": "2026-09-11T14:38:03Z",
+      "branch": "feat/goals"
+    },
+    {
+      "id": "page-goals",
+      "title": "Page shows current/target, tagline in the header",
+      "milestone": "m5",
+      "status": "todo"
+    },
+    {
+      "id": "pulse-command",
+      "title": "pulse command: github-stars without a key",
+      "milestone": "m5",
+      "status": "todo"
+    },
+    {
+      "id": "action-pulse",
+      "title": "Action runs the pulse on schedule",
+      "milestone": "m5",
+      "status": "todo"
+    },
+    {
+      "id": "docs-positioning",
+      "title": "README and PRODUCT.md: from first commit to first customer",
+      "milestone": "m5",
       "status": "todo"
     }
   ]
