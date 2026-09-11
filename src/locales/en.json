@@ -23,7 +23,8 @@
       "unplanned": "{title}",
       "notOnRoadmap": "Not on the roadmap",
       "stale": "stale",
-      "staleText": { "one": "{title}: no activity for 1 day", "other": "{title}: no activity for {n} days" }
+      "staleText": { "one": "{title}: no activity for 1 day", "other": "{title}: no activity for {n} days" },
+      "agent": "agent"
     },
     "now": {
       "inProgress": "In progress",
@@ -50,7 +51,24 @@
     "invalid": "{file} is invalid, showing the last valid state.",
     "noData": "no valid data yet",
     "justNow": "just now",
-    "unplannedTitle": "Unplanned"
+    "unplannedTitle": "Unplanned",
+    "waiting": { "title": "Waiting for you", "hint": "Answering works on the live page" },
+    "comments": {
+      "count": { "one": "1 comment", "other": "{n} comments" },
+      "placeholder": "Tell the agent something…",
+      "add": "comment",
+      "send": "Send",
+      "sent": "sent",
+      "failed": "not sent, try again",
+      "you": "you",
+      "agent": "agent",
+      "show": "show",
+      "hide": "hide"
+    },
+    "git": {
+      "ahead": { "one": "1 ahead of main", "other": "{n} ahead of main" },
+      "changed": { "one": "1 changed", "other": "{n} changed" }
+    }
   },
   "cli": {
     "usage": "Usage: roadmap-live [command] [file] [options]\n\nCommands:\n  (none)                 start the live server (default)\n  sync                   read pull request activity from GitHub and update the roadmap\n  render                 write a static HTML page from the current state\n  init                   create roadmap.json, AGENTS.md and the workflow file\n  auth                   log in to GitHub in the browser (--logout removes the token)\n  doctor                 explain which GitHub credential and which provider would be used\n\nOptions:\n  file                   path to roadmap.json (default: ./roadmap.json)\n  --port <n>             HTTP port for the live server (default: 4242)\n  --check                validate the file and exit with 0 (ok) or 1 (problems)\n  --repo owner/name      repository for sync (default: sync.repo, GITHUB_REPOSITORY or the git remote)\n  --dry-run              sync: print the planned changes and write nothing\n  --apply                sync: apply .roadmap-live/result.json written by your coding agent\n  --provider <name>      sync: anthropic, claude-cli, codex-cli, gemini-cli or agent\n  --public               auth: ask for the public_repo scope only\n  --out <path>           render: output file (default: roadmap/index.html)\n  --theme <name>         render: neutral, paper, mono or a file in roadmap-themes/\n  --mode light|dark      render: fix the color mode instead of following the system\n  -h, --help             show this help",
@@ -59,6 +77,7 @@
     "invalidPort": "invalid port: {port}",
     "checkOk": "{file}: ok ({milestones} milestones, {items} items, {done} done, {active} active)",
     "checkParallel": "note: {n} items are active at the same time",
+    "checkLarge": "note: {file} is {kb} KB, trim old comments and notes yourself (the agent never deletes comments) so the agent reads less",
     "checkProblems": { "one": "{file}: 1 problem", "other": "{file}: {n} problems" },
     "invalidFile": "{file} is invalid:",
     "server": {

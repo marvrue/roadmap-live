@@ -86,9 +86,27 @@ npx roadmap-live doctor                explain which login and which model would
       "id": "menu-editor",
       "title": "Menu editor",
       "milestone": "m1",
-      "status": "done",
+      "status": "active",
       "note": "optional, one sentence",
       "updated": "2026-09-10T14:02:00Z",
+      "branch": "feat/menu-editor",
+      "comments": [
+        {
+          "from": "human",
+          "text": "Add a button to clear the menu",
+          "at": "2026-09-10T14:00:00Z"
+        },
+        {
+          "from": "agent",
+          "text": "Done, button is in the top right.",
+          "at": "2026-09-10T14:01:00Z"
+        }
+      ],
+      "question": {
+        "text": "Should the delete button require confirmation?",
+        "options": ["yes", "no"],
+        "asked": "2026-09-10T14:01:30Z"
+      },
       "prs": [42],
       "open_points": [
         {
@@ -111,6 +129,7 @@ npx roadmap-live doctor                explain which login and which model would
 - Sync writes `prs`, `open_points`, `unplanned`, `sync` and the status `blocked`. The agent leaves those alone.
 - `theme`, `language` and `stale_after_days` are optional settings. Files without them, and files from older versions, work unchanged.
 - Milestones are in array order. A milestone is complete when all of its items are done. The current milestone is the first one that is not.
+- The human writes `comments` from the page; the agent answers there, sets and clears `question` and records `branch`.
 
 ## What "Since you last looked" shows
 
@@ -122,6 +141,12 @@ The block above the board is the short version of what changed, newest first, at
 - Items that went quiet: in progress or linked to a pull request, but no activity for `stale_after_days` (default 7).
 
 Quiet, unplanned and blocked share the one attention color on the page. Everything else is gray, so those three are the only things that stand out.
+
+## Talking back to the agent
+
+On the live page every open item can be expanded to a short conversation. Write one sentence ("finish the cart first", "add an item for vouchers") and the agent reads it on its next run, answers in one sentence and acts. When the agent needs a decision it parks a question; those show up in "Waiting for you" above the board with the possible answers as buttons. Everything is stored in `roadmap.json`, so the shared page shows the same conversations, read-only.
+
+The header of the live page also shows where the working copy is: the branch, how many commits it is ahead of `main`, and how many files are changed.
 
 ## Themes
 

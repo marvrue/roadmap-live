@@ -3,7 +3,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert');
 const { validate } = require('../src/validate');
-const { fixture } = require('./helpers');
+const { fixture, tmpDir } = require('./helpers');
 
 test('old roadmap.json without sync fields is valid', () => {
   assert.deepStrictEqual(validate(fixture('roadmap-old.json')), []);
@@ -53,4 +53,56 @@ test('rejects malformed sync fields', () => {
 
 test('root must be an object', () => {
   assert.deepStrictEqual(validate([]), ['root must be a JSON object']);
+});
+
+test('comments, question and branch are valid when well formed', () => {
+  const data = fixture('roadmap-base.json');
+  data.items[0].branch = 'feat/menu';
+  data.items[0].comments = [
+    { from: 'human', text: 'Finish the cart first', at: '2026-09-11T08:10:00Z' },
+    { from: 'agent', text: 'Ok, cart first.', at: '2026-09-11T08:32:00Z' },
+  ];
+  data.items[0].question = { text: 'Pickup time in 15 or 30 minute steps?', options: ['15', '30'], asked: '2026-09-11T08:32:00Z' };
+  data.items[1].question = { text: 'Which font?', asked: '2026-09-11T08:32:00Z' };
+  assert.deepStrictEqual(validate(data), []);
+});
+
+test('rejects malformed comments, question and branch', () => {
+  const data = fixture('roadmap-base.json');
+  data.items[0].branch = '';
+  data.items[0].comments = [
+    { from: 'bot', text: 'x', at: '2026-09-11T08:10:00Z' },
+    { from: 'human', text: '', at: '2026-09-11T08:10:00Z' },
+    { from: 'human', text: 'ok', at: 'yesterday' },
+    'not an object',
+  ];
+  data.items[1].question = { text: '', options: [], asked: 'nope' };
+  data.items[2].question = { text: 'q', options: ['a', 'b', 'c', 'd', 'e'], asked: '2026-09-11T08:10:00Z' };
+  data.items[3].question = 'just a string';
+  const errors = validate(data);
+  assert.ok(errors.some((e) => e.includes('branch must be a non-empty string')));
+  assert.ok(errors.some((e) => e.includes('comments[0].from must be "human" or "agent"')));
+  assert.ok(errors.some((e) => e.includes('comments[1].text must be a non-empty string')));
+  assert.ok(errors.some((e) => e.includes('comments[2].at must be an ISO 8601')));
+  assert.ok(errors.some((e) => e.includes('comments[3] must be an object')));
+  assert.ok(errors.some((e) => e.includes('question.text must be a non-empty string')));
+  assert.ok(errors.some((e) => e.includes('question.options must have 1 to 4 entries')));
+  assert.ok(errors.some((e) => e.includes('question.asked must be an ISO 8601')));
+  assert.ok(errors.some((e) => e.includes('items[2] ("payment").question.options must have 1 to 4 entries')));
+  assert.ok(errors.some((e) => e.includes('items[3] ("order-queue").question must be an object')));
+});
+
+test('--check warns above 200 KB', () => {
+  const { runCheck } = require('../src/cli');
+  const fs = require('fs');
+  const path = require('path');
+  const data = fixture('roadmap-base.json');
+  data.items[0].comments = Array.from({ length: 3000 }, (_, i) => ({ from: 'human', text: `comment number ${i} with some padding text to make it long`, at: '2026-09-11T08:10:00Z' }));
+  const file = path.join(tmpDir(), 'roadmap.json');
+  fs.writeFileSync(file, JSON.stringify(data, null, 2));
+  const logs = [];
+  const orig = console.log;
+  console.log = (l) => logs.push(l);
+  try { assert.strictEqual(runCheck(file, { LANG: 'C' }), 0); } finally { console.log = orig; }
+  assert.ok(logs.some((l) => l.includes('KB, trim old comments')));
 });

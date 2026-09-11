@@ -191,6 +191,14 @@
       "updated": "2026-09-10T16:25:00Z"
     },
     {
+      "id": "feedback-channel",
+      "title": "Comments and questions between human and agent on the page",
+      "milestone": "m3",
+      "status": "done",
+      "note": "Live page writes to roadmap.json, static page shows read-only.",
+      "updated": "2026-09-10T21:37:45Z"
+    },
+    {
       "id": "oauth-app",
       "title": "Register the public GitHub OAuth app for the browser login",
       "milestone": "m3",
