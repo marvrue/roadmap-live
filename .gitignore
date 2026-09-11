@@ -5,3 +5,4 @@ npm-debug.log*
 .roadmap-live/
 .playwright-mcp/
 *.tmp
+.claude/worktrees/

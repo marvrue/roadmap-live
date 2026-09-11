@@ -157,9 +157,13 @@ rl.addComment(data, 'listing-editor', 'Finish the cart first');
 - Milestones are in array order. A milestone is complete when all of its items are done. The current milestone is the first one that is not.
 - The human writes `comments` from the page; the agent answers there, sets and clears `question` and records `branch`.
 
+## Two views
+
+The button next to the theme switch cycles through the views. **Milestones** (the default) shows one list per milestone: open items first with their status, done items folded away, so "what is left until Release" needs no clicking. **Board** is the classic three columns Open, In progress and Done across all milestones. The browser remembers your choice; `?view=board` in the address forces one, and `"view": "board"` in `roadmap.json` sets the default for everyone. Clicking a milestone in the progress bar narrows both views to it.
+
 ## What "Since you last looked" shows
 
-The block above the board is the short version of what changed, newest first, at most eight rows:
+The block above the items is the short version of what changed, newest first: four rows, "show all" opens up to eight.
 
 - Status changes, with the pull request that caused them.
 - New open points: things a reviewer asked for, in the reviewer's words, so you do not have to open the pull request to know what is holding it up.

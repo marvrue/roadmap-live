@@ -10,6 +10,7 @@ const path = require('path');
 
 const AGENT_STATUSES = ['todo', 'active', 'done'];
 const STATUSES = ['todo', 'active', 'blocked', 'done'];
+const VIEWS = ['milestones', 'board'];
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?)?$/;
 const ID_RE = /^[a-z0-9][a-z0-9-]*$/;
 const REPO_RE = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
@@ -91,6 +92,7 @@ function validate(data) {
 
   if (!isText(data.project)) errors.push('"project" must be a non-empty string');
   if (data.theme !== undefined && !isText(data.theme)) errors.push('"theme" must be a non-empty string');
+  if (data.view !== undefined && !VIEWS.includes(data.view)) errors.push(`"view" must be one of ${VIEWS.join(', ')}`);
   if (data.page_url !== undefined && (!isText(data.page_url) || !/^https?:\/\//.test(data.page_url))) errors.push('"page_url" must be an http(s) URL');
   if (data.language !== undefined && (!isText(data.language) || !/^[a-z]{2,3}(-[A-Za-z0-9]+)*$/.test(data.language))) {
     errors.push('"language" must be a language tag such as "en" or "de"');
@@ -203,6 +205,7 @@ module.exports = {
   isIso,
   AGENT_STATUSES,
   STATUSES,
+  VIEWS,
   ID_RE,
   REPO_RE,
   DEFAULT_STALE_DAYS,
