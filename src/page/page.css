@@ -143,6 +143,26 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
 .more { padding: 10px 0; }
 .more button { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); border-bottom: 1px solid var(--line-strong); }
 
+/* milestones view */
+.milestones .ms { margin-bottom: 34px; }
+.milestones .ms > header { display: flex; align-items: baseline; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--line-strong); }
+.milestones .ms h2 { font-family: var(--font-heading); font-size: 18px; font-weight: 500; }
+.milestones .ms.is-done h2 { color: var(--text-3); font-weight: 400; }
+.milestones .ms .count { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
+.milestones .ms > header .label { margin-left: auto; }
+.milestones .item .title { display: grid; grid-template-columns: 6.5em minmax(0, 1fr); column-gap: 16px; align-items: baseline; }
+.milestones .item .title .label.status { font-size: 12px; }
+.milestones .item .title > span:not(.label) { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+.milestones .item .sub, .milestones .item .conv, .milestones .item .comment-form { margin-left: calc(6.5em + 16px); }
+.milestones .item[data-status="active"] .title { font-weight: 500; }
+.ms-done { margin-top: 4px; }
+.ms-done summary { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); cursor: pointer; padding: 8px 0; list-style: none; }
+.ms-done summary::-webkit-details-marker { display: none; }
+.ms-done summary::before { content: "+ "; }
+.ms-done[open] summary::before { content: "\2013 "; }
+.ms-done .item .title > span:not(.label) { color: var(--text-2); }
+.ms-done .item .sub .note { display: none; }
+
 /* unplanned in the board (static and live) */
 .unplanned { margin-top: 40px; }
 .unplanned h2 { margin-bottom: 4px; }
@@ -201,6 +221,8 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
   body { padding: 0 16px 40px; }
   .banner { margin: 0 -16px 8px; padding: 10px 16px; }
   .board { grid-template-columns: 1fr; gap: 28px; }
+  .milestones .item .title { grid-template-columns: 5.5em minmax(0, 1fr); }
+  .milestones .item .sub, .milestones .item .conv, .milestones .item .comment-form { margin-left: 0; }
   .now .title, .now .elapsed { font-size: 18px; }
   .total { text-align: left; }
   .segments { flex-wrap: wrap; }

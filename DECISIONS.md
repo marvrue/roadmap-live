@@ -38,6 +38,10 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **The share button asks GitHub whether Pages is on, and turns it on from the live page.** Enabling Pages is a one-time setting the human would otherwise have to find in the repository settings; the server already holds a GitHub credential, so one click is enough. `page_url` in roadmap.json overrides the address for pages hosted elsewhere.
 - **The Pages address is the site URL plus `roadmap/`.** That is the Action's default output path; a different `output_path` needs `page_url`.
 
+- **Views cycle through one button, like themes, instead of a two-position switch.** The list of views is one array; a new view is one render function plus one entry, and the header does not change.
+- **Milestones is the default view.** It answers "where are we" per milestone without clicking; the board answers "what is in flight" and stays one click away.
+- **The feed shows four rows by default and eight on request.** Eight rows of "done" pushed the items below the fold; the block should announce, not dominate.
+
 ## Providers and credentials
 
 - **The Anthropic provider is a plain `fetch` to the Messages API, no SDK.** The spec asks for zero runtime dependencies.

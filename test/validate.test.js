@@ -106,3 +106,11 @@ test('--check warns above 200 KB', () => {
   try { assert.strictEqual(runCheck(file, { LANG: 'C' }), 0); } finally { console.log = orig; }
   assert.ok(logs.some((l) => l.includes('KB, trim old comments')));
 });
+
+test('view setting: milestones or board', () => {
+  const data = fixture('roadmap-base.json');
+  data.view = 'board';
+  assert.deepStrictEqual(validate(data), []);
+  data.view = 'kanban';
+  assert.ok(validate(data).some((e) => e.includes('"view" must be one of milestones, board')));
+});

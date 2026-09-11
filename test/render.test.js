@@ -73,7 +73,7 @@ test('static page is English by default and German with lang de', () => {
   const en = body(renderPage(demoState(), { theme: 'neutral', lang: 'en', live: false, now: NOW }));
   const de = body(renderPage(demoState(), { theme: 'neutral', lang: 'de', live: false, now: NOW }));
   assert.ok(en.includes('Since you last looked') && en.includes('<html lang="en"'));
-  assert.ok(de.includes('Seit dem letzten Blick') && de.includes('<html lang="de"') && de.includes('In Arbeit'));
+  assert.ok(de.includes('Seit dem letzten Blick') && de.includes('<html lang="de"') && de.includes('in Arbeit'));
   assert.ok(!de.includes('Since you last looked'));
 });
 
@@ -99,7 +99,7 @@ test('stale is computed, not stored', () => {
 });
 
 test('board: blocked in In progress with a label, done collapses to three', () => {
-  const html = body(renderPage(demoState(), { theme: 'neutral', lang: 'en', live: false, now: NOW }));
+  const html = body(renderPage(demoState(), { theme: 'neutral', lang: 'en', live: false, now: NOW, view: 'board' }));
   assert.ok(/<section class="col active"[\s\S]*data-id="payment"[\s\S]*<span class="label attention">blocked<\/span>/.test(html));
   assert.ok(html.includes('and 2 more'));
   assert.ok(html.includes('2 open points'));
@@ -216,4 +216,37 @@ test('share button: live page only with a link or with Pages off, static page al
   const t = i18n.translator('en');
   const off = view.renderApp({ ...demoState(), mode: 'live', pages: { enabled: false } }, { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', showAllDone: false, changed: null, share: { note: 'off' } });
   assert.ok(off.includes('data-action="enable-pages"') && off.includes('The public page is off.'));
+});
+
+test('views: milestones is the default, board via opts, the header button cycles', () => {
+  const t = i18n.translator('en');
+  const base = { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', showAllDone: false, changed: null };
+  const ms = view.renderApp(demoState(), base);
+  assert.ok(ms.includes('<main class="milestones">'));
+  assert.ok(!ms.includes('<main class="board">'));
+  assert.ok(ms.includes('data-action="view"') && ms.includes('>Milestones</button>'));
+  assert.ok(/<section class="ms is-current" data-milestone="m1">[\s\S]*?<h2>Buying flow<\/h2>/.test(ms));
+  assert.ok(/<section class="ms" data-milestone="m3">/.test(ms), 'Launch has one open item, so it is neither current nor done');
+  assert.ok(/<details class="ms-done" data-milestone="m3">[\s\S]*?<summary>4 done<\/summary>/.test(ms));
+  assert.ok(/<span class="label status attention">blocked<\/span><span>Card payment with Stripe<\/span>/.test(ms));
+  assert.ok(/<span class="label status">in progress<\/span><span>Checkout with reserved copies<\/span>/.test(ms));
+  const board = view.renderApp(demoState(), { ...base, view: 'board' });
+  assert.ok(board.includes('<main class="board">') && board.includes('>Board</button>'));
+  assert.ok(!board.includes('class="label status'), 'board keeps its columns without status labels');
+  const filtered = view.renderApp(demoState(), { ...base, filter: 'm2' });
+  assert.ok(filtered.includes('data-milestone="m2"') && !filtered.includes('data-milestone="m1"'));
+  const stat = body(renderPage(demoState(), { theme: 'neutral', lang: 'en', live: false, now: NOW }));
+  assert.ok(stat.includes('<main class="milestones">') && stat.includes('data-action="view"'));
+});
+
+test('feed shows four rows with a show-all button, all rows when asked', () => {
+  const t = i18n.translator('en');
+  const base = { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', showAllDone: false, changed: null };
+  const short = view.renderApp(demoState(), base);
+  const rows = (short.match(/<li data-kind=/g) || []).length;
+  assert.strictEqual(rows, 4);
+  assert.ok(short.includes('data-action="more-feed"') && short.includes('show all 8'));
+  const all = view.renderApp(demoState(), { ...base, showAllFeed: true });
+  assert.strictEqual((all.match(/<li data-kind=/g) || []).length, 8);
+  assert.ok(!all.includes('data-action="more-feed"'));
 });

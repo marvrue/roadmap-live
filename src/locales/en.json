@@ -25,7 +25,8 @@
     "filterClear": "show all",
     "since": {
       "title": "Since you last looked",
-      "empty": "Nothing new."
+      "empty": "Nothing new.",
+      "showAll": "show all {n}"
     },
     "feed": {
       "statusChange": "{title} moved to {status}",
@@ -138,6 +139,16 @@
       "enabled": "Turned on. The page appears within about a minute.",
       "error": "Could not turn it on: {message}",
       "title": "Copy the public link"
+    },
+    "views": {
+      "milestones": "Milestones",
+      "board": "Board"
+    },
+    "viewTitle": "Switch the view",
+    "milestoneCurrent": "current milestone",
+    "doneCount": {
+      "one": "1 done",
+      "other": "{n} done"
     }
   },
   "cli": {
