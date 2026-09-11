@@ -29,6 +29,9 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **`--check` warns above 200 KB instead of failing.** Growth is a smell, not an error; the number is far above any roadmap seen so far.
 - **The git header uses `main` as the base and hides "ahead" when there is no `main`.** Guessing the default branch would need a remote query; `main` covers the common case silently.
 
+- **The share button asks GitHub whether Pages is on, and turns it on from the live page.** Enabling Pages is a one-time setting the human would otherwise have to find in the repository settings; the server already holds a GitHub credential, so one click is enough. `page_url` in roadmap.json overrides the address for pages hosted elsewhere.
+- **The Pages address is the site URL plus `roadmap/`.** That is the Action's default output path; a different `output_path` needs `page_url`.
+
 ## Providers and credentials
 
 - **The Anthropic provider is a plain `fetch` to the Messages API, no SDK.** The spec asks for zero runtime dependencies.

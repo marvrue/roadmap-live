@@ -50,6 +50,9 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
 .conn.off { color: var(--attention); }
 .theme { border-bottom: 1px solid var(--line-strong); margin-left: 10px; }
 .theme:hover { border-bottom-color: var(--text); }
+.share-note { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); flex-basis: 100%; text-align: right; }
+.share-note.attention { color: var(--attention); }
+.share-note button { border-bottom: 1px solid var(--line-strong); margin-left: 8px; }
 
 /* progress */
 .progress { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; padding: 6px 0 24px; border-bottom: 1px solid var(--line); margin-bottom: 26px; }

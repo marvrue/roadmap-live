@@ -146,6 +146,8 @@ Quiet, unplanned and blocked share the one attention color on the page. Everythi
 
 On the live page every open item can be expanded to a short conversation. Write one sentence ("finish the cart first", "add an item for vouchers") and the agent reads it on its next run, answers in one sentence and acts. When the agent needs a decision it parks a question; those show up in "Waiting for you" above the board with the possible answers as buttons. Everything is stored in `roadmap.json`, so the shared page shows the same conversations, read-only.
 
+**Sharing.** The "Share" button in the top right copies the public link to the page. It points to GitHub Pages for the repository; if Pages is still off, the button says so and turns it on for you (source: the `main` branch). Set `"page_url"` in `roadmap.json` when the page lives somewhere else. On the shared page the button copies its own address.
+
 The header of the live page also shows where the working copy is: the branch, how many commits it is ahead of `main`, and how many files are changed.
 
 ## Themes

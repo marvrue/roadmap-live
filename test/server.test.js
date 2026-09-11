@@ -232,3 +232,69 @@ test('POST /comment rejects non-JSON content-type', async () => {
     await new Promise((r) => server.close(r));
   }
 });
+
+function pagesFetch(state) {
+  return async (url, init = {}) => {
+    if (!url.includes('/pages')) return new Response('{}', { status: 404 });
+    if (init.method === 'POST') { state.enabled = true; return new Response(JSON.stringify({ html_url: 'https://acme.github.io/abholbereit/' }), { status: 201 }); }
+    return state.enabled ? new Response(JSON.stringify({ html_url: 'https://acme.github.io/abholbereit/' }), { status: 200 }) : new Response('{"message":"Not Found"}', { status: 404 });
+  };
+}
+
+function listenWithPages(file, state) {
+  return new Promise((resolve) => {
+    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+    data.sync = { repo: 'acme/abholbereit' };
+    fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
+    const server = startServer({ file, port: 0, theme: null }, { LANG: 'C', PATH: process.env.PATH }, { credential: { token: 't' }, fetchFn: pagesFetch(state) });
+    server.once('listening', () => resolve({ server, port: server.address().port }));
+  });
+}
+
+function getJson(port, p) {
+  return new Promise((resolve, reject) => {
+    http.get({ host: '127.0.0.1', port, path: p }, (res) => {
+      let out = '';
+      res.on('data', (d) => { out += d; });
+      res.on('end', () => resolve(JSON.parse(out)));
+    }).on('error', reject);
+  });
+}
+
+test('share: pages status in the snapshot and POST /pages/enable turns it on', async () => {
+  const file = roadmapFile();
+  const state = { enabled: false };
+  const { server, port } = await listenWithPages(file, state);
+  try {
+    await new Promise((r) => setTimeout(r, 100));
+    let snap = await getJson(port, '/data');
+    assert.deepStrictEqual(snap.pages, { enabled: false });
+    assert.strictEqual(snap.shareUrl, null);
+    const r = await new Promise((resolve, reject) => {
+      const req = http.request({ host: '127.0.0.1', port, path: '/pages/enable', method: 'POST', headers: { 'content-type': 'application/json' } }, (res) => resolve(res.statusCode));
+      req.on('error', reject);
+      req.end('{}');
+    });
+    assert.strictEqual(r, 204);
+    snap = await getJson(port, '/data');
+    assert.strictEqual(snap.shareUrl, 'https://acme.github.io/abholbereit/roadmap/');
+    const page = await new Promise((resolve) => { http.get({ host: '127.0.0.1', port, path: '/' }, (res) => { let o = ''; res.on('data', (d) => { o += d; }); res.on('end', () => resolve(o)); }); });
+    assert.ok(page.includes('data-action="share"'));
+  } finally {
+    await new Promise((r) => server.close(r));
+  }
+});
+
+test('share: page_url in roadmap.json wins over the Pages address', async () => {
+  const file = roadmapFile();
+  const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+  data.page_url = 'https://roadmap.example.com/';
+  fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
+  const { server, port } = await listenWithPages(file, { enabled: true });
+  try {
+    await new Promise((r) => setTimeout(r, 100));
+    assert.strictEqual((await getJson(port, '/data')).shareUrl, 'https://roadmap.example.com/');
+  } finally {
+    await new Promise((r) => server.close(r));
+  }
+});
