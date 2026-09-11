@@ -161,7 +161,7 @@ rl.addComment(data, 'listing-editor', 'Finish the cart first');
 - The agent writes `project`, `milestones`, `items` with `id`, `title`, `milestone`, `status` (`todo`, `active`, `done`), `note` and `updated`.
 - Sync writes `prs`, `open_points`, `unplanned`, `sync` and the status `blocked`. The agent leaves those alone.
 - `theme`, `language`, `stale_after_days` and `tagline` are optional settings. `tagline` is one sentence about the project, 140 characters or fewer. Files without them, and files from older versions, work unchanged.
-- Milestones are in array order. A milestone is complete when all of its items are done. The current milestone is the first one that is not.
+- Milestones are in array order. A milestone is complete when all of its items are done; a milestone without items is not started. The current milestone is the first one that is not complete.
 - The human writes `comments` from the page; the agent answers there, sets and clears `question` and records `branch`.
 - An item may carry a `goal`, a number it works towards: `label` and `target`, plus `current`, `changed` (when `current` last changed) and `source` when known. `source` names where the number comes from, as `kind:argument`: `github-stars:owner/name` or `npm-downloads:package`. Goals go on items, never on milestones. The page shows a goal as `34/100` next to the item (`–/100` until something was measured) and the tagline under the project name; `--check` validates both.
 
@@ -179,6 +179,7 @@ The block above the items is the short version of what changed, newest first: fo
 - New open points: things a reviewer asked for, in the reviewer's words, so you do not have to open the pull request to know what is holding it up.
 - Work that is not on the roadmap, marked as such. It is pulled from pull requests that match no item.
 - Items that went quiet: in progress or linked to a pull request, but no activity for `stale_after_days` (default 7).
+- The latest goal change, as `34/100 GitHub stars`. One row at most, so a number that moves every day does not push the rest out.
 
 Quiet, unplanned and blocked share the one attention color on the page. Everything else is gray, so those three are the only things that stand out.
 
