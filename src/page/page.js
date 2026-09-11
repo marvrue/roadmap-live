@@ -18,7 +18,34 @@
   var THEME_KEY = 'roadmap-live-theme';
   var themes = Array.isArray(state.themes) ? state.themes : [];
   var theme = state.theme || themes[0] || null;
+  // Where the page's own routes live (data, events, comment). The server
+  // sets it when it renders the page; a host serving under /p/<id>/ passes
+  // that path. Always ends with a slash.
+  var base = typeof state.base === 'string' && state.base.charAt(0) === '/' ? state.base : '/';
   var MODES = ['system', 'light', 'dark'];
+
+  // ---- write key: ?key=... once, then remembered per page in this browser --
+  // The plain address is read-only. The address with ?key= (printed by the
+  // server, or the hosted page's write link) stores the key and drops it from
+  // the address bar; from then on the short address writes in this browser.
+  var KEY_STORE = 'roadmap-live-key:' + base;
+  var key = null;
+  try {
+    var params = new URLSearchParams(location.search);
+    if (params.has('key')) {
+      key = params.get('key') || null;
+      params.delete('key');
+      var rest = params.toString();
+      history.replaceState(null, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+      if (key) localStorage.setItem(KEY_STORE, key); else localStorage.removeItem(KEY_STORE);
+    } else {
+      key = localStorage.getItem(KEY_STORE) || null;
+    }
+  } catch (e) { /* no storage: the key lives for this page load only */ }
+  function forgetKey() {
+    key = null;
+    try { localStorage.removeItem(KEY_STORE); } catch (e) { /* ignore */ }
+  }
 
   // ---- language: ?lang, then roadmap.json / ROADMAP_LANG, then the browser
   function pickLang() {
@@ -74,7 +101,7 @@
   var unseen = false;
 
   function opts(changed) {
-    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending, share: share };
+    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending, share: share, canWrite: state.mode === 'live' && !!key };
   }
 
   function render(changed) {
@@ -179,7 +206,7 @@
   function sendComment(id, text) {
     text = String(text || '').trim();
     if (!id || !text) return Promise.resolve(false);
-    if (state.mode !== 'live') return Promise.resolve(false);
+    if (state.mode !== 'live' || !key) return Promise.resolve(false);
     // A retry with the same text replaces the earlier failed entry instead
     // of stacking another one below it.
     pending = pending.filter(function (p) { return !(p.failed && p.id === id && p.text === text); });
@@ -192,8 +219,14 @@
       render();
       return false;
     };
-    return fetch('/comment', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: id, text: text }) })
-      .then(function (r) { return r.ok ? true : fail(); })
+    return fetch(base + 'comment', { method: 'POST', headers: { 'content-type': 'application/json', 'x-roadmap-key': key }, body: JSON.stringify({ id: id, text: text }) })
+      .then(function (r) {
+        if (r.ok) return true;
+        // The key is no longer valid (server restarted with a new one): back
+        // to read-only until the write address is opened again.
+        if (r.status === 401) forgetKey();
+        return fail();
+      })
       .catch(fail);
   }
 
@@ -272,11 +305,12 @@
     }
   }
   function enablePages() {
-    if (state.mode !== 'live') return;
+    if (state.mode !== 'live' || !key) return;
     setShare({ note: 'enabling' });
-    fetch('/pages/enable', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })
+    fetch(base + 'pages/enable', { method: 'POST', headers: { 'content-type': 'application/json', 'x-roadmap-key': key }, body: '{}' })
       .then(function (r) {
         if (r.ok) return setShare({ note: 'enabled' }, 8000);
+        if (r.status === 401) forgetKey();
         return r.json().then(function (b) { setShare({ note: 'error', message: b && b.error ? b.error : String(r.status) }, 8000); }, function () { setShare({ note: 'error', message: String(r.status) }, 8000); });
       })
       .catch(function (e) { setShare({ note: 'error', message: e && e.message ? e.message : 'network' }, 8000); });
@@ -289,6 +323,7 @@
       state = next;
       state.themes = themes;
       state.theme = theme;
+      state.base = base;
       settlePending();
       var changed = null;
       if (state.data) {
@@ -307,6 +342,7 @@
     render: render,
     lang: lang,
     t: t,
+    base: base,
     sendComment: sendComment,
   };
 
