@@ -5,6 +5,7 @@
 
 const http = require('http');
 const path = require('path');
+const crypto = require('crypto');
 const { createStore } = require('./store');
 const { renderPage, repoUrl, resolveTheme, DEFAULT_THEME } = require('./render');
 const i18n = require('./i18n');
@@ -33,10 +34,25 @@ function log(msg) {
   console.log(`[${t}] ${msg}`);
 }
 
+// The write key. The page at its plain address is read-only; the address
+// with ?key=<key> lets the browser write. The page stores the key and sends
+// it as the X-Roadmap-Key header; the server never puts it into a response.
+function generateKey() {
+  return crypto.randomBytes(24).toString('base64url');
+}
+
+function keyMatches(given, expected) {
+  if (typeof given !== 'string' || typeof expected !== 'string' || !given || !expected) return false;
+  const a = Buffer.from(given);
+  const b = Buffer.from(expected);
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
 function startServer(opts, env = process.env) {
   const t = i18n.cliT(null, env);
   const store = createStore(opts.file, { log, t });
   const clients = new Set();
+  const key = opts.key || env.ROADMAP_KEY || generateKey();
 
   const withLinks = (snap) => {
     const repo = snap.data && snap.data.sync && snap.data.sync.repo;
@@ -82,6 +98,7 @@ function startServer(opts, env = process.env) {
     if (contentType !== 'application/json') return json(res, 415, { error: 'content-type must be application/json' });
     const origin = req.headers.origin;
     if (origin && !originAllowed(origin, req.headers.host)) return json(res, 403, { error: 'forbidden origin' });
+    if (!keyMatches(req.headers['x-roadmap-key'], key)) return json(res, 401, { error: 'missing or wrong key; open the write address shown in the terminal' });
     const chunks = [];
     let size = 0;
     let overLimit = false;
@@ -146,7 +163,8 @@ function startServer(opts, env = process.env) {
   server.listen(opts.port, '127.0.0.1', () => {
     const port = server.address().port;
     console.log(t('cli.server.watching', { file: displayName(opts.file) }));
-    console.log(`  http://localhost:${port}`);
+    console.log(t('cli.server.readUrl', { url: `http://localhost:${port}` }));
+    console.log(t('cli.server.writeUrl', { url: `http://localhost:${port}/?key=${encodeURIComponent(key)}` }));
     console.log(t('cli.server.stop'));
   });
 
@@ -172,4 +190,4 @@ function startServer(opts, env = process.env) {
   return server;
 }
 
-module.exports = { startServer };
+module.exports = { startServer, generateKey, keyMatches, originAllowed };
