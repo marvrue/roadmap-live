@@ -53,6 +53,22 @@ test('every theme defines the required variables for light and dark', () => {
   }
 });
 
+test('every built-in theme is embedded, the chosen one active, custom themes added', () => {
+  const html = renderPage(demoState(), { theme: 'paper', lang: 'en', live: false, now: NOW });
+  assert.ok(html.includes('<style data-theme="paper" media="all">'));
+  assert.ok(html.includes('<style data-theme="neutral" media="not all">'));
+  assert.ok(html.includes('<style data-theme="mono" media="not all">'));
+  assert.ok(html.includes('data-action="theme-name"'));
+  assert.ok(body(html).includes('>paper</button>'));
+  const dir = tmpDir();
+  fs.mkdirSync(path.join(dir, 'roadmap-themes'));
+  fs.writeFileSync(path.join(dir, 'roadmap-themes', 'custom.css'), ':root { --bg: #123456; }');
+  const custom = renderPage(demoState(), { theme: 'custom', baseDir: dir, lang: 'en', live: false, now: NOW });
+  assert.ok(custom.includes('<style data-theme="custom" media="all">'));
+  assert.ok(custom.includes('<style data-theme="neutral" media="not all">'));
+  assert.ok(custom.includes('"themes":["custom","neutral","paper","mono"]'));
+});
+
 test('static page is English by default and German with lang de', () => {
   const en = body(renderPage(demoState(), { theme: 'neutral', lang: 'en', live: false, now: NOW }));
   const de = body(renderPage(demoState(), { theme: 'neutral', lang: 'de', live: false, now: NOW }));

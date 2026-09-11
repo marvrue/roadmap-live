@@ -51,6 +51,7 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **Status rows without a pull request show the status word as their mono label.** The label column must not be empty for roadmaps that were never synced.
 - **The elapsed timer switches to `21d 4h` after 48 hours.** `508:17:53` is not a number anyone reads.
 - **The static view shows unplanned work as its own block below the board as well as in the feed.** The feed is capped at eight rows, and unplanned work must stay visible when the feed is full.
+- **The page embeds every built-in theme plus the configured custom one, and a toggle switches between them.** Switching without a rebuild means a viewer can pick their look; the theme from `roadmap.json` or `--theme` stays the default for first-time viewers.
 - **The static page embeds all locales and the state JSON.** The spec asks for language selection at load time and `?lang=`; embedding avoids any request after load.
 
 ## GitHub Action and workflows

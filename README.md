@@ -150,7 +150,7 @@ The header of the live page also shows where the working copy is: the branch, ho
 
 ## Themes
 
-Three come built in: `neutral` (default), `paper` (warm, serif headings) and `mono` (everything monospace). Set `"theme": "paper"` in `roadmap.json` or pass `--theme paper` to `render`. Every theme has a light and a dark mode; the page follows the system and the toggle in the top right overrides it.
+Three come built in: `neutral` (default), `paper` (warm, serif headings) and `mono` (everything monospace). Set `"theme": "paper"` in `roadmap.json` or pass `--theme paper` to `render` to pick the default. Every theme has a light and a dark mode; the page follows the system and the toggle in the top right overrides it. Next to it, a second toggle switches between the themes; both choices are remembered in the browser.
 
 To make your own, put `roadmap-themes/<name>.css` in your repository and set `"theme": "<name>"`. A theme is only a list of custom properties; copy `src/page/themes/neutral.css` as a starting point.
 
