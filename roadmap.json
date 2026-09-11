@@ -247,8 +247,10 @@
       "id": "cloud-repo",
       "title": "Private roadmap-live-cloud service on Hetzner/CapRover",
       "milestone": "m4",
-      "status": "todo",
-      "note": "Node container, SQLite volume, sync worker, page hosting."
+      "status": "active",
+      "note": "Private repo marvrue/roadmap-live-cloud; spec and plan live there.",
+      "updated": "2026-09-11T11:36:03Z",
+      "branch": "main (roadmap-live-cloud)"
     },
     {
       "id": "cloud-overview",
