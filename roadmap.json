@@ -113,7 +113,11 @@
       "title": "Panel for the item in progress with a running timer",
       "milestone": "m2",
       "status": "done",
-      "updated": "2026-09-08T10:05:00Z"
+      "updated": "2026-09-11T18:59:01Z",
+      "prs": [
+        14
+      ],
+      "branch": "feat/page-goals"
     },
     {
       "id": "history",
@@ -442,7 +446,7 @@
     }
   ],
   "sync": {
-    "last_run": "2026-09-11T18:23:13.439Z",
+    "last_run": "2026-09-11T18:59:14.225Z",
     "repo": "marvrue/roadmap-live"
   }
 }
