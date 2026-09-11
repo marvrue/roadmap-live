@@ -97,17 +97,28 @@ function diffChanges(prev, next, at) {
   return changes;
 }
 
-// Appends a human comment to an item. Re-reads the file so a concurrent
-// change by the agent is not lost, then writes atomically (temp + rename).
+// Appends a human comment to an item of roadmap data in memory. Returns
+// { ok: true } or { ok: false, status, error } with an HTTP-shaped status.
+function addComment(data, id, text, now = new Date().toISOString()) {
+  if (typeof text !== 'string' || !text.trim()) return { ok: false, status: 400, error: 'text must be a non-empty string' };
+  if (text.length > MAX_COMMENT_CHARS) return { ok: false, status: 413, error: `text must be at most ${MAX_COMMENT_CHARS} characters` };
+  const item = data && Array.isArray(data.items) ? data.items.find((it) => it.id === id) : null;
+  if (!item) return { ok: false, status: 400, error: `unknown item: ${id}` };
+  if (!Array.isArray(item.comments)) item.comments = [];
+  item.comments.push({ from: 'human', text: text.trim(), at: now });
+  return { ok: true };
+}
+
+// Appends a human comment to an item in the file. Re-reads the file so a
+// concurrent change by the agent is not lost, then writes atomically
+// (temp + rename).
 function appendComment(file, id, text, now = new Date().toISOString()) {
   if (typeof text !== 'string' || !text.trim()) return { ok: false, status: 400, error: 'text must be a non-empty string' };
   if (text.length > MAX_COMMENT_CHARS) return { ok: false, status: 413, error: `text must be at most ${MAX_COMMENT_CHARS} characters` };
   const result = loadRoadmap(file);
   if (!result.ok) return { ok: false, status: 409, error: result.errors.join('; ') };
-  const item = result.data.items.find((it) => it.id === id);
-  if (!item) return { ok: false, status: 400, error: `unknown item: ${id}` };
-  if (!Array.isArray(item.comments)) item.comments = [];
-  item.comments.push({ from: 'human', text: text.trim(), at: now });
+  const added = addComment(result.data, id, text, now);
+  if (!added.ok) return added;
   const tmp = `${file}.${process.pid}.tmp`;
   try {
     fs.writeFileSync(tmp, `${JSON.stringify(result.data, null, 2)}\n`);
@@ -189,4 +200,4 @@ function createStore(file, { log = () => {}, t = (k) => k, gitDir = path.dirname
   };
 }
 
-module.exports = { watchFile, diffChanges, createStore, statKey, appendComment, MAX_COMMENT_CHARS };
+module.exports = { watchFile, diffChanges, createStore, statKey, addComment, appendComment, MAX_COMMENT_CHARS };
