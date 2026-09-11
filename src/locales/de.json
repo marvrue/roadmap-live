@@ -182,7 +182,7 @@
       },
       "empty": "Keine offenen Punkte. Die Reviewer wollen nichts mehr."
     },
-    "prs": {
+    "pullRequests": {
       "items": {
         "one": "1 Item",
         "other": "{n} Items"

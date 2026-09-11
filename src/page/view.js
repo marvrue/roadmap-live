@@ -528,17 +528,22 @@
     return out + '</div>';
   }
 
-  // Nothing in progress: name the next open item of the current milestone.
-  function renderIdle(state, opts) {
+  // Nothing in progress: name the next open item of the current milestone,
+  // or of the given items when a milestone filter narrows the view.
+  function renderIdle(state, opts, items) {
     var t = opts.t, data = state.data;
-    var info = milestoneStats(data);
     var next = null;
-    if (info.current) next = data.items.filter(function (it) { return it.status === 'todo' && it.milestone === info.current.m.id; })[0] || null;
-    // An empty current milestone has nothing to start; point at the first open item in milestone order.
-    if (!next) {
-      var order = {};
-      data.milestones.forEach(function (m, i) { order[m.id] = i; });
-      next = sortItems(data.items.filter(function (it) { return it.status === 'todo'; }), order, 'todo')[0] || null;
+    if (items) {
+      next = items.filter(function (it) { return it.status === 'todo'; })[0] || null;
+    } else {
+      var info = milestoneStats(data);
+      if (info.current) next = data.items.filter(function (it) { return it.status === 'todo' && it.milestone === info.current.m.id; })[0] || null;
+      // An empty current milestone has nothing to start; point at the first open item in milestone order.
+      if (!next) {
+        var order = {};
+        data.milestones.forEach(function (m, i) { order[m.id] = i; });
+        next = sortItems(data.items.filter(function (it) { return it.status === 'todo'; }), order, 'todo')[0] || null;
+      }
     }
     var out = '<div class="eyebrow"><span>' + esc(next ? t('page.now.idle') : t('page.now.allDone')) + '</span></div><div class="idle">';
     if (next) out += esc(t('page.now.next', { title: '' })).replace(/\s*$/, '') + ' <b>' + esc(next.title) + '</b>';
@@ -671,7 +676,7 @@
     var order = {}, titles = {};
     data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
     var list = sortItems(visibleItems(data, opts).filter(function (it) { return it.status === 'active' || it.status === 'blocked'; }), order, 'focus');
-    if (!list.length) return '<main class="focus"><div class="now">' + renderIdle(state, opts) + '</div></main>';
+    if (!list.length) return '<main class="focus"><div class="now">' + renderIdle(state, opts, opts.filter ? visibleItems(data, opts) : null) + '</div></main>';
     var out = list.map(function (it) {
       var h = '<article class="item" data-id="' + esc(it.id) + '" data-status="' + esc(it.status) + '"><div class="head"><h2 class="title">' + esc(it.title) + '</h2>';
       if (it.status === 'blocked') h += '<span class="label attention state">' + esc(t('page.blocked')) + '</span>';
@@ -851,12 +856,12 @@
     });
     if (!opts.filter) (data.unplanned || []).forEach(function (u) { (u.prs || []).forEach(function (n) { group(n).unplanned.push(u); }); });
     var numbers = Object.keys(groups).map(Number).sort(function (a, b) { return b - a; });
-    if (!numbers.length) return '<main class="prs"><div class="empty">' + esc(t('page.prs.empty')) + '</div></main>';
+    if (!numbers.length) return '<main class="prs"><div class="empty">' + esc(t('page.pullRequests.empty')) + '</div></main>';
     var out = numbers.map(function (n) {
       var g = groups[n];
       var open = g.points.filter(function (x) { return !x.p.resolved; }), resolved = g.points.filter(function (x) { return x.p.resolved; });
       var h = '<section class="group" data-pr="' + n + '"><header><h2>' + prLabel(state, t, n) + '</h2>' +
-        (g.items.length ? '<span class="meta">' + esc(t('page.prs.items', { n: g.items.length })) + '</span>' : '') +
+        (g.items.length ? '<span class="meta">' + esc(t('page.pullRequests.items', { n: g.items.length })) + '</span>' : '') +
         (open.length ? '<span class="meta">' + esc(t('page.points.open', { n: open.length })) + '</span>' : '') + '</header>';
       if (g.items.length) {
         h += '<ul class="rows">' + g.items.map(function (it) {
@@ -864,9 +869,9 @@
         }).join('') + '</ul>';
       }
       if (g.unplanned.length) h += '<ul class="rows">' + g.unplanned.map(function (u) { return row(opts, esc(t('page.unplannedTitle')), esc(u.title) + '<span class="tag">' + esc(t('page.feed.notOnRoadmap')) + '</span>', u.first_seen, 'attention'); }).join('') + '</ul>';
-      if (open.length) h += '<ul class="rows pts">' + open.map(function (x) { return row(opts, esc(t('page.prs.review')), esc(x.it.title + ': ' + x.p.text), x.p.opened); }).join('') + '</ul>';
+      if (open.length) h += '<ul class="rows pts">' + open.map(function (x) { return row(opts, esc(t('page.pullRequests.review')), esc(x.it.title + ': ' + x.p.text), x.p.opened); }).join('') + '</ul>';
       if (resolved.length) {
-        h += '<details class="fold" data-key="pr:' + n + '"' + (isOpen(opts, 'pr:' + n) ? ' open' : '') + '><summary>' + esc(t('page.points.resolved', { n: resolved.length })) + '</summary><ul class="rows pts resolved">' + resolved.map(function (x) { return row(opts, esc(t('page.prs.review')), esc(x.it.title + ': ' + x.p.text), x.p.resolved); }).join('') + '</ul></details>';
+        h += '<details class="fold" data-key="pr:' + n + '"' + (isOpen(opts, 'pr:' + n) ? ' open' : '') + '><summary>' + esc(t('page.points.resolved', { n: resolved.length })) + '</summary><ul class="rows pts resolved">' + resolved.map(function (x) { return row(opts, esc(t('page.pullRequests.review')), esc(x.it.title + ': ' + x.p.text), x.p.resolved); }).join('') + '</ul></details>';
       }
       return h + '</section>';
     });
