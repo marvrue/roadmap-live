@@ -58,6 +58,7 @@ For the pull request sync on GitHub, add one secret to the repository: `ANTHROPI
 npx roadmap-live                       live page for ./roadmap.json on port 4242
 npx roadmap-live path/to/roadmap.json  another file
 npx roadmap-live --port 5000           another port
+npx roadmap-live --key <secret>        fixed write key instead of a new one per start
 npx roadmap-live --check               validate the file, exit code 0 or 1
 npx roadmap-live sync                  pull in GitHub activity
 npx roadmap-live sync --dry-run        show what sync would change, write nothing
@@ -95,7 +96,7 @@ const html = rl.renderPage({ mode: 'live', ok: true, data: r.roadmap }, { theme:
 rl.addComment(data, 'listing-editor', 'Finish the cart first');
 ```
 
-`syncRoadmap` never mutates its input and never writes; the caller stores `r.roadmap` and appends `rl.changelogLines(r.changes, r.t, 'en')` wherever a changelog lives. The building blocks are exported too: `github` (client and pull request fetching), `providers` (the classification chain), `classifyPr`, `applyClassification`, `changelogLines`, `staticState`.
+`syncRoadmap` never mutates its input and never writes; the caller stores `r.roadmap` and appends `rl.changelogLines(r.changes, r.t, 'en')` wherever a changelog lives. A host that serves the live page follows the same write rule as the local server: the page stores a key it finds in `?key=` and sends it as the `X-Roadmap-Key` header on `POST <basePath>comment`; the host checks it and never puts the key into a response. The building blocks are exported too: `github` (client and pull request fetching), `providers` (the classification chain), `classifyPr`, `applyClassification`, `changelogLines`, `staticState`.
 
 ## Data format
 
@@ -170,6 +171,8 @@ Quiet, unplanned and blocked share the one attention color on the page. Everythi
 ## Talking back to the agent
 
 On the live page every open item can be expanded to a short conversation. Write one sentence ("finish the cart first", "add an item for vouchers") and the agent reads it on its next run, answers in one sentence and acts. When the agent needs a decision it parks a question; those show up in "Waiting for you" above the board with the possible answers as buttons. Everything is stored in `roadmap.json`, so the shared page shows the same conversations, read-only.
+
+Writing needs a key. When the server starts it prints two addresses: the plain one shows the page read-only, the one with `?key=` lets you write. Open the second one once; the browser remembers the key for that page and drops it from the address bar, so the short address works for writing from then on in that browser. Other browsers, and any other website you have open, cannot write. The key is new on every start unless you pass `--key <secret>` or set `ROADMAP_KEY`. If a comment stops going through after a restart, open the new write address.
 
 The header of the live page also shows where the working copy is: the branch, how many commits it is ahead of `main`, and how many files are changed.
 
