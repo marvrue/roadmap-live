@@ -170,18 +170,14 @@
     pending.push(entry);
     expanded[id] = true;
     render();
-    var fail = function (body) {
+    var fail = function () {
       entry.failed = true;
-      entry.error = body && body.error;
       render();
       return false;
     };
     return fetch('/comment', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: id, text: text }) })
-      .then(function (r) {
-        if (r.ok) return true;
-        return r.json().then(fail, function () { return fail(); });
-      })
-      .catch(function () { return fail(); });
+      .then(function (r) { return r.ok ? true : fail(); })
+      .catch(fail);
   }
 
   // Drop pending entries once the snapshot contains them.
@@ -218,10 +214,13 @@
     var value = input.value;
     input.value = '';
     var id = form.getAttribute('data-id');
-    var last = { id: id, text: value };
+    var sameIdForms = app.querySelectorAll('form.comment-form[data-id="' + id.replace(/"/g, '\\"') + '"]');
+    var last = { id: id, text: value, index: Array.prototype.indexOf.call(sameIdForms, form) };
     sendComment(id, value).then(function (ok) {
       if (ok) return;
-      var again = app.querySelector('form.comment-form[data-id="' + last.id.replace(/"/g, '\\"') + '"] input[name="text"]');
+      var forms = app.querySelectorAll('form.comment-form[data-id="' + last.id.replace(/"/g, '\\"') + '"]');
+      var target = forms[last.index] || forms[0];
+      var again = target ? target.querySelector('input[name="text"]') : null;
       if (again && !again.value) again.value = last.text;
     });
   });

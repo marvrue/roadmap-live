@@ -161,6 +161,14 @@ test('conversations: count collapsed, thread when expanded, pending marker, done
   assert.ok(!expanded.includes('Images are resized on upload now.'), 'done item conversation is not rendered');
 });
 
+test('a failed pending comment shows the attention marker', () => {
+  const state = { ...demoState(), mode: 'live' };
+  const t = i18n.translator('en');
+  const html = view.renderApp(state, { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', theme: 'neutral', showAllDone: false, changed: null, expanded: { checkout: true }, pending: [{ id: 'checkout', text: 'x', at: new Date(NOW).toISOString(), failed: true }] });
+  assert.ok(html.includes('class="when attention"'));
+  assert.ok(html.includes('not sent, try again'));
+});
+
 test('git state in the header and branch in the subline', () => {
   const state = { ...demoState(), mode: 'live', git: { branch: 'feat/checkout', ahead: 3, changed: 2 } };
   const html = body(renderPage(state, { theme: 'neutral', lang: 'en', live: true, now: NOW }));
