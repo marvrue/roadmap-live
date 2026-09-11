@@ -27,6 +27,21 @@ test('appendComment adds a human comment, keeps key order and indentation', () =
   assert.strictEqual(JSON.parse(fs.readFileSync(file, 'utf8')).items[0].comments.length, 2);
 });
 
+test('appendComment appends after existing comments without touching them', () => {
+  const data = fixture('roadmap-base.json');
+  data.items[0].comments = [
+    { from: 'human', text: 'first', at: '2026-09-01T00:00:00Z' },
+    { from: 'agent', text: 'second', at: '2026-09-01T00:01:00Z' },
+  ];
+  const file = roadmapFile(data);
+  assert.deepStrictEqual(appendComment(file, 'menu-editor', 'third', NOW), { ok: true });
+  const comments = JSON.parse(fs.readFileSync(file, 'utf8')).items[0].comments;
+  assert.strictEqual(comments.length, 3);
+  assert.deepStrictEqual(comments[0], { from: 'human', text: 'first', at: '2026-09-01T00:00:00Z' });
+  assert.deepStrictEqual(comments[1], { from: 'agent', text: 'second', at: '2026-09-01T00:01:00Z' });
+  assert.deepStrictEqual(comments[2], { from: 'human', text: 'third', at: NOW });
+});
+
 test('appendComment rejects empty text, unknown ids, long text and invalid files', () => {
   const file = roadmapFile();
   assert.strictEqual(appendComment(file, 'menu-editor', '   ', NOW).status, 400);
@@ -57,6 +72,7 @@ test('store snapshot carries git state and addComment notifies listeners', async
   const file = roadmapFile();
   const store = createStore(file, { gitDir: path.dirname(file) });
   try {
+    await new Promise((r) => setTimeout(r, 200));
     assert.strictEqual(store.snapshot().git, null, 'temp dir is not a git repo');
     const seen = [];
     store.subscribe((snap) => seen.push(snap));
@@ -178,6 +194,29 @@ test('POST /comment rejects foreign origins and accepts the server\'s own', asyn
 
     const ok = await post(port, { id: 'checkout', text: 'from self' }, false, { origin: `http://127.0.0.1:${port}` });
     assert.strictEqual(ok.status, 204);
+  } finally {
+    await new Promise((r) => server.close(r));
+  }
+});
+
+test('POST /comment accepts loopback on any port and a Host-matching origin, forwarded setups', async () => {
+  const file = roadmapFile();
+  const { server, port } = await listen(file);
+  try {
+    // ssh -L / Codespaces / VS Code port forwarding: the browser's Origin
+    // still names loopback, just not the port the server is bound to.
+    const otherLoopbackPort = await post(port, { id: 'checkout', text: 'via forwarded port' }, false, { origin: 'http://localhost:9999' });
+    assert.strictEqual(otherLoopbackPort.status, 204);
+
+    // The origin's host matches the request's own Host header, even though
+    // neither is loopback (a forwarded hostname).
+    const matchingHost = await post(port, { id: 'checkout', text: 'via matching host' }, false, { origin: 'http://myhost.example:4242', host: 'myhost.example:4242' });
+    assert.strictEqual(matchingHost.status, 204);
+
+    const evil = await post(port, { id: 'checkout', text: 'from evil' }, false, { origin: 'https://evil.example' });
+    assert.strictEqual(evil.status, 403);
+    const item = JSON.parse(fs.readFileSync(file, 'utf8')).items.find((it) => it.id === 'checkout');
+    assert.ok(!item.comments.some((c) => c.text === 'from evil'));
   } finally {
     await new Promise((r) => server.close(r));
   }
