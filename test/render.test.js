@@ -79,7 +79,11 @@ test('static page is English by default and German with lang de', () => {
 
 test('feed: stale first, then newest first, max 8, unplanned marked', () => {
   const t = i18n.translator('en');
-  const feed = view.computeFeed(fixture('demo-roadmap.json'), NOW, t);
+  const data = fixture('demo-roadmap.json');
+  // Without goals the fixture has exactly eight rows; the goal row is covered below
+  // and would push the oldest (the unplanned entry) out of the cap.
+  data.items.forEach((it) => { delete it.goal; });
+  const feed = view.computeFeed(data, NOW, t);
   assert.ok(feed.length <= 8);
   assert.strictEqual(feed[0].kind, 'stale');
   assert.ok(feed[0].text.includes('Order queue for the warehouse screen: no activity for 21 days'));
@@ -237,6 +241,100 @@ test('views: milestones is the default, board via opts, the header button cycles
   assert.ok(filtered.includes('data-milestone="m2"') && !filtered.includes('data-milestone="m1"'));
   const stat = body(renderPage(demoState(), { theme: 'neutral', lang: 'en', live: false, now: NOW }));
   assert.ok(stat.includes('<main class="milestones">') && stat.includes('data-action="view"'));
+});
+
+// Goals on the page
+
+test('formatCount: plain integers below 10,000, compact and language-independent above', () => {
+  assert.strictEqual(view.formatCount(0), '0');
+  assert.strictEqual(view.formatCount(9999), '9999');
+  assert.strictEqual(view.formatCount(10000), '10k');
+  assert.strictEqual(view.formatCount(12345), '12.3k');
+  assert.strictEqual(view.formatCount(99950), '100k');
+  assert.strictEqual(view.formatCount(1500000), '1.5M');
+  assert.strictEqual(view.formatCount(2000000000), '2B');
+  assert.strictEqual(view.formatCount(3.7), '4');
+});
+
+test('goalText: current/target, an en dash when nothing was measured', () => {
+  assert.strictEqual(view.goalText({ label: 'Stars', target: 100, current: 34 }), '34/100');
+  assert.strictEqual(view.goalText({ label: 'Stars', target: 100, current: 120 }), '120/100');
+  assert.strictEqual(view.goalText({ label: 'Stars', target: 100 }), '–/100');
+  assert.strictEqual(view.goalText({ label: 'Downloads', target: 100000, current: 12345 }), '12.3k/100k');
+});
+
+test('milestones view: a goal replaces the status word for open and done items, not for active ones', () => {
+  const t = i18n.translator('en');
+  const base = { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', showAllDone: false, changed: null };
+  const ms = view.renderApp(demoState(), base);
+  // todo item with a goal: the goal is the label, the status word is gone
+  assert.ok(/<span class="label status goal">34\/100<\/span><span>App store listing<\/span>/.test(ms));
+  // active item with a goal keeps "in progress" and shows the goal in the subline
+  assert.ok(/<span class="label status">in progress<\/span><span>Checkout with reserved copies<\/span>/.test(ms));
+  assert.ok(/data-id="checkout"[\s\S]*?<div class="sub">[\s\S]*?<span class="goal">7\/20 Test orders<\/span>/.test(ms));
+  // done item whose goal was reached: label shows the numbers, the subline goal is dimmed
+  assert.ok(/<span class="label status goal">240\/200<\/span><span>Basic analytics<\/span>/.test(ms));
+  assert.ok(/data-id="analytics"[\s\S]*?<span class="goal reached">240\/200 Monthly orders<\/span>/.test(ms));
+  // an unmeasured goal shows the dash with a title
+  const state = demoState();
+  state.data.items.find((it) => it.id === 'printer').goal = { label: 'Printers sold', target: 5 };
+  const dash = view.renderApp(state, base);
+  assert.ok(/<span class="label status goal" title="not measured yet">–\/5<\/span><span>Packing slip printer support<\/span>/.test(dash));
+});
+
+test('board: the goal sits in the subline, never in the title', () => {
+  const t = i18n.translator('en');
+  const board = view.renderApp(demoState(), { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', showAllDone: false, changed: null, view: 'board' });
+  assert.ok(!board.includes('class="label status'));
+  assert.ok(/data-id="app-store"[\s\S]*?<span class="goal">34\/100 GitHub stars<\/span>/.test(board));
+});
+
+test('feed: at most one goal row, the latest change, competing like every other row', () => {
+  const t = i18n.translator('en');
+  const feed = view.computeFeed(fixture('demo-roadmap.json'), NOW, t);
+  const goals = feed.filter((e) => e.kind === 'goal');
+  assert.strictEqual(goals.length, 1);
+  assert.strictEqual(goals[0].label, '34/100');
+  assert.strictEqual(goals[0].text, 'App store listing: GitHub stars');
+  assert.strictEqual(goals[0].at, '2026-09-09T06:00:00Z');
+  assert.ok(!goals[0].attention, 'a moving number is not an attention signal');
+  const html = view.renderApp(demoState(), { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', showAllDone: false, changed: null, showAllFeed: true });
+  assert.ok(/<li data-kind="goal"><span class="label">34\/100<\/span><span class="text">App store listing: GitHub stars<\/span>/.test(html));
+  const short = body(renderPage(demoState(), { theme: 'neutral', lang: 'en', live: false, now: NOW }));
+  assert.ok(!short.includes('data-kind="goal"'), 'the goal row is the sixth newest, so the four-row feed does not show it');
+});
+
+test('a goal change is not activity: stale detection and the header time ignore it', () => {
+  const data = fixture('demo-roadmap.json');
+  const item = data.items.find((it) => it.id === 'order-queue');
+  item.goal = { label: 'Orders', target: 10, current: 3, changed: '2026-09-10T11:00:00Z' };
+  assert.strictEqual(view.staleDays(item, NOW, 7), 21);
+  const t = i18n.translator('en');
+  const html = view.renderApp({ ...demoState(), data }, { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', showAllDone: false, changed: null });
+  assert.ok(/<span>updated <time[^>]*datetime="2026-09-09T10:00:00.000Z"/.test(html));
+});
+
+test('current milestone: the first that is not complete, an empty one counts as not started', () => {
+  const data = fixture('roadmap-base.json');
+  data.milestones.unshift({ id: 'm0', title: 'Empty first' });
+  const info = view.milestoneStats(data);
+  assert.strictEqual(info.current.m.id, 'm0');
+  assert.strictEqual(info.stats[0].total, 0);
+  assert.strictEqual(info.stats[0].complete, false);
+  const t = i18n.translator('en');
+  const html = view.renderApp({ ...demoState(), data }, { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', showAllDone: false, changed: null });
+  assert.ok(/<section class="ms is-current" data-milestone="m0">/.test(html));
+  assert.ok(html.includes('class="seg is-current"'));
+});
+
+test('tagline: under the project name when set, no element without it', () => {
+  const html = body(renderPage(demoState(), { theme: 'neutral', lang: 'en', live: false, now: NOW }));
+  assert.ok(/<header class="top"><div class="brand"><h1>storefront<\/h1><p class="tagline">Secondhand records from a small shop, shipped the next day.<\/p><\/div><div class="meta">/.test(html));
+  const none = demoState();
+  delete none.data.tagline;
+  const plain = body(renderPage(none, { theme: 'neutral', lang: 'en', live: false, now: NOW }));
+  assert.ok(plain.includes('<div class="brand"><h1>storefront</h1></div>'));
+  assert.ok(!plain.includes('class="tagline"'));
 });
 
 test('feed shows four rows with a show-all button, all rows when asked', () => {

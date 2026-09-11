@@ -42,6 +42,8 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
 /* header */
 .top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 30px 0 18px; }
 .top h1 { font-family: var(--font-heading); font-size: 24px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+.top .brand { min-width: 0; }
+.top .tagline { margin-top: 4px; color: var(--text-2); max-width: var(--measure); overflow-wrap: anywhere; }
 .top .meta { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }
 .top .meta .sep { color: var(--text-3); }
 .conn::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--text-3); margin-right: 6px; vertical-align: 1px; }
@@ -137,6 +139,9 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
 .col.active .item .title { font-weight: 500; }
 .item .sub { display: flex; align-items: baseline; gap: 10px; margin-top: 3px; font-family: var(--font-mono); font-size: 12px; color: var(--text-3); flex-wrap: wrap; }
 .item .sub .note { font-family: var(--font-body); font-size: 13px; color: var(--text-2); overflow-wrap: anywhere; }
+/* a goal reads one tone louder than the PR and branch entries beside it; reached, it dims like a done item */
+.item .sub .goal { color: var(--text-2); }
+.item .sub .goal.reached { color: var(--text-3); }
 .col.done .item { padding: 7px 0; }
 .col.done .item .title { color: var(--text-2); }
 .col.done .item .sub .note { display: none; }
