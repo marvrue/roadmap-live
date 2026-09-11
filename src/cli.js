@@ -27,6 +27,7 @@ function parseArgs(argv) {
     out: null,
     theme: null,
     mode: null,
+    key: null,
   };
   const takeValue = (i, name) => {
     if (argv[i + 1] === undefined) throw new Error(`${name} needs a value`);
@@ -50,6 +51,7 @@ function parseArgs(argv) {
     else if (name === '--out') opts.out = value();
     else if (name === '--theme') opts.theme = value();
     else if (name === '--mode') opts.mode = value();
+    else if (name === '--key') opts.key = value();
     else if (name.startsWith('-')) throw Object.assign(new Error(`unknown option: ${name}`), { key: 'cli.unknownOption', params: { option: name } });
     else if (opts.command === null && COMMANDS.includes(a) && opts.file === DEFAULT_FILE) opts.command = a;
     else opts.file = a;

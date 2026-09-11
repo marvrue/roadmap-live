@@ -231,8 +231,10 @@
       "id": "page-write-token",
       "title": "Per-page token for the comment route",
       "milestone": "m4",
-      "status": "todo",
-      "note": "Closes the DNS-rebinding gap and is the login for the hosted page."
+      "status": "done",
+      "note": "Plain address reads, ?key= address writes; the key is a header, never in a response.",
+      "updated": "2026-09-11T09:34:53Z",
+      "branch": "feat/page-write-token"
     },
     {
       "id": "github-app",

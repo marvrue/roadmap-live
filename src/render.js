@@ -95,7 +95,9 @@ function normalizeBasePath(value) {
 }
 
 // Renders a complete HTML document.
-// opts: { theme, lang, langFixed, mode ('light'|'dark'|null), live, now, title, basePath }
+// opts: { theme, lang, langFixed, mode ('light'|'dark'|null), live, now, title, basePath, canWrite }
+// canWrite renders the comment fields on a live page. The server leaves it
+// off: the browser adds the fields itself once it holds the write key.
 function renderPage(state, opts = {}) {
   const a = loadAssets();
   const locales = i18n.loadLocales();
@@ -105,7 +107,7 @@ function renderPage(state, opts = {}) {
   if (!themes) throw new Error(`unknown theme: ${opts.theme}`);
   const now = opts.now || Date.now();
   const fullState = { ...state, fixedLang: opts.langFixed || null, theme: themes[0].name, themes: themes.map((x) => x.name), base: normalizeBasePath(opts.basePath) };
-  const body = view.renderApp(fullState, { t, lang, now, filter: null, colorMode: opts.mode || 'system', theme: themes[0].name, showAllDone: false, changed: null });
+  const body = view.renderApp(fullState, { t, lang, now, filter: null, colorMode: opts.mode || 'system', theme: themes[0].name, showAllDone: false, changed: null, canWrite: opts.canWrite === true });
   const title = opts.title || (state.data ? `${view.progressPercent(state.data)} % · ${state.data.project}` : 'roadmap-live');
   const vars = {
     lang,
