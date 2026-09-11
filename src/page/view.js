@@ -166,7 +166,7 @@
   function commentsOf(it, opts) {
     var list = (it.comments || []).slice();
     (opts.pending || []).forEach(function (p) {
-      if (p.id === it.id) list.push({ from: 'human', text: p.text, at: p.at, pending: true });
+      if (p.id === it.id) list.push({ from: 'human', text: p.text, at: p.at, pending: true, failed: p.failed });
     });
     return list;
   }
@@ -320,8 +320,9 @@
     var list = commentsOf(it, opts);
     var items = list.map(function (c) {
       var who = c.from === 'agent' ? t('page.comments.agent') : t('page.comments.you');
-      var when = c.pending ? esc(t('page.comments.sent')) : time(c.at, opts.now, opts.lang);
-      return '<li class="' + esc(c.from) + '"><span class="label">' + esc(who) + '</span><span class="text">' + esc(c.text) + '</span><span class="when">' + when + '</span></li>';
+      var when = c.pending ? esc(t(c.failed ? 'page.comments.failed' : 'page.comments.sent')) : time(c.at, opts.now, opts.lang);
+      var whenCls = 'when' + (c.failed ? ' attention' : '');
+      return '<li class="' + esc(c.from) + '"><span class="label">' + esc(who) + '</span><span class="text">' + esc(c.text) + '</span><span class="' + whenCls + '">' + when + '</span></li>';
     });
     var out = items.length ? '<ul class="conv">' + items.join('') + '</ul>' : '';
     if (state.mode === 'live') out += renderCommentForm(it, t);
@@ -397,7 +398,7 @@
     var comments = commentsOf(it, opts);
     var expanded = opts.expanded && opts.expanded[it.id];
     if (openItem(it) && (comments.length || state.mode === 'live')) {
-      var label = comments.length ? t('page.comments.count', { n: comments.length }) : t('page.comments.placeholder');
+      var label = comments.length ? t('page.comments.count', { n: comments.length }) : t('page.comments.add');
       sub.push('<button type="button" class="toggle" data-action="expand" data-id="' + esc(it.id) + '" aria-expanded="' + (expanded ? 'true' : 'false') + '">' + esc(label) + ' &middot; ' + esc(t(expanded ? 'page.comments.hide' : 'page.comments.show')) + '</button>');
     } else if (comments.length) {
       sub.push('<span>' + esc(t('page.comments.count', { n: comments.length })) + '</span>');

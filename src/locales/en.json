@@ -55,8 +55,10 @@
     "comments": {
       "count": { "one": "1 comment", "other": "{n} comments" },
       "placeholder": "Tell the agent something…",
+      "add": "comment",
       "send": "Send",
       "sent": "sent",
+      "failed": "not sent, try again",
       "you": "you",
       "agent": "agent",
       "show": "show",
@@ -74,7 +76,7 @@
     "invalidPort": "invalid port: {port}",
     "checkOk": "{file}: ok ({milestones} milestones, {items} items, {done} done, {active} active)",
     "checkParallel": "note: {n} items are active at the same time",
-    "checkLarge": "note: {file} is {kb} KB, trim old comments and notes so the agent reads less",
+    "checkLarge": "note: {file} is {kb} KB, trim old comments and notes yourself (the agent never deletes comments) so the agent reads less",
     "checkProblems": { "one": "{file}: 1 problem", "other": "{file}: {n} problems" },
     "invalidFile": "{file} is invalid:",
     "server": {
