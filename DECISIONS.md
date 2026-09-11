@@ -42,8 +42,14 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **The share button asks GitHub whether Pages is on, and turns it on from the live page.** Enabling Pages is a one-time setting the human would otherwise have to find in the repository settings; the server already holds a GitHub credential, so one click is enough. `page_url` in roadmap.json overrides the address for pages hosted elsewhere.
 - **The Pages address is the site URL plus `roadmap/`.** That is the Action's default output path; a different `output_path` needs `page_url`.
 
-- **Views cycle through one button, like themes, instead of a two-position switch.** The list of views is one array; a new view is one render function plus one entry, and the header does not change.
-- **Milestones is the default view.** It answers "where are we" per milestone without clicking; the board answers "what is in flight" and stays one click away.
+- **Views are a row of names above the content, links with `?view=`, not a cycling button.** Nine views make cycling a guessing game; a link works on the static page without JavaScript and gives every view an address.
+- **Milestones is the default view.** It answers "where are we" per milestone without clicking; every other view answers one other question and is one click away.
+- **Pull requests and Open points keep their names out of the row until the roadmap has such data.** An empty view with a hint is a dead end for a roadmap that was never synced.
+- **Focus replaces the "In progress" block, Conversations replace "Waiting for you", Signals replace the unplanned block.** Each view is that block at full size; showing both would say the same thing twice on one screen.
+- **The timeline shows the file's times and not the live session's history.** The session history already sits beside "In progress", and its detection times would double the agent's own `updated` times.
+- **Every view shares one row grammar: mono label column, text, mono time on the right, hairlines between.** A new view should read as the same page; a long label wraps instead of running into the text.
+- **The list sorts in memory only, never in the browser's storage.** A sort is a question for now; the view choice is a habit worth remembering.
+- **The page claims no pull request state.** `roadmap.json` stores numbers, not whether a pull request is open or merged, so the Pull requests view shows the items' statuses and nothing it cannot know.
 - **The feed shows four rows by default and eight on request.** Eight rows of "done" pushed the items below the fold; the block should announce, not dominate.
 - **A goal shows as `current/target` in the label column for open and done items; active and blocked items keep their status word and carry the goal in the subline.** The label column is where the eye reads state, and "blocked" must keep its attention color; the subline always names the goal (`34/100 GitHub stars`) so the number has a meaning.
 - **Goal numbers are formatted by hand: plain up to 9,999, then `12.3k`, `1.5M`.** `Intl.NumberFormat` with compact notation prints `12.000` in German, which does not fit the label column and reads as a different number.

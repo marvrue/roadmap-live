@@ -167,9 +167,21 @@ rl.addComment(data, 'menu-editor', 'Finish the cart first');
 
 `--check` may print notes after the ok line: a done item whose goal is under its target, an open item that already reached its goal, or a tagline longer than 140 characters. Notes are hints, not errors; the exit code stays 0.
 
-## Two views
+## Views
 
-The button next to the theme switch cycles through the views. **Milestones** (the default) shows one list per milestone: open items first with their status, done items folded away, so "what is left until Release" needs no clicking. **Board** is the classic three columns Open, In progress and Done across all milestones. The browser remembers your choice; `?view=board` in the address forces one, and `"view": "board"` in `roadmap.json` sets the default for everyone. Clicking a milestone in the progress bar narrows both views to it.
+A row of names above the content switches between the views. The browser remembers your choice, `?view=board` in the address forces one, and `"view": "board"` in `roadmap.json` sets the default for everyone. Clicking a milestone in the progress bar narrows every view to it.
+
+- **Milestones** (the default): one list per milestone, open items first with their status, done items folded away. "What is left until Release" needs no clicking.
+- **Board**: the classic three columns Open, In progress and Done across all milestones.
+- **Focus**: the item in progress as one block: title, timer, note, branch, the reviewers' open points, the question the agent parked and the conversation. Several items in progress stack, blocked ones follow.
+- **Timeline**: everything with a time, newest day first: status changes, reviewer points opened and resolved, comments, questions, unplanned work, sync runs.
+- **Conversations**: every open item with a thread or a question. Questions first, then threads waiting for the agent's answer. On the live page the other open items fold away below, ready to start a thread.
+- **Open points**: what reviewers still want, grouped by item, in their words, linked to the comment. Resolved points fold away per item.
+- **Pull requests**: grouped by number, newest first: the linked items with their status, the review points from that pull request, and unplanned work it brought.
+- **Signals**: only what needs you: open questions, blocked items, items gone quiet, work not on the roadmap. When there is nothing, the page says so.
+- **List**: every item as one table row, sortable by column.
+
+Pull requests and Open points join the row once the roadmap has been synced.
 
 ## What "Since you last looked" shows
 

@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-11T13:01:35Z",
+  "title": "Design System: roadmap-live",
+  "extensions": {
+    "themeContract": {
+      "properties": ["--bg", "--surface", "--text", "--text-2", "--text-3", "--line", "--line-strong", "--attention", "--attention-bg", "--done", "--font-heading", "--font-body", "--font-mono", "--radius", "--measure"],
+      "builtIn": ["neutral", "paper", "mono"],
+      "customPath": "roadmap-themes/<name>.css",
+      "modes": ["light", "dark"],
+      "modeSelectors": ["@media (prefers-color-scheme: dark) :root:not([data-mode=\"light\"])", ":root[data-mode=\"dark\"]"],
+      "enforcedBy": "test/render.test.js: no hex, rgb() or font names in src/page/page.css",
+      "nonColor": {
+        "neutral": { "--font-heading": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif", "--font-body": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif", "--font-mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace", "--radius": "3px", "--measure": "64ch" },
+        "paper": { "--font-heading": "Charter, \"Bitstream Charter\", \"Iowan Old Style\", \"Source Serif Pro\", Georgia, serif", "--font-body": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif", "--font-mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace", "--radius": "2px", "--measure": "62ch" },
+        "mono": { "--font-heading": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace", "--font-body": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace", "--font-mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace", "--radius": "0px", "--measure": "72ch" }
+      }
+    },
+    "colorMeta": {
+      "bg": { "role": "neutral", "displayName": "Sheet", "cssVar": "--bg", "canonical": "#fafafa", "tonalRamp": ["#111318", "#131315", "#211d1a", "#f3f4f6", "#f6f1e8", "#fafafa"], "themes": { "neutral": { "light": "#fafafa", "dark": "#131315" }, "paper": { "light": "#f6f1e8", "dark": "#211d1a" }, "mono": { "light": "#f3f4f6", "dark": "#111318" } } },
+      "surface": { "role": "neutral", "displayName": "Surface", "cssVar": "--surface", "canonical": "#ffffff", "tonalRamp": ["#171a20", "#1a1a1d", "#282320", "#f9fafb", "#fbf8f2", "#ffffff"], "themes": { "neutral": { "light": "#ffffff", "dark": "#1a1a1d" }, "paper": { "light": "#fbf8f2", "dark": "#282320" }, "mono": { "light": "#f9fafb", "dark": "#171a20" } } },
+      "text": { "role": "neutral", "displayName": "Ink", "cssVar": "--text", "canonical": "#1a1a1c", "tonalRamp": ["#16181d", "#1a1a1c", "#2b2420", "#e6e8ec", "#ebebec", "#ece5da"], "themes": { "neutral": { "light": "#1a1a1c", "dark": "#ebebec" }, "paper": { "light": "#2b2420", "dark": "#ece5da" }, "mono": { "light": "#16181d", "dark": "#e6e8ec" } } },
+      "text-2": { "role": "neutral", "displayName": "Ink 2", "cssVar": "--text-2", "canonical": "#55555b", "tonalRamp": ["#4f5560", "#55555b", "#645a52", "#a0a6b0", "#a4a4aa", "#b0a698"], "themes": { "neutral": { "light": "#55555b", "dark": "#a4a4aa" }, "paper": { "light": "#645a52", "dark": "#b0a698" }, "mono": { "light": "#4f5560", "dark": "#a0a6b0" } } },
+      "text-3": { "role": "neutral", "displayName": "Ink 3", "cssVar": "--text-3", "canonical": "#6f6f75", "tonalRamp": ["#676d78", "#6f6f75", "#736860", "#878d98", "#8b8b91", "#978d80"], "themes": { "neutral": { "light": "#6f6f75", "dark": "#8b8b91" }, "paper": { "light": "#736860", "dark": "#978d80" }, "mono": { "light": "#676d78", "dark": "#878d98" } } },
+      "line": { "role": "neutral", "displayName": "Hairline", "cssVar": "--line", "canonical": "#e4e4e6", "tonalRamp": ["#262a32", "#29292d", "#363029", "#dcdfe4", "#e2dacd", "#e4e4e6"], "themes": { "neutral": { "light": "#e4e4e6", "dark": "#29292d" }, "paper": { "light": "#e2dacd", "dark": "#363029" }, "mono": { "light": "#dcdfe4", "dark": "#262a32" } } },
+      "line-strong": { "role": "neutral", "displayName": "Hairline Strong", "cssVar": "--line-strong", "canonical": "#c6c6ca", "tonalRamp": ["#3a3f4a", "#3e3e44", "#4d453c", "#b9bec7", "#c6c6ca", "#c9bfaf"], "themes": { "neutral": { "light": "#c6c6ca", "dark": "#3e3e44" }, "paper": { "light": "#c9bfaf", "dark": "#4d453c" }, "mono": { "light": "#b9bec7", "dark": "#3a3f4a" } } },
+      "attention": { "role": "primary", "displayName": "Attention", "cssVar": "--attention", "canonical": "#b1381f", "tonalRamp": ["#a8441d", "#b1381f", "#b23a1a", "#eb9a6c", "#f09070", "#f29066"], "themes": { "neutral": { "light": "#b1381f", "dark": "#f09070" }, "paper": { "light": "#a8441d", "dark": "#eb9a6c" }, "mono": { "light": "#b23a1a", "dark": "#f29066" } } },
+      "attention-bg": { "role": "primary", "displayName": "Attention Wash", "cssVar": "--attention-bg", "canonical": "rgba(177, 56, 31, 0.08)", "tonalRamp": ["rgba(242, 144, 102, 0.12)", "rgba(240, 144, 112, 0.12)", "rgba(235, 154, 108, 0.12)", "rgba(178, 58, 26, 0.08)", "rgba(168, 68, 29, 0.09)", "rgba(177, 56, 31, 0.08)"], "themes": { "neutral": { "light": "rgba(177, 56, 31, 0.08)", "dark": "rgba(240, 144, 112, 0.12)" }, "paper": { "light": "rgba(168, 68, 29, 0.09)", "dark": "rgba(235, 154, 108, 0.12)" }, "mono": { "light": "rgba(178, 58, 26, 0.08)", "dark": "rgba(242, 144, 102, 0.12)" } } },
+      "done": { "role": "neutral", "displayName": "Done", "cssVar": "--done", "canonical": "#3a3a3e", "tonalRamp": ["#363a42", "#3a3a3e", "#4a423b", "#c4c8d0", "#c8c8cc", "#cfc6b9"], "themes": { "neutral": { "light": "#3a3a3e", "dark": "#c8c8cc" }, "paper": { "light": "#4a423b", "dark": "#cfc6b9" }, "mono": { "light": "#363a42", "dark": "#c4c8d0" } } }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Focus view item title, one per in-progress item, capped at --measure; 24px at <=760px. Timer beside it in mono 28px (20px mobile)." },
+      "headline": { "displayName": "Headline", "purpose": "The project name in the page header. The only h1." },
+      "title": { "displayName": "Title", "purpose": "Now block item title and the Signals calm sentence; timer beside it in mono 20px; both 18px at <=760px." },
+      "subtitle": { "displayName": "Subtitle", "purpose": "Milestone headings in the Milestones view; done milestones drop to 400 and text-3." },
+      "body": { "displayName": "Body", "purpose": "Base size; board item titles, Now notes, comment input. Focus note and idle sentence are 16px." },
+      "row": { "displayName": "Row", "purpose": "Every list row, table cell, subline, banner, empty-state sentence." },
+      "label": { "displayName": "Label", "purpose": "Mono for labels, times, counts, section headings, column headers, view names, text buttons, the eyebrow. Never uppercase. Status labels inside board titles are 11px." },
+      "timer": { "displayName": "Timer", "purpose": "Elapsed time in the Focus head; Now uses 20px; 'since' prefix 12px text-3." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-move", "value": "cubic-bezier(0.2, 0.7, 0.2, 1)", "purpose": "Progress fill width (0.5s) and FLIP item transform (0.4s)." },
+      { "name": "item-opacity", "value": "opacity 0.3s ease, background-color 0.3s ease", "purpose": "Item fade during moves." },
+      { "name": "enter", "value": "0.35s ease; from opacity 0 translateY(4px)", "purpose": "A row that just appeared." },
+      { "name": "flash", "value": "1.6s ease; background var(--attention-bg) to transparent", "purpose": "A row that just changed. The only fill that ever appears on a row." },
+      { "name": "breathe", "value": "2.2s ease-in-out infinite; opacity 1 -> 0.3 -> 1", "purpose": "The 6px dot before the Now eyebrow while something is in progress." },
+      { "name": "reduced-motion", "value": "@media (prefers-reduced-motion: reduce): .item, .fill transition none; enter, flash, breathe animation none", "purpose": "Everything above is off under reduced motion." }
+    ],
+    "breakpoints": [
+      { "name": "live-stack", "value": "900px", "purpose": "Live grid (Now + history) goes to one column; history cap drops to 132px." },
+      { "name": "mobile", "value": "760px", "purpose": "Gutters 16px, board one column, row grids 77px label column with time under text, Focus display 24/20, Now 18/18, List hides milestone/PR/points columns." },
+      { "name": "minimum", "value": "380px", "purpose": "The page must hold here; checked by hand." }
+    ],
+    "layout": {
+      "maxWidth": "1180px",
+      "gutter": "28px",
+      "gutterMobile": "16px",
+      "rowGrid": "105px minmax(0, 1fr) auto",
+      "rowGridMobile": "77px minmax(0, 1fr)",
+      "timelineGrid": "52px 105px minmax(0, 1fr)",
+      "milestoneStatusColumn": "6.5em (5.5em mobile)",
+      "liveGrid": "minmax(0, 3fr) minmax(240px, 2fr) / gap 32px",
+      "boardGrid": "repeat(3, minmax(0, 1fr)) / gap 32px",
+      "blockGap": "26-36px",
+      "rowPadding": "8px 0",
+      "measure": "var(--measure)"
+    },
+    "exceptions": [
+      { "selector": ".now .eyebrow", "what": "Mono 12px text-3 line above the Now titles reading 'N items in progress', preceded by a 6px breathing dot when active.", "why": "Kicker-shaped, but it carries the live count and the pulse; named as the single exception by the finish review. Do not add eyebrows above other titles." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Row",
+      "kind": "custom",
+      "refersTo": "row",
+      "description": "The unit every view is built from: mono label, text, mono time, hairlines.",
+      "html": "<ul class=\"ds-rows\"><li><span class=\"ds-label\">PR #44</span><span class=\"ds-text\">Checkout with pickup time: Add a test for the empty cart case</span><span class=\"ds-when\">yesterday</span></li><li><span class=\"ds-label ds-attention\">stale</span><span class=\"ds-text\">Order queue for the kitchen screen: no activity for 21 days</span><span class=\"ds-when\">21 days ago</span></li><li><span class=\"ds-label ds-attention\">PR #41</span><span class=\"ds-text\">Customer loyalty points<span class=\"ds-tag\">Not on the roadmap</span></span><span class=\"ds-when\">4 days ago</span></li></ul>",
+      "css": ".ds-rows { list-style: none; margin: 0; padding: 0; font-family: var(--font-body); font-variant-numeric: tabular-nums; color: var(--text); } .ds-rows li { display: grid; grid-template-columns: 105px minmax(0, 1fr) auto; column-gap: 16px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.5; } .ds-rows li:last-child { border-bottom: 1px solid var(--line); } .ds-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.01em; color: var(--text-3); overflow-wrap: anywhere; } .ds-label.ds-attention { color: var(--attention); } .ds-text { overflow-wrap: anywhere; } .ds-tag { font-family: var(--font-mono); font-size: 12px; color: var(--attention); margin-left: 8px; white-space: nowrap; } .ds-when { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); white-space: nowrap; } @media (max-width: 760px) { .ds-rows li { grid-template-columns: 77px minmax(0, 1fr); } .ds-when { grid-column: 2; } }"
+    },
+    {
+      "name": "Section heading",
+      "kind": "custom",
+      "refersTo": "section-heading",
+      "description": "Mono 12px, text-3, no caps; attention for Waiting for you and Signals.",
+      "html": "<h2 class=\"ds-section\">Since you last looked</h2><h2 class=\"ds-section ds-attention\">Waiting for you</h2>",
+      "css": ".ds-section { margin: 0 0 4px; font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-3); letter-spacing: 0.02em; text-transform: none; } .ds-section.ds-attention { color: var(--attention); }"
+    },
+    {
+      "name": "View row",
+      "kind": "nav",
+      "refersTo": "view-link",
+      "description": "The row of view names above the content; the active one underlined in text color.",
+      "html": "<nav class=\"ds-views\"><a href=\"#\">Milestones</a><a href=\"#\">Board</a><a href=\"#\" aria-current=\"page\">Focus</a><a href=\"#\">Timeline</a><a href=\"#\">Conversations</a><a href=\"#\">Signals</a><a href=\"#\">List</a></nav>",
+      "css": ".ds-views { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.01em; padding-bottom: 10px; border-bottom: 1px solid var(--line-strong); } .ds-views a { color: var(--text-3); text-decoration: none; padding-bottom: 2px; border-bottom: 1px solid transparent; } .ds-views a:hover { color: var(--text); } .ds-views a[aria-current=\"page\"] { color: var(--text); border-bottom-color: var(--text); } .ds-views a:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; border-radius: var(--radius); }"
+    },
+    {
+      "name": "Text button",
+      "kind": "button",
+      "refersTo": "text-button",
+      "description": "Every interactive text: inline, mono 12px, underlined with a line-strong border that turns text on hover. No filled buttons exist.",
+      "html": "<button type=\"button\" class=\"ds-btn\">show all 8</button> <button type=\"button\" class=\"ds-btn\">Send</button> <button type=\"button\" class=\"ds-btn ds-btn-faint\">2 comments &middot; show</button>",
+      "css": ".ds-btn { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.01em; color: var(--text-2); background: none; border: 0; padding: 0; cursor: pointer; border-bottom: 1px solid var(--line-strong); } .ds-btn:hover { color: var(--text); border-bottom-color: var(--text); } .ds-btn.ds-btn-faint { color: var(--text-3); border-bottom-color: var(--line); } .ds-btn.ds-btn-faint:hover { color: var(--text); border-bottom-color: var(--line-strong); } .ds-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; border-radius: var(--radius); }"
+    },
+    {
+      "name": "Comment input",
+      "kind": "input",
+      "refersTo": "comment-input",
+      "description": "The one field on the page: surface tint, no border, line-strong bottom edge that turns text on focus.",
+      "html": "<form class=\"ds-comment\"><input type=\"text\" placeholder=\"Say something to the agent…\"><button type=\"submit\" class=\"ds-comment-send\">Send</button></form>",
+      "css": ".ds-comment { display: flex; gap: 10px; align-items: baseline; font-family: var(--font-body); font-size: 14px; } .ds-comment input { flex: 1 1 auto; min-width: 0; font: inherit; color: var(--text); background: var(--surface); border: 0; border-bottom: 1px solid var(--line-strong); padding: 6px 0; border-radius: 0; caret-color: var(--text); } .ds-comment input::placeholder { color: var(--text-3); } .ds-comment input:focus { outline: none; border-bottom-color: var(--text); } .ds-comment-send { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); background: none; border: 0; padding: 0; cursor: pointer; border-bottom: 1px solid var(--line-strong); } .ds-comment-send:hover { color: var(--text); border-bottom-color: var(--text); }"
+    },
+    {
+      "name": "Progress bar",
+      "kind": "custom",
+      "refersTo": "progress-track",
+      "description": "Segmented milestone progress: 5px tracks in line, filled in done (gray, never green), name and count beneath.",
+      "html": "<div class=\"ds-progress\"><div class=\"ds-segments\"><div class=\"ds-seg ds-current\"><div class=\"ds-track\"><div class=\"ds-fill\" style=\"width:33%\"></div></div><div class=\"ds-info\"><span class=\"ds-name\">Ordering flow</span><span class=\"ds-count\">1/3</span></div></div><div class=\"ds-seg\"><div class=\"ds-track\"><div class=\"ds-fill\" style=\"width:0%\"></div></div><div class=\"ds-info\"><span class=\"ds-name\">Kitchen</span><span class=\"ds-count\">0/3</span></div></div><div class=\"ds-seg ds-done\"><div class=\"ds-track\"><div class=\"ds-fill\" style=\"width:100%\"></div></div><div class=\"ds-info\"><span class=\"ds-name\">Launch</span><span class=\"ds-count\">5/5</span></div></div></div><div class=\"ds-total\"><span class=\"ds-big\">6/11 &middot; 55 %</span><span class=\"ds-today\">+1 today</span></div></div>",
+      "css": ".ds-progress { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; padding: 6px 0 24px; border-bottom: 1px solid var(--line); font-family: var(--font-body); font-variant-numeric: tabular-nums; color: var(--text); } .ds-segments { display: flex; gap: 4px; flex: 1 1 360px; min-width: 0; } .ds-seg { flex: 1 1 0; min-width: 64px; } .ds-track { height: 5px; background: var(--line); overflow: hidden; border-radius: var(--radius); } .ds-fill { height: 100%; background: var(--done); transition: width 0.5s cubic-bezier(0.2, 0.7, 0.2, 1); } .ds-seg.ds-done .ds-fill { background: var(--text-3); } .ds-info { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; font-size: 13px; line-height: 1.3; } .ds-name { color: var(--text-2); } .ds-seg.ds-current .ds-name { color: var(--text); font-weight: 500; } .ds-seg.ds-done .ds-name { color: var(--text-3); } .ds-seg:hover .ds-name { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; } .ds-count { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); } .ds-total { text-align: right; line-height: 1.3; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); } .ds-big { display: block; font-size: 15px; color: var(--text); font-weight: 500; white-space: nowrap; } .ds-today { display: block; margin-top: 4px; color: var(--text-3); } @media (prefers-reduced-motion: reduce) { .ds-fill { transition: none; } }"
+    },
+    {
+      "name": "Focus head",
+      "kind": "custom",
+      "refersTo": "display",
+      "description": "Title in the heading face and the mono timer on one baseline; the Now block is the same at 22/20px with the one named eyebrow above it.",
+      "html": "<div class=\"ds-now ds-active\"><div class=\"ds-eyebrow\"><span>2 items in progress</span></div><div class=\"ds-head\"><h2 class=\"ds-title\">Checkout with pickup time</h2><span class=\"ds-elapsed\"><small>since</small>2d 3h</span></div><div class=\"ds-sub\"><span>Ordering flow</span><span>PR #44</span><span>feat/checkout</span><span>yesterday</span></div></div>",
+      "css": ".ds-now { font-family: var(--font-body); color: var(--text); font-variant-numeric: tabular-nums; } .ds-eyebrow { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--text-3); margin-bottom: 10px; } .ds-now.ds-active .ds-eyebrow::before { content: \"\"; width: 6px; height: 6px; border-radius: 50%; background: var(--text); animation: ds-breathe 2.2s ease-in-out infinite; } @keyframes ds-breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } .ds-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; } .ds-title { margin: 0; font-family: var(--font-heading); font-size: 32px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.15; overflow-wrap: anywhere; max-width: var(--measure); } .ds-elapsed { font-family: var(--font-mono); font-size: 28px; white-space: nowrap; color: var(--text); } .ds-elapsed small { font-size: 12px; color: var(--text-3); margin-right: 8px; } .ds-sub { margin-top: 10px; display: flex; gap: 14px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); } @media (max-width: 760px) { .ds-title { font-size: 24px; } .ds-elapsed { font-size: 20px; } } @media (prefers-reduced-motion: reduce) { .ds-now.ds-active .ds-eyebrow::before { animation: none; } }"
+    },
+    {
+      "name": "Board item",
+      "kind": "card",
+      "refersTo": "row",
+      "description": "A board entry: no box, hairline below, title 14px, mono subline; flash wash fades in 1.6s when it changes.",
+      "html": "<div class=\"ds-col ds-col-active\"><header class=\"ds-col-head\"><h2>In progress</h2><span class=\"ds-count\">3</span><span class=\"ds-hint\">2 in parallel</span></header><div class=\"ds-item\"><div class=\"ds-item-title\"><span>Card payment with Stripe</span><span class=\"ds-status ds-attention\">blocked</span></div><div class=\"ds-item-sub\"><span>PR #43</span><span>3 days ago</span><span class=\"ds-note\">Waiting for the Stripe sandbox account.</span></div></div><div class=\"ds-item ds-flash\"><div class=\"ds-item-title\"><span>Checkout with pickup time</span></div><div class=\"ds-item-sub\"><span>PR #44</span><span>2 open points</span></div></div></div>",
+      "css": ".ds-col { font-family: var(--font-body); color: var(--text); font-variant-numeric: tabular-nums; } .ds-col-head { display: flex; align-items: baseline; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--line-strong); } .ds-col-head h2 { margin: 0; font-size: 14px; font-weight: 500; } .ds-count, .ds-hint { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); } .ds-hint { margin-left: auto; } .ds-item { padding: 10px 0; border-bottom: 1px solid var(--line); transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.3s ease, background-color 0.3s ease; } .ds-item-title { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; } .ds-col-active .ds-item-title { font-weight: 500; } .ds-status { font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: var(--text-3); } .ds-status.ds-attention { color: var(--attention); } .ds-item-sub { display: flex; align-items: baseline; gap: 10px; margin-top: 3px; font-family: var(--font-mono); font-size: 12px; color: var(--text-3); flex-wrap: wrap; } .ds-note { font-family: var(--font-body); font-size: 13px; color: var(--text-2); } .ds-item.ds-flash { animation: ds-flash 1.6s ease; } @keyframes ds-flash { 0% { background: var(--attention-bg); } 100% { background: transparent; } } @media (prefers-reduced-motion: reduce) { .ds-item { transition: none; } .ds-item.ds-flash { animation: none; } }"
+    },
+    {
+      "name": "Banner",
+      "kind": "custom",
+      "refersTo": "banner",
+      "description": "Invalid file or lost connection: attention text on the attention wash, full bleed.",
+      "html": "<div class=\"ds-banner\"><strong>Connection lost.</strong> Showing the last state from 2 minutes ago.</div>",
+      "css": ".ds-banner { font-family: var(--font-body); font-size: 13px; line-height: 1.5; color: var(--attention); background: var(--attention-bg); border-bottom: 1px solid var(--attention); padding: 10px 28px; white-space: pre-line; } .ds-banner strong { font-weight: 500; }"
+    },
+    {
+      "name": "Calm state",
+      "kind": "custom",
+      "refersTo": "title",
+      "description": "Signals when nothing needs the reader: one sentence in the heading face, counts beneath.",
+      "html": "<div class=\"ds-calm\"><p class=\"ds-big\">Nothing needs you.</p><p class=\"ds-counts\">2 in progress, 4 open, 5 done.</p></div>",
+      "css": ".ds-calm { padding: 4px 0 20px; max-width: var(--measure); color: var(--text); } .ds-calm p { margin: 0; } .ds-calm .ds-big { font-family: var(--font-heading); font-size: 22px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; } .ds-calm .ds-counts { margin-top: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); font-variant-numeric: tabular-nums; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Ledger Beside the Terminal",
+    "overview": "The page is a ledger, not a dashboard. Everything on it is a row: a mono label in a fixed left column, the text in the reader's or agent's own words, a mono time on the right, a hairline underneath. Milestones, Board, Focus, Timeline, Conversations, Open points, Pull requests, Signals and List are the same row vocabulary arranged for a different question. There are no tiles, no counters in colored badges, no cards, no icons; the only graphic marks are a 6 px dot for connection state and the same dot breathing next to \"in progress\".\n\nColor is almost entirely tone. Three text tones (`text`, `text-2`, `text-3`) carry all hierarchy, two hairline strengths carry all structure, and one attention color says what needs a human: blocked, unplanned, gone quiet, an open question. Completion is gray, never green. The palette is not fixed; it is a contract of fifteen custom properties that a theme fills, once for light and once for dark, and three built-in themes (neutral, paper, mono) prove the same layout holds with system sans, a serif heading face, or monospace everywhere.\n\nDensity is the density of a good terminal: 13 px rows on 8 px vertical padding, a 64ch measure on prose, 28 px page gutters that fall to 16 px on a phone. When a view has nothing to say, it says so in one calm sentence in the heading face and stops.",
+    "keyCharacteristics": [
+      "One row grammar in every view: mono label column, text, mono time, hairline",
+      "Hierarchy by tone (`text` / `text-2` / `text-3`) and two weights (400, 500), never by size alone",
+      "One attention color for the four things that need a person; everything else recedes",
+      "Hairlines as the only structure; no boxes, no fills, no shadows, no icons",
+      "Theme variables are the whole palette: 15 properties, light and dark, swappable at runtime",
+      "Tabular numerals everywhere; mono for labels, counts, times and timers"
+    ],
+    "rules": [
+      { "name": "The One Attention Color Rule", "body": "Blocked, unplanned, quiet and open questions share `attention`; nothing else may be colored. A second highlight would dilute all four (DECISIONS.md: completion is shown by tone, not hue).", "section": "colors" },
+      { "name": "The Theme Contract Rule", "body": "A theme is exactly these fifteen custom properties, once for light and once for dark: `--bg`, `--surface`, `--text`, `--text-2`, `--text-3`, `--line`, `--line-strong`, `--attention`, `--attention-bg`, `--done`, `--font-heading`, `--font-body`, `--font-mono`, `--radius`, `--measure`. Layout CSS may use no other color or font; `test/render.test.js` fails on any hex, `rgb()`, or font name in `page.css`. Custom themes ship as `roadmap-themes/<name>.css`. Every text tone stays at WCAG AA against both `bg` and `surface`.", "section": "colors" },
+      { "name": "The Wash Is A Moment Rule", "body": "`attention-bg` appears only on the banner, on selection, and on a flash that fades to transparent in 1.6 s. No resting element carries a fill.", "section": "colors" },
+      { "name": "The Two Weights Rule", "body": "Only 400 and 500 exist. Emphasis is 500 or a darker tone, never bold, never italic (the `em` in history rows is explicitly `font-style: normal`).", "section": "typography" },
+      { "name": "The Tabular Rule", "body": "`font-variant-numeric: tabular-nums` is set on `body`; every count, time and timer aligns because of it. Times are `white-space: nowrap`.", "section": "typography" },
+      { "name": "The No Caps Rule", "body": "Nothing is uppercase. Section headings are mono 12px in `text-3`, lowercase or sentence case, `text-transform: none`.", "section": "typography" },
+      { "name": "The Hairline Rule", "body": "Structure is drawn with 1px rules in `line` and `line-strong` and nothing else. No boxes, no card backgrounds, no borders around groups, no shadows.", "section": "elevation" },
+      { "name": "The Underline Is The Button Rule", "body": "Every interactive text element (links, view names, \"show all\", \"Send\", \"and 2 more\", answer options, the theme and mode toggles) is inline text with a 1px bottom border in `line-strong` that becomes `text` on hover or when current. There are no filled buttons.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do build every new list from the row grid (105px mono label, text, mono time, hairlines; 77px at ≤760px) and put the time in column 2 under the text on a phone.",
+      "Do use only the fifteen theme properties in layout CSS; the test rejects any literal color or font name in `page.css`.",
+      "Do carry hierarchy with `text` / `text-2` / `text-3` and weights 400 / 500; make done things gray, not smaller.",
+      "Do reserve `attention` for blocked, unplanned, quiet and open questions, and `attention-bg` for the banner, selection and a fading flash.",
+      "Do set every count, time and timer in `--font-mono` at 12px (timers larger) with tabular numerals and `white-space: nowrap`.",
+      "Do make interactive text an underlined inline element with a `line-strong` bottom border that turns `text` on hover, and keep the 2px `text` focus outline.",
+      "Do cap prose at `--measure` and wrap long words anywhere rather than truncating.",
+      "Do disable the fill transition, item transitions, `enter`, `flash` and the breathing dot under `prefers-reduced-motion: reduce`.",
+      "Do say \"nothing\" in one calm sentence when a view is empty, and let Signals say it in the heading face at 22px."
+    ],
+    "donts": [
+      "Don't add a second highlight color, a green for done, or colored status badges; the progress fill is `done`, a gray.",
+      "Don't draw boxes, cards, filled buttons, group borders or shadows; the only fill at rest is the comment input's `surface`.",
+      "Don't add a new custom property to the theme contract without a fallback and a DECISIONS.md entry; it breaks every custom theme in `roadmap-themes/`.",
+      "Don't use uppercase, letter-spaced eyebrows, or a kicker above a title; `.now .eyebrow` is the single named exception and exists for the live count and pulse.",
+      "Don't add icons, an icon font, web fonts or a logo; the 6px dots are the only marks, and the product name appears only in the footer.",
+      "Don't use weights other than 400 and 500, or italics; `em` in this system is normal style in `text-2`.",
+      "Don't invent sizes: the ramp is 11 / 12 / 13 / 14 / 15 / 16 / 18 / 20 / 22 / 24 / 28 / 32px as listed above."
+    ]
+  }
+}
