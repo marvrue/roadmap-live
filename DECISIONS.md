@@ -29,6 +29,10 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **No new status for "needs a decision".** The `question` field carries it, so the agent's `todo | active | done` and sync's `blocked` stay untouched.
 - **Done items' conversations are not rendered and not covered by the agent rule.** Keeps the board quiet and bounds what the agent has to read.
 - **`--check` warns above 200 KB instead of failing.** Growth is a smell, not an error; the number is far above any roadmap seen so far.
+- **The live page is read-only at its plain address and writes only with a key that arrives once in `?key=` and then lives in the browser's storage for that page.** A page from another site that reaches the server through DNS rebinding sees a key-free page and has no access to our origin's storage, so the gap is closed without a login; the same two addresses are the read link and the write link of the hosted page.
+- **The key is a header on the write request, never a cookie and never part of a response.** A cookie would be sent by the browser for a rebinding attacker too, and a key in the page or the data would leak to anyone who can read.
+- **A new key on every start, unless `--key` or `ROADMAP_KEY` fixes it.** Nothing to store and nothing to rotate; the terminal line is the one place the key appears, and a fixed key is an explicit choice.
+- **The server renders without the write fields; the browser adds them once it holds the key.** One HTML for everyone keeps the key out of the page, and a 401 on a write drops the stored key so the page falls back to read-only instead of failing silently.
 - **The git header uses `main` as the base and hides "ahead" when there is no `main`.** Guessing the default branch would need a remote query; `main` covers the common case silently.
 
 ## Providers and credentials
