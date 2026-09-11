@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "layout-transition",
+        "value": "*",
+        "files": [
+          "src/page/page.css"
+        ],
+        "createdAt": "2026-09-11T12:51:44.559Z",
+        "reason": "Claude, pre-existing: the 5px progress bar fill widens when an item is done; literal progress motion on one element, not layout thrash"
+      }
+    ]
+  }
+}
