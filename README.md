@@ -86,7 +86,7 @@ npx roadmap-live doctor                explain which login and which model would
       "id": "listing-editor",
       "title": "Listing editor",
       "milestone": "m1",
-      "status": "done",
+      "status": "active",
       "note": "optional, one sentence",
       "updated": "2026-09-10T14:02:00Z",
       "branch": "feat/listing-editor",
