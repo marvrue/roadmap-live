@@ -45,6 +45,13 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **Views cycle through one button, like themes, instead of a two-position switch.** The list of views is one array; a new view is one render function plus one entry, and the header does not change.
 - **Milestones is the default view.** It answers "where are we" per milestone without clicking; the board answers "what is in flight" and stays one click away.
 - **The feed shows four rows by default and eight on request.** Eight rows of "done" pushed the items below the fold; the block should announce, not dominate.
+- **A goal shows as `current/target` in the label column for open and done items; active and blocked items keep their status word and carry the goal in the subline.** The label column is where the eye reads state, and "blocked" must keep its attention color; the subline always names the goal (`34/100 GitHub stars`) so the number has a meaning.
+- **Goal numbers are formatted by hand: plain up to 9,999, then `12.3k`, `1.5M`.** `Intl.NumberFormat` with compact notation prints `12.000` in German, which does not fit the label column and reads as a different number.
+- **An unmeasured goal shows `–/100` with a "not measured yet" title, never `0/100`.** Zero is a measurement; a dash is the honest absence of one.
+- **The feed carries at most one goal row, the latest change, and the timeline none.** A daily pulse would otherwise make numbers the newest rows every day and push status changes out of the four visible rows; the timeline has only the last value, so a moving point is not a timeline.
+- **A goal's `changed` is not activity.** Stale detection and the header's "updated" time ignore it; an item that is only measured is still quiet.
+- **The current milestone is the first in order that is not complete, and a milestone without items is not started rather than finished.** A fresh project with an empty first milestone and a seeded Launch milestone would otherwise open with "Launch: current".
+- **The tagline sits under the project name in the header, one tone lighter, wrapping at the measure.** It is the one sentence a stranger needs; links to site, install and repository belong in the footer, not in a header menu.
 
 ## Providers and credentials
 

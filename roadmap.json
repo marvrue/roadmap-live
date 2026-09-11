@@ -298,7 +298,10 @@
       "id": "page-goals",
       "title": "Page shows current/target, tagline in the header",
       "milestone": "m5",
-      "status": "todo"
+      "status": "done",
+      "updated": "2026-09-11T18:08:51Z",
+      "branch": "feat/page-goals",
+      "note": "34/100 in the label column, goal in the subline, one feed row, tagline in the header."
     },
     {
       "id": "pulse-command",
@@ -315,6 +318,24 @@
     {
       "id": "docs-positioning",
       "title": "README and PRODUCT.md: from first commit to first customer",
+      "milestone": "m5",
+      "status": "todo"
+    },
+    {
+      "id": "drift-off-track",
+      "title": "Off track: active item outside the current milestone",
+      "milestone": "m5",
+      "status": "todo"
+    },
+    {
+      "id": "drift-limit",
+      "title": "Milestone limit with a --check note, later milestone",
+      "milestone": "m5",
+      "status": "todo"
+    },
+    {
+      "id": "drift-unplanned-ratio",
+      "title": "Planned vs unplanned pull requests in 30 days",
       "milestone": "m5",
       "status": "todo"
     }

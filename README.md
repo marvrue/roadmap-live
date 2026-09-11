@@ -163,7 +163,7 @@ rl.addComment(data, 'menu-editor', 'Finish the cart first');
 - `theme`, `language`, `stale_after_days` and `tagline` are optional settings. `tagline` is one sentence about the project, 140 characters or fewer. Files without them, and files from older versions, work unchanged.
 - Milestones are in array order. A milestone is complete when all of its items are done. The current milestone is the first one that is not.
 - The human writes `comments` from the page; the agent answers there, sets and clears `question` and records `branch`.
-- An item may carry a `goal`, a number it works towards: `label` and `target`, plus `current`, `changed` (when `current` last changed) and `source` when known. `source` names where the number comes from, as `kind:argument`: `github-stars:owner/name` or `npm-downloads:package`. Goals go on items, never on milestones. The page does not show goals or the tagline yet; `--check` validates both.
+- An item may carry a `goal`, a number it works towards: `label` and `target`, plus `current`, `changed` (when `current` last changed) and `source` when known. `source` names where the number comes from, as `kind:argument`: `github-stars:owner/name` or `npm-downloads:package`. Goals go on items, never on milestones. The page shows a goal as `34/100` next to the item (`–/100` until something was measured) and the tagline under the project name; `--check` validates both.
 
 `--check` may print notes after the ok line: a done item whose goal is under its target, an open item that already reached its goal, or a tagline longer than 140 characters. Notes are hints, not errors; the exit code stays 0.
 
