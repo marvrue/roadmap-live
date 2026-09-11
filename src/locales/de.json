@@ -159,6 +159,9 @@
     "checkOk": "{file}: ok ({milestones} Meilensteine, {items} Items, {done} erledigt, {active} in Arbeit)",
     "checkParallel": "Hinweis: {n} Items sind gleichzeitig in Arbeit",
     "checkLarge": "Hinweis: {file} ist {kb} KB groß, kürze alte Kommentare und Notizen selbst (der Agent löscht nie Kommentare), damit der Agent weniger liest",
+    "checkGoalDone": "Hinweis: \"{item}\" ist erledigt, aber das Ziel steht bei {current}/{target}",
+    "checkGoalReached": "Hinweis: \"{item}\" hat sein Ziel erreicht ({current}/{target}), ist aber noch offen",
+    "checkTagline": "Hinweis: die Tagline hat {length} Zeichen, höchstens {max} halten sie eine kurze Zeile",
     "checkProblems": {
       "one": "{file}: 1 Problem",
       "other": "{file}: {n} Probleme"
