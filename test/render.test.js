@@ -206,3 +206,14 @@ test('feed has a row per agent comment', () => {
   assert.strictEqual(row.label, 'agent');
   assert.ok(row.text.startsWith('Checkout with pickup time: Ok, cart first'));
 });
+
+test('share button: live page only with a link or with Pages off, static page always', () => {
+  const live = (extra) => body(renderPage({ ...demoState(), mode: 'live', ...extra }, { theme: 'neutral', lang: 'en', live: true, now: NOW }));
+  assert.ok(!live({ pages: null, shareUrl: null }).includes('data-action="share"'));
+  assert.ok(live({ pages: { enabled: false }, shareUrl: null }).includes('data-action="share"'));
+  assert.ok(live({ pages: { enabled: true, url: 'https://x/' }, shareUrl: 'https://x/' }).includes('data-action="share"'));
+  assert.ok(body(renderPage(demoState(), { theme: 'neutral', lang: 'en', live: false, now: NOW })).includes('data-action="share"'));
+  const t = i18n.translator('en');
+  const off = view.renderApp({ ...demoState(), mode: 'live', pages: { enabled: false } }, { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', showAllDone: false, changed: null, share: { note: 'off' } });
+  assert.ok(off.includes('data-action="enable-pages"') && off.includes('The public page is off.'));
+});

@@ -254,6 +254,14 @@
       parts.push('<button type="button" class="theme" data-action="theme-name" title="' + esc(t('page.pickTheme', { list: state.themes.join(', ') })) + '">' + esc(opts.theme) + '</button>');
     }
     parts.push('<button type="button" class="theme" data-action="theme" title="' + esc(t('page.themeTitle')) + '">' + esc(t('page.theme.' + (opts.colorMode || 'system'))) + '</button>');
+    var canShare = state.mode !== 'live' || state.shareUrl || (state.pages && !state.pages.enabled);
+    if (canShare) parts.push('<button type="button" class="theme" data-action="share" title="' + esc(t('page.share.title')) + '">' + esc(t('page.share.button')) + '</button>');
+    var note = opts.share && opts.share.note;
+    if (note === 'copied') parts.push('<span class="share-note">' + esc(t('page.share.copied')) + '</span>');
+    else if (note === 'off') parts.push('<span class="share-note attention">' + esc(t('page.share.off')) + '<button type="button" data-action="enable-pages">' + esc(t('page.share.enable')) + '</button></span>');
+    else if (note === 'enabling') parts.push('<span class="share-note">' + esc(t('page.share.enabling')) + '</span>');
+    else if (note === 'enabled') parts.push('<span class="share-note">' + esc(t('page.share.enabled')) + '</span>');
+    else if (note === 'error') parts.push('<span class="share-note attention">' + esc(t('page.share.error', { message: opts.share.message || '' })) + '</span>');
     return '<header class="top"><h1>' + esc(data ? data.project : 'roadmap-live') + '</h1><div class="meta">' + parts.join('') + '</div></header>';
   }
 

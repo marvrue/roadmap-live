@@ -5,25 +5,38 @@
     "updatedNever": "no activity yet",
     "pr": "PR #{number}",
     "prs": "PRs {list}",
-    "theme": { "system": "System", "light": "Light", "dark": "Dark" },
+    "theme": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
     "themeTitle": "Switch between light, dark and system",
     "pickTheme": "Switch the theme ({list})",
     "connected": "connected",
     "disconnected": "disconnected",
     "progress": "{done} of {total} done",
-    "todayDone": { "one": "1 done today", "other": "{n} done today" },
+    "todayDone": {
+      "one": "1 done today",
+      "other": "{n} done today"
+    },
     "milestoneTitle": "{title}: {done} of {total} done",
     "milestoneComplete": "complete",
     "filterOnly": "Only {title}",
     "filterClear": "show all",
-    "since": { "title": "Since you last looked", "empty": "Nothing new." },
+    "since": {
+      "title": "Since you last looked",
+      "empty": "Nothing new."
+    },
     "feed": {
       "statusChange": "{title} moved to {status}",
       "openPoint": "{title}: {text}",
       "unplanned": "{title}",
       "notOnRoadmap": "Not on the roadmap",
       "stale": "stale",
-      "staleText": { "one": "{title}: no activity for 1 day", "other": "{title}: no activity for {n} days" },
+      "staleText": {
+        "one": "{title}: no activity for 1 day",
+        "other": "{title}: no activity for {n} days"
+      },
       "agent": "agent"
     },
     "now": {
@@ -33,28 +46,68 @@
       "idle": "Nothing in progress right now.",
       "next": "Next up: {title}",
       "allDone": "Everything is done.",
-      "summary": { "one": "1 milestone, {items} items.", "other": "{n} milestones, {items} items." },
+      "summary": {
+        "one": "1 milestone, {items} items.",
+        "other": "{n} milestones, {items} items."
+      },
       "empty": "No items yet."
     },
-    "history": { "title": "History", "empty": "No changes yet." },
-    "changelog": { "title": "Changelog", "empty": "No entries yet." },
-    "columns": { "todo": "Open", "active": "In progress", "done": "Done" },
+    "history": {
+      "title": "History",
+      "empty": "No changes yet."
+    },
+    "changelog": {
+      "title": "Changelog",
+      "empty": "No entries yet."
+    },
+    "columns": {
+      "todo": "Open",
+      "active": "In progress",
+      "done": "Done"
+    },
     "blocked": "blocked",
     "parallel": "{n} in parallel",
     "empty": "No items",
-    "andMore": { "one": "and 1 more", "other": "and {n} more" },
+    "andMore": {
+      "one": "and 1 more",
+      "other": "and {n} more"
+    },
     "showAll": "show all",
-    "openPoints": { "one": "1 open point", "other": "{n} open points" },
-    "status": { "todo": "open", "active": "in progress", "blocked": "blocked", "done": "done" },
-    "change": { "done": "done", "active": "started", "blocked": "blocked", "todo": "reopened", "added": "added" },
-    "footer": { "repo": "Repository", "roadmap": "roadmap.json", "builtWith": "Built with roadmap-live" },
+    "openPoints": {
+      "one": "1 open point",
+      "other": "{n} open points"
+    },
+    "status": {
+      "todo": "open",
+      "active": "in progress",
+      "blocked": "blocked",
+      "done": "done"
+    },
+    "change": {
+      "done": "done",
+      "active": "started",
+      "blocked": "blocked",
+      "todo": "reopened",
+      "added": "added"
+    },
+    "footer": {
+      "repo": "Repository",
+      "roadmap": "roadmap.json",
+      "builtWith": "Built with roadmap-live"
+    },
     "invalid": "{file} is invalid, showing the last valid state.",
     "noData": "no valid data yet",
     "justNow": "just now",
     "unplannedTitle": "Unplanned",
-    "waiting": { "title": "Waiting for you", "hint": "Answering works on the live page" },
+    "waiting": {
+      "title": "Waiting for you",
+      "hint": "Answering works on the live page"
+    },
     "comments": {
-      "count": { "one": "1 comment", "other": "{n} comments" },
+      "count": {
+        "one": "1 comment",
+        "other": "{n} comments"
+      },
       "placeholder": "Tell the agent something…",
       "add": "comment",
       "send": "Send",
@@ -66,8 +119,24 @@
       "hide": "hide"
     },
     "git": {
-      "ahead": { "one": "1 ahead of main", "other": "{n} ahead of main" },
-      "changed": { "one": "1 changed", "other": "{n} changed" }
+      "ahead": {
+        "one": "1 ahead of main",
+        "other": "{n} ahead of main"
+      },
+      "changed": {
+        "one": "1 changed",
+        "other": "{n} changed"
+      }
+    },
+    "share": {
+      "button": "Share",
+      "copied": "Link copied",
+      "off": "The public page is off.",
+      "enable": "Turn on GitHub Pages",
+      "enabling": "Turning on…",
+      "enabled": "Turned on. The page appears within about a minute.",
+      "error": "Could not turn it on: {message}",
+      "title": "Copy the public link"
     }
   },
   "cli": {
@@ -78,7 +147,10 @@
     "checkOk": "{file}: ok ({milestones} milestones, {items} items, {done} done, {active} active)",
     "checkParallel": "note: {n} items are active at the same time",
     "checkLarge": "note: {file} is {kb} KB, trim old comments and notes yourself (the agent never deletes comments) so the agent reads less",
-    "checkProblems": { "one": "{file}: 1 problem", "other": "{file}: {n} problems" },
+    "checkProblems": {
+      "one": "{file}: 1 problem",
+      "other": "{file}: {n} problems"
+    },
     "invalidFile": "{file} is invalid:",
     "server": {
       "watching": "roadmap-live: watching {file}",
@@ -119,7 +191,12 @@
       "roadmapMissing": "Roadmap: {file} (not found, run roadmap-live init)",
       "repo": "Repository: {repo} ({source})",
       "repoNone": "Repository: not found. Set sync.repo in roadmap.json or pass --repo owner/name.",
-      "repoSource": { "flag": "from --repo", "roadmap": "from sync.repo", "env": "from GITHUB_REPOSITORY", "git": "from the git remote" },
+      "repoSource": {
+        "flag": "from --repo",
+        "roadmap": "from sync.repo",
+        "env": "from GITHUB_REPOSITORY",
+        "git": "from the git remote"
+      },
       "credential": "GitHub credential: {name}",
       "credentialWhy": "  because {reason}",
       "credentialNone": "GitHub credential: none",
@@ -127,7 +204,12 @@
       "providerWhy": "  because {reason}",
       "skipped": "  skipped {name}: {reason}",
       "language": "Language: {lang} ({source})",
-      "languageSource": { "roadmap": "from roadmap.json", "env": "from ROADMAP_LANG", "system": "from LANG", "default": "default" },
+      "languageSource": {
+        "roadmap": "from roadmap.json",
+        "env": "from ROADMAP_LANG",
+        "system": "from LANG",
+        "default": "default"
+      },
       "theme": "Theme: {theme}"
     },
     "why": {
@@ -148,7 +230,10 @@
       "firstRun": "the last 30 days (first run)",
       "fetching": "Fetching pull requests...",
       "noActivity": "No new pull request activity.",
-      "prs": { "one": "1 pull request with new activity", "other": "{n} pull requests with new activity" },
+      "prs": {
+        "one": "1 pull request with new activity",
+        "other": "{n} pull requests with new activity"
+      },
       "classifying": "Classifying #{number} {title} with {provider}...",
       "skipped": "Skipped #{number}: {reason}",
       "malformed": "the provider returned no valid classification twice",

@@ -66,13 +66,15 @@
   // ---- render ----------------------------------------------------------------
   var filter = null;
   var showAllDone = false;
+  var share = null;      // { note: 'copied' | 'off' | 'enabling' | 'enabled' | 'error', message }
+  var shareTimer = null;
   var expanded = {};     // item id -> true
   var pending = [];      // comments sent but not yet in a snapshot
   var prevStatus = null;
   var unseen = false;
 
   function opts(changed) {
-    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending };
+    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending, share: share };
   }
 
   function render(changed) {
@@ -215,6 +217,8 @@
     if (e.target.closest('a')) return;
     var action = el.getAttribute('data-action');
     if (action === 'theme') applyMode(MODES[(MODES.indexOf(colorMode) + 1) % MODES.length]), render();
+    else if (action === 'share') shareLink();
+    else if (action === 'enable-pages') enablePages();
     else if (action === 'theme-name') applyTheme(themes[(themes.indexOf(theme) + 1) % themes.length]), render();
     else if (action === 'filter') setFilter(filter === el.getAttribute('data-id') ? null : el.getAttribute('data-id'));
     else if (action === 'clear-filter') setFilter(null);
@@ -245,6 +249,38 @@
     if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); el.click(); }
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && filter) setFilter(null); });
+
+  // ---- share -----------------------------------------------------------------
+  function setShare(next, ms) {
+    clearTimeout(shareTimer);
+    share = next;
+    render();
+    if (ms) shareTimer = setTimeout(function () { share = null; render(); }, ms);
+  }
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+    return new Promise(function (resolve, reject) {
+      try { window.prompt(t('page.share.title'), text); resolve(); } catch (e) { reject(e); }
+    });
+  }
+  function shareLink() {
+    var url = state.shareUrl || (state.mode !== 'live' ? location.href : null);
+    if (url) {
+      copyText(url).then(function () { setShare({ note: 'copied' }, 2500); }, function () { setShare({ note: 'error', message: url }, 6000); });
+    } else if (state.pages && !state.pages.enabled) {
+      setShare({ note: 'off' });
+    }
+  }
+  function enablePages() {
+    if (state.mode !== 'live') return;
+    setShare({ note: 'enabling' });
+    fetch('/pages/enable', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })
+      .then(function (r) {
+        if (r.ok) return setShare({ note: 'enabled' }, 8000);
+        return r.json().then(function (b) { setShare({ note: 'error', message: b && b.error ? b.error : String(r.status) }, 8000); }, function () { setShare({ note: 'error', message: String(r.status) }, 8000); });
+      })
+      .catch(function (e) { setShare({ note: 'error', message: e && e.message ? e.message : 'network' }, 8000); });
+  }
 
   // ---- public API for live.js ------------------------------------------------
   window.RoadmapPage = {

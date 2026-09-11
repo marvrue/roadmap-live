@@ -9,6 +9,9 @@ const { createStore } = require('./store');
 const { renderPage, repoUrl, resolveTheme, DEFAULT_THEME } = require('./render');
 const i18n = require('./i18n');
 const { displayName } = require('./validate');
+const { resolveCredential } = require('./auth');
+const github = require('./github');
+const { pagesStatus, enablePages } = require('./pages');
 
 const HEARTBEAT_MS = 25000;
 const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
@@ -33,20 +36,44 @@ function log(msg) {
   console.log(`[${t}] ${msg}`);
 }
 
-function startServer(opts, env = process.env) {
+function startServer(opts, env = process.env, deps = {}) {
   const t = i18n.cliT(null, env);
   const store = createStore(opts.file, { log, t });
   const clients = new Set();
+
+  // GitHub Pages for the share button: looked up once at start with a
+  // credential that needs no interaction, refreshed after enabling.
+  let pages = null;
+  let credential = null;
+  const repoOf = () => {
+    const snap = store.snapshot();
+    const r = github.resolveRepo({ roadmap: snap.data, env, cwd: path.dirname(opts.file), exec: deps.exec });
+    return r ? r.repo : null;
+  };
+  const refreshPages = async () => {
+    const repo = repoOf();
+    if (!repo) { pages = null; return; }
+    if (!credential) credential = deps.credential || await resolveCredential({ env, exec: deps.exec, interactive: false, t }).catch(() => null);
+    if (!credential) { pages = null; return; }
+    const next = await pagesStatus({ repo, token: credential.token, fetchFn: deps.fetchFn, baseUrl: deps.githubBaseUrl });
+    if (JSON.stringify(next) !== JSON.stringify(pages)) {
+      pages = next;
+      for (const res of clients) sendEvent(res, store.snapshot());
+    }
+  };
 
   const withLinks = (snap) => {
     const repo = snap.data && snap.data.sync && snap.data.sync.repo;
     const url = repoUrl(repo);
     const { lang, source } = i18n.resolveLanguage({ roadmap: snap.data, env });
+    const pageUrl = snap.data && typeof snap.data.page_url === 'string' ? snap.data.page_url : null;
     return {
       ...snap,
       repoUrl: url,
       roadmapUrl: url ? `${url}/blob/HEAD/${path.basename(opts.file)}` : null,
       fixedLang: source === 'roadmap' || source === 'env' ? lang : null,
+      pages,
+      shareUrl: pageUrl || (pages && pages.enabled ? pages.url : null),
     };
   };
 
@@ -106,9 +133,24 @@ function startServer(opts, env = process.env) {
     });
   };
 
+  const handleEnablePages = (req, res) => {
+    const origin = req.headers.origin;
+    if (origin && !originAllowed(origin, req.headers.host)) return json(res, 403, { error: 'forbidden origin' });
+    const repo = repoOf();
+    if (!repo || !credential) return json(res, 409, { error: 'repository or GitHub credential missing' });
+    enablePages({ repo, token: credential.token, branch: deps.branch || 'main', fetchFn: deps.fetchFn, baseUrl: deps.githubBaseUrl })
+      .then(async () => {
+        await refreshPages();
+        res.writeHead(204, { 'Cache-Control': 'no-store' });
+        res.end();
+      })
+      .catch((e) => json(res, e.status === 403 || e.status === 404 ? 403 : 502, { error: e.message }));
+  };
+
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://localhost');
     if (req.method === 'POST' && url.pathname === '/comment') return handleComment(req, res);
+    if (req.method === 'POST' && url.pathname === '/pages/enable') return handleEnablePages(req, res);
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       res.writeHead(405, { 'Content-Type': 'text/plain' });
       return res.end('method not allowed');
@@ -142,6 +184,8 @@ function startServer(opts, env = process.env) {
     else console.error(`roadmap-live: ${e.message}`);
     process.exit(1);
   });
+
+  refreshPages().catch(() => {});
 
   server.listen(opts.port, '127.0.0.1', () => {
     const port = server.address().port;
