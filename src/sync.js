@@ -148,6 +148,61 @@ function writeInbox({ dir, roadmap, prs, repo, runStart, lang, t, log }) {
   log(t('cli.sync.agentHandoff', { n: prs.length }));
 }
 
+// Pull requests with activity since the last run. Logs what it does and
+// returns { prs, runStart, since }.
+async function fetchActivity({ roadmap, repo, token, now, lang, log, t, fetchFn, baseUrl, wait }) {
+  const runStart = new Date(now || Date.now()).toISOString();
+  const since = (roadmap.sync && roadmap.sync.last_run) || github.firstRunSince(now || Date.now());
+  log(t('cli.sync.repo', { repo, since: roadmap.sync && roadmap.sync.last_run ? i18n.formatDate(since, lang, { dateStyle: 'medium', timeStyle: 'short' }) : t('cli.sync.firstRun') }));
+  log(t('cli.sync.fetching'));
+  const client = github.createClient({ token, fetchFn, baseUrl, wait, log, t });
+  const prs = await github.fetchPullRequests(client, repo, since);
+  if (!prs.length) log(t('cli.sync.noActivity'));
+  else log(t('cli.sync.prs', { n: prs.length }));
+  return { prs, runStart, since };
+}
+
+// Classifies every pull request through the provider. Returns the
+// validated results keyed by number and the pull requests that failed.
+async function classifyAll({ roadmap, prs, provider, lang, env, log, providerOpts, t }) {
+  const results = {};
+  const failed = [];
+  for (const pr of prs) {
+    log(t('cli.sync.classifying', { number: pr.number, title: pr.title, provider: provider.name }));
+    const r = await classifyPr({ roadmap, pr, provider, lang, env, log, providerOpts });
+    if (r.ok) results[pr.number] = r.value;
+    else {
+      failed.push(pr);
+      log(t('cli.sync.skipped', { number: pr.number, reason: r.malformed ? t('cli.sync.malformed') : r.reason }));
+    }
+  }
+  return { results, failed };
+}
+
+// The sync core without any file access, for services that keep the roadmap
+// somewhere else. Fetches pull request activity since roadmap.sync.last_run,
+// classifies it and applies the rules to a copy.
+//
+//   syncRoadmap({ roadmap, repo, token, provider, now, lang, env, fetchFn, baseUrl, wait, log, providerOpts, t })
+//   -> { roadmap, changes, prs, failed, lastRun, t }
+//
+// With no new activity, prs is empty and roadmap is the input, untouched.
+// The input roadmap is never mutated. `t` is the translator used for the log
+// lines; pass it to changelogLines for matching CHANGELOG text.
+async function syncRoadmap({ roadmap, repo, token, provider, now, lang, env = process.env, fetchFn, baseUrl, wait, log = () => {}, providerOpts, t } = {}) {
+  if (!roadmap || !Array.isArray(roadmap.items)) throw new Error('syncRoadmap needs a valid roadmap');
+  if (!repo) throw new Error('syncRoadmap needs a repo');
+  if (!provider || typeof provider.classify !== 'function') throw new Error('syncRoadmap needs a provider with classify()');
+  t = t || i18n.cliT(roadmap, env);
+  lang = lang || i18n.resolveLanguage({ roadmap, env }).lang;
+  const { prs, runStart } = await fetchActivity({ roadmap, repo, token, now, lang, log, t, fetchFn, baseUrl, wait });
+  if (!prs.length) return { roadmap, changes: [], prs: [], failed: [], lastRun: null, t };
+  const { results, failed } = await classifyAll({ roadmap, prs, provider, lang, env, log, providerOpts, t });
+  const lastRun = nextLastRun(runStart, failed);
+  const { next, changes } = applyAll(roadmap, prs, results, { repo, lastRun });
+  return { roadmap: next, changes, prs, failed, lastRun, t };
+}
+
 async function runSync(opts, env = process.env, deps = {}) {
   const log = deps.log || console.log;
   const result = loadRoadmap(opts.file);
@@ -179,17 +234,8 @@ async function runSync(opts, env = process.env, deps = {}) {
   }
   const provider = deps.provider || chosen.provider;
 
-  const runStart = new Date(deps.now || Date.now()).toISOString();
-  const since = (roadmap.sync && roadmap.sync.last_run) || github.firstRunSince(deps.now || Date.now());
-  log(t('cli.sync.repo', { repo, since: roadmap.sync && roadmap.sync.last_run ? i18n.formatDate(since, lang, { dateStyle: 'medium', timeStyle: 'short' }) : t('cli.sync.firstRun') }));
-  log(t('cli.sync.fetching'));
-  const client = github.createClient({ token: cred.token, fetchFn: deps.fetchFn, baseUrl: deps.baseUrl, wait: deps.wait, log, t });
-  const prs = await github.fetchPullRequests(client, repo, since);
-  if (!prs.length) {
-    log(t('cli.sync.noActivity'));
-    return 0;
-  }
-  log(t('cli.sync.prs', { n: prs.length }));
+  const { prs, runStart } = await fetchActivity({ roadmap, repo, token: cred.token, now: deps.now, lang, log, t, fetchFn: deps.fetchFn, baseUrl: deps.baseUrl, wait: deps.wait });
+  if (!prs.length) return 0;
 
   if (provider.handoff) {
     if (opts.dryRun) {
@@ -201,18 +247,8 @@ async function runSync(opts, env = process.env, deps = {}) {
     return 0;
   }
 
-  const results = {};
-  const failed = [];
-  for (const pr of prs) {
-    log(t('cli.sync.classifying', { number: pr.number, title: pr.title, provider: provider.name }));
-    const r = await classifyPr({ roadmap, pr, provider, lang, env, log, providerOpts: deps.providerOpts });
-    if (r.ok) results[pr.number] = r.value;
-    else {
-      failed.push(pr);
-      log(t('cli.sync.skipped', { number: pr.number, reason: r.malformed ? t('cli.sync.malformed') : r.reason }));
-    }
-  }
+  const { results, failed } = await classifyAll({ roadmap, prs, provider, lang, env, log, providerOpts: deps.providerOpts, t });
   return finish({ opts, roadmap, prs, results, failed, repo, runStart, t, lang, log, dir });
 }
 
-module.exports = { runSync, applyAll, changelogLines, appendChangelog, describeChange, nextLastRun, writeInbox, applyFromInbox, INBOX_DIR, INBOX_FILE, PENDING_FILE, RESULT_FILE };
+module.exports = { runSync, syncRoadmap, fetchActivity, classifyAll, applyAll, changelogLines, appendChangelog, describeChange, nextLastRun, writeInbox, applyFromInbox, INBOX_DIR, INBOX_FILE, PENDING_FILE, RESULT_FILE };
