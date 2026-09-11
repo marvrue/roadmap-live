@@ -308,18 +308,24 @@
     var rows = asking.map(function (it) {
       var q = it.question;
       var out = '<li><span class="label attention">' + esc(it.title) + '</span><div class="q">' + esc(q.text);
-      if (state.mode === 'live') {
+      if (writable(state, opts)) {
         out += '<div class="answers">';
         (q.options || []).forEach(function (o) {
           out += '<button type="button" data-action="answer" data-id="' + esc(it.id) + '" data-text="' + esc(o) + '">' + esc(o) + '</button>';
         });
         out += '</div>' + renderCommentForm(it, t);
       } else {
-        out += '<div class="hint">' + esc(t('page.waiting.hint')) + '</div>';
+        out += '<div class="hint">' + esc(t(state.mode === 'live' ? 'page.readOnly' : 'page.waiting.hint')) + '</div>';
       }
       return out + '</div></li>';
     });
     return '<section class="waiting"><h2 class="section">' + esc(t('page.waiting.title')) + '</h2><ul>' + rows.join('') + '</ul></section>';
+  }
+
+  // Writing needs the live page and the write key in the browser. The
+  // server renders without the key; the page re-renders once it holds one.
+  function writable(state, opts) {
+    return state.mode === 'live' && opts.canWrite === true;
   }
 
   function renderCommentForm(it, t) {
@@ -336,7 +342,8 @@
       return '<li class="' + esc(c.from) + '"><span class="label">' + esc(who) + '</span><span class="text">' + esc(c.text) + '</span><span class="' + whenCls + '">' + when + '</span></li>';
     });
     var out = items.length ? '<ul class="conv">' + items.join('') + '</ul>' : '';
-    if (state.mode === 'live') out += renderCommentForm(it, t);
+    if (writable(state, opts)) out += renderCommentForm(it, t);
+    else if (state.mode === 'live') out += '<div class="hint">' + esc(t('page.readOnly')) + '</div>';
     return out;
   }
 
@@ -408,7 +415,7 @@
     if (it.note) sub.push('<span class="note">' + esc(it.note) + '</span>');
     var comments = commentsOf(it, opts);
     var expanded = opts.expanded && opts.expanded[it.id];
-    if (openItem(it) && (comments.length || state.mode === 'live')) {
+    if (openItem(it) && (comments.length || writable(state, opts))) {
       var label = comments.length ? t('page.comments.count', { n: comments.length }) : t('page.comments.add');
       sub.push('<button type="button" class="toggle" data-action="expand" data-id="' + esc(it.id) + '" aria-expanded="' + (expanded ? 'true' : 'false') + '">' + esc(label) + ' &middot; ' + esc(t(expanded ? 'page.comments.hide' : 'page.comments.show')) + '</button>');
     } else if (comments.length) {

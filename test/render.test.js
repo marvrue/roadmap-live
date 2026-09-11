@@ -148,7 +148,7 @@ test('runRender writes the file and honours the theme in roadmap.json and roadma
 });
 
 test('waiting block: only with a question, buttons on the live page, hint on the static one', () => {
-  const live = body(renderPage({ ...demoState(), mode: 'live' }, { theme: 'neutral', lang: 'en', live: true, now: NOW }));
+  const live = body(renderPage({ ...demoState(), mode: 'live' }, { theme: 'neutral', lang: 'en', live: true, now: NOW, canWrite: true }));
   assert.ok(live.includes('class="waiting"'));
   assert.ok(live.includes('Hold copies for 15 or 30 minutes?'));
   assert.ok(live.includes('data-action="answer" data-id="checkout" data-text="15"'));

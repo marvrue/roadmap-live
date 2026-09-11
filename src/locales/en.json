@@ -103,6 +103,7 @@
       "title": "Waiting for you",
       "hint": "Answering works on the live page"
     },
+    "readOnly": "Read-only. To write, open the link with the key.",
     "comments": {
       "count": {
         "one": "1 comment",
@@ -140,7 +141,7 @@
     }
   },
   "cli": {
-    "usage": "Usage: roadmap-live [command] [file] [options]\n\nCommands:\n  (none)                 start the live server (default)\n  sync                   read pull request activity from GitHub and update the roadmap\n  render                 write a static HTML page from the current state\n  init                   create roadmap.json, AGENTS.md and the workflow file\n  auth                   log in to GitHub in the browser (--logout removes the token)\n  doctor                 explain which GitHub credential and which provider would be used\n\nOptions:\n  file                   path to roadmap.json (default: ./roadmap.json)\n  --port <n>             HTTP port for the live server (default: 4242)\n  --check                validate the file and exit with 0 (ok) or 1 (problems)\n  --repo owner/name      repository for sync (default: sync.repo, GITHUB_REPOSITORY or the git remote)\n  --dry-run              sync: print the planned changes and write nothing\n  --apply                sync: apply .roadmap-live/result.json written by your coding agent\n  --provider <name>      sync: anthropic, claude-cli, codex-cli, gemini-cli or agent\n  --public               auth: ask for the public_repo scope only\n  --out <path>           render: output file (default: roadmap/index.html)\n  --theme <name>         render: neutral, paper, mono or a file in roadmap-themes/\n  --mode light|dark      render: fix the color mode instead of following the system\n  -h, --help             show this help",
+    "usage": "Usage: roadmap-live [command] [file] [options]\n\nCommands:\n  (none)                 start the live server (default)\n  sync                   read pull request activity from GitHub and update the roadmap\n  render                 write a static HTML page from the current state\n  init                   create roadmap.json, AGENTS.md and the workflow file\n  auth                   log in to GitHub in the browser (--logout removes the token)\n  doctor                 explain which GitHub credential and which provider would be used\n\nOptions:\n  file                   path to roadmap.json (default: ./roadmap.json)\n  --port <n>             HTTP port for the live server (default: 4242)\n  --key <secret>         write key for the live page (default: generated at start, or ROADMAP_KEY)\n  --check                validate the file and exit with 0 (ok) or 1 (problems)\n  --repo owner/name      repository for sync (default: sync.repo, GITHUB_REPOSITORY or the git remote)\n  --dry-run              sync: print the planned changes and write nothing\n  --apply                sync: apply .roadmap-live/result.json written by your coding agent\n  --provider <name>      sync: anthropic, claude-cli, codex-cli, gemini-cli or agent\n  --public               auth: ask for the public_repo scope only\n  --out <path>           render: output file (default: roadmap/index.html)\n  --theme <name>         render: neutral, paper, mono or a file in roadmap-themes/\n  --mode light|dark      render: fix the color mode instead of following the system\n  -h, --help             show this help",
     "unknownOption": "unknown option: {option}",
     "unknownCommand": "unknown command: {command}",
     "invalidPort": "invalid port: {port}",
@@ -154,6 +155,8 @@
     "invalidFile": "{file} is invalid:",
     "server": {
       "watching": "roadmap-live: watching {file}",
+      "readUrl": "  read   {url}",
+      "writeUrl": "  write  {url}   (open this one to comment)",
       "stop": "  press Ctrl+C to stop",
       "stopped": "roadmap-live: stopped",
       "portInUse": "roadmap-live: port {port} is already in use, try --port <number>",

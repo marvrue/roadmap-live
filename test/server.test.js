@@ -88,17 +88,21 @@ test('store snapshot carries git state and addComment notifies listeners', async
 const http = require('http');
 const { startServer } = require('../src/server');
 
-function listen(file) {
+// Every test server runs with this write key; post() sends it unless told not to.
+const KEY = 'test-key-1234';
+
+function listen(file, opts = {}) {
   return new Promise((resolve) => {
-    const server = startServer({ file, port: 0, theme: null }, { LANG: 'C', PATH: process.env.PATH });
+    const server = startServer({ file, port: 0, theme: null, key: KEY, ...opts }, { LANG: 'C', PATH: process.env.PATH });
     server.once('listening', () => resolve({ server, port: server.address().port }));
   });
 }
 
-function post(port, body, raw = false, headers = {}) {
+function post(port, body, raw = false, headers = {}, key = KEY) {
   return new Promise((resolve, reject) => {
     const data = raw ? body : JSON.stringify(body);
-    const req = http.request({ host: '127.0.0.1', port, path: '/comment', method: 'POST', headers: { 'content-type': 'application/json', ...headers } }, (res) => {
+    const keyHeader = key === null ? {} : { 'x-roadmap-key': key };
+    const req = http.request({ host: '127.0.0.1', port, path: '/comment', method: 'POST', headers: { 'content-type': 'application/json', ...keyHeader, ...headers } }, (res) => {
       let out = '';
       res.on('data', (d) => { out += d; });
       res.on('end', () => resolve({ status: res.statusCode, body: out }));
@@ -246,7 +250,7 @@ function listenWithPages(file, state) {
     const data = JSON.parse(fs.readFileSync(file, 'utf8'));
     data.sync = { repo: 'acme/storefront' };
     fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
-    const server = startServer({ file, port: 0, theme: null }, { LANG: 'C', PATH: process.env.PATH }, { credential: { token: 't' }, fetchFn: pagesFetch(state) });
+    const server = startServer({ file, port: 0, theme: null, key: KEY }, { LANG: 'C', PATH: process.env.PATH }, { credential: { token: 't' }, fetchFn: pagesFetch(state) });
     server.once('listening', () => resolve({ server, port: server.address().port }));
   });
 }
@@ -270,12 +274,13 @@ test('share: pages status in the snapshot and POST /pages/enable turns it on', a
     let snap = await getJson(port, '/data');
     assert.deepStrictEqual(snap.pages, { enabled: false });
     assert.strictEqual(snap.shareUrl, null);
-    const r = await new Promise((resolve, reject) => {
-      const req = http.request({ host: '127.0.0.1', port, path: '/pages/enable', method: 'POST', headers: { 'content-type': 'application/json' } }, (res) => resolve(res.statusCode));
+    const enable = (headers) => new Promise((resolve, reject) => {
+      const req = http.request({ host: '127.0.0.1', port, path: '/pages/enable', method: 'POST', headers: { 'content-type': 'application/json', ...headers } }, (res) => resolve(res.statusCode));
       req.on('error', reject);
       req.end('{}');
     });
-    assert.strictEqual(r, 204);
+    assert.strictEqual(await enable({}), 401, 'turning Pages on needs the write key too');
+    assert.strictEqual(await enable({ 'x-roadmap-key': KEY }), 204);
     snap = await getJson(port, '/data');
     assert.strictEqual(snap.shareUrl, 'https://acme.github.io/storefront/roadmap/');
     const page = await new Promise((resolve) => { http.get({ host: '127.0.0.1', port, path: '/' }, (res) => { let o = ''; res.on('data', (d) => { o += d; }); res.on('end', () => resolve(o)); }); });
