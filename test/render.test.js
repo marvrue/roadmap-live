@@ -222,25 +222,158 @@ test('share button: live page only with a link or with Pages off, static page al
   assert.ok(off.includes('data-action="enable-pages"') && off.includes('The public page is off.'));
 });
 
-test('views: milestones is the default, board via opts, the header button cycles', () => {
-  const t = i18n.translator('en');
-  const base = { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', showAllDone: false, changed: null };
+const BASE_OPTS = () => ({ t: i18n.translator('en'), lang: 'en', now: NOW, filter: null, colorMode: 'system', showAllDone: false, changed: null });
+
+test('views: milestones is the default, board via opts, the row above the content links every view', () => {
+  const base = BASE_OPTS();
   const ms = view.renderApp(demoState(), base);
   assert.ok(ms.includes('<main class="milestones">'));
   assert.ok(!ms.includes('<main class="board">'));
-  assert.ok(ms.includes('data-action="view"') && ms.includes('>Milestones</button>'));
+  assert.ok(ms.includes('<nav class="views" aria-label="Switch the view">'));
+  assert.ok(ms.includes('<a href="?view=milestones" data-action="view" data-view="milestones" aria-current="page">Milestones</a>'));
+  assert.ok(ms.includes('<a href="?view=board" data-action="view" data-view="board">Board</a>'));
+  assert.ok(!ms.includes('<button type="button" class="theme" data-action="view"'), 'the header button is gone');
   assert.ok(/<section class="ms is-current" data-milestone="m1">[\s\S]*?<h2>Ordering flow<\/h2>/.test(ms));
   assert.ok(/<section class="ms" data-milestone="m3">/.test(ms), 'Launch has one open item, so it is neither current nor done');
-  assert.ok(/<details class="ms-done" data-milestone="m3">[\s\S]*?<summary>4 done<\/summary>/.test(ms));
+  assert.ok(/<details class="ms-done fold" data-key="ms:m3" data-milestone="m3">[\s\S]*?<summary>4 done<\/summary>/.test(ms));
+  assert.ok(view.renderApp(demoState(), { ...base, open: { 'ms:m3': true } }).includes('data-milestone="m3" open>'));
   assert.ok(/<span class="label status attention">blocked<\/span><span>Card payment with Stripe<\/span>/.test(ms));
   assert.ok(/<span class="label status">in progress<\/span><span>Checkout with pickup time<\/span>/.test(ms));
   const board = view.renderApp(demoState(), { ...base, view: 'board' });
-  assert.ok(board.includes('<main class="board">') && board.includes('>Board</button>'));
+  assert.ok(board.includes('<main class="board">') && board.includes('data-view="board" aria-current="page">Board</a>'));
   assert.ok(!board.includes('class="label status'), 'board keeps its columns without status labels');
   const filtered = view.renderApp(demoState(), { ...base, filter: 'm2' });
   assert.ok(filtered.includes('data-milestone="m2"') && !filtered.includes('data-milestone="m1"'));
   const stat = body(renderPage(demoState(), { theme: 'neutral', lang: 'en', live: false, now: NOW }));
-  assert.ok(stat.includes('<main class="milestones">') && stat.includes('data-action="view"'));
+  assert.ok(stat.includes('<main class="milestones">') && stat.includes('<nav class="views"'));
+  const order = [...ms.matchAll(/data-view="([a-z]+)"/g)].map((m) => m[1]);
+  assert.deepStrictEqual(order, ['milestones', 'board', 'focus', 'timeline', 'conversations', 'points', 'prs', 'signals', 'list']);
+});
+
+test('views that need synced data stay out of the row until the roadmap has it', () => {
+  const plain = demoState();
+  plain.data.items.forEach((it) => { delete it.prs; delete it.open_points; });
+  delete plain.data.unplanned;
+  assert.deepStrictEqual(view.availableViews(plain.data), ['milestones', 'board', 'focus', 'timeline', 'conversations', 'signals', 'list']);
+  const html = view.renderApp(plain, { ...BASE_OPTS(), view: 'prs' });
+  assert.ok(!html.includes('data-view="prs"') && !html.includes('data-view="points"'));
+  assert.ok(html.includes('<main class="milestones">'), 'an unavailable view falls back to the first');
+  assert.strictEqual(view.resolveView(demoState().data, 'nope'), 'milestones');
+});
+
+test('focus: active items at full size, blocked after them, now block folded in', () => {
+  const live = { ...demoState(), mode: 'live' };
+  const html = view.renderApp(live, { ...BASE_OPTS(), view: 'focus', canWrite: true });
+  assert.ok(html.includes('<main class="focus">'));
+  assert.ok(!html.includes('id="now"') && !html.includes('id="history"'), 'the now block is the view itself');
+  const ids = html.match(/<main class="focus">[\s\S]*?<\/main>/)[0].match(/<article class="item" data-id="([a-z-]+)"/g);
+  assert.deepStrictEqual(ids, ['<article class="item" data-id="checkout"', '<article class="item" data-id="order-queue"', '<article class="item" data-id="payment"']);
+  assert.ok(/<h2 class="title">Checkout with pickup time<\/h2><div class="elapsed" data-since="2026-09-09T09:00:00Z">/.test(html));
+  assert.ok(/<h2 class="title">Card payment with Stripe<\/h2><span class="label attention state">blocked<\/span>/.test(html));
+  assert.ok(html.includes('href="https://github.com/acme/abholbereit/pull/44#discussion_r2001"'), 'open points link to the review comment');
+  assert.ok(html.includes('Pickup time in 15 or 30 minute steps?') && html.includes('data-action="answer" data-id="checkout" data-text="15"'));
+  const focusMain = html.match(/<main class="focus">[\s\S]*?<\/main>/)[0];
+  assert.strictEqual((focusMain.match(/<form class="comment-form" data-id="checkout"/g) || []).length, 1, 'question and thread share one field');
+  assert.ok(html.includes('Finish the cart first, the checkout can wait'), 'the thread is open');
+  const idle = demoState();
+  idle.data.items.forEach((it) => { if (it.status === 'active' || it.status === 'blocked') it.status = 'todo'; });
+  const none = view.renderApp(idle, { ...BASE_OPTS(), view: 'focus' });
+  assert.ok(none.includes('Nothing in progress right now.') && none.includes('<b>Checkout with pickup time</b>'));
+});
+
+test('timeline: newest first, grouped by day, every kind of event, capped at 40', () => {
+  const rows = view.computeTimeline(demoState(), BASE_OPTS());
+  for (let i = 1; i < rows.length; i++) assert.ok(Date.parse(rows[i - 1].at) >= Date.parse(rows[i].at));
+  const kinds = new Set(rows.map((r) => r.kind));
+  for (const k of ['status', 'point', 'resolved', 'comment', 'question', 'unplanned', 'sync']) assert.ok(kinds.has(k), `has ${k}`);
+  const html = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'timeline' });
+  assert.ok(html.includes('<main class="timeline">'));
+  assert.ok(html.includes('<section class="day"><h2>yesterday</h2>'), 'Sep 9 is yesterday for NOW');
+  assert.ok(/<li data-kind="resolved" class="is-quiet">[\s\S]*?<span class="tag quiet">resolved<\/span>/.test(html));
+  assert.ok(/<li data-kind="question">[\s\S]*?<span class="label attention">question<\/span>/.test(html));
+  assert.ok(!html.includes('data-action="more-timeline"'));
+  const big = demoState();
+  for (let i = 0; i < 50; i++) big.data.items.push({ id: `x${i}`, title: `Item ${i}`, milestone: 'm1', status: 'done', updated: `2026-08-${String(1 + (i % 28)).padStart(2, '0')}T10:00:00Z` });
+  const capped = view.renderApp(big, { ...BASE_OPTS(), view: 'timeline' });
+  assert.strictEqual((capped.match(/<li data-kind=/g) || []).length, 40 + 4, '40 timeline rows plus the 4 feed rows');
+  assert.ok(capped.includes('data-action="more-timeline"'));
+  assert.ok((view.renderApp(big, { ...BASE_OPTS(), view: 'timeline', showAllTimeline: true }).match(/<li data-kind=/g) || []).length > 44);
+});
+
+test('conversations: questions first, unanswered threads marked, waiting block folded in, others foldable with the key', () => {
+  const live = { ...demoState(), mode: 'live' };
+  const html = view.renderApp(live, { ...BASE_OPTS(), view: 'conversations', canWrite: true });
+  assert.ok(html.includes('<main class="conversations">'));
+  assert.ok(!html.includes('class="waiting"'), 'questions live in the threads here');
+  const main = html.match(/<main class="conversations">[\s\S]*?<\/main>/)[0];
+  const ids = main.split('<details')[0].match(/<article class="item" data-id="([a-z-]+)"/g);
+  assert.deepStrictEqual(ids, ['<article class="item" data-id="checkout"', '<article class="item" data-id="order-queue"']);
+  assert.ok(/data-id="order-queue"[\s\S]*?<span class="label">unanswered<\/span>/.test(main));
+  assert.ok(main.includes('Pickup time in 15 or 30 minute steps?'));
+  assert.ok(main.includes('<details class="fold" data-key="conv:others"><summary>4 items without a conversation</summary>'));
+  const stat = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'conversations' });
+  assert.ok(!stat.includes('data-key="conv:others"') && !/<input|<form/.test(stat));
+});
+
+test('open points: grouped by item, open first, resolved folded, linked to the comment', () => {
+  const html = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'points' });
+  const main = html.match(/<main class="points">[\s\S]*?<\/main>/)[0];
+  const ids = main.match(/<section class="group[^"]*" data-id="([a-z-]+)"/g);
+  assert.deepStrictEqual(ids, ['<section class="group" data-id="checkout"', '<section class="group is-done" data-id="menu-editor"']);
+  assert.ok(main.includes('<span class="meta">2 open</span>'));
+  assert.ok(main.includes('<details class="fold" data-key="pt:menu-editor"><summary>1 resolved</summary>'));
+  assert.ok(main.includes('href="https://github.com/acme/abholbereit/pull/42#issuecomment-1893"'));
+  assert.ok(!main.includes('class="empty"'));
+});
+
+test('pull requests: newest first with items, review points and unplanned work', () => {
+  const html = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'prs' });
+  const main = html.match(/<main class="prs">[\s\S]*?<\/main>/)[0];
+  const nums = main.match(/data-pr="(\d+)"/g);
+  assert.deepStrictEqual(nums, ['data-pr="44"', 'data-pr="43"', 'data-pr="42"', 'data-pr="41"']);
+  assert.ok(/data-pr="43">[\s\S]*?<span class="label attention">blocked<\/span><span class="text">Card payment with Stripe<\/span>/.test(main));
+  assert.ok(/data-pr="41">[\s\S]*?<span class="label attention">Unplanned<\/span><span class="text">Customer loyalty points<span class="tag">Not on the roadmap<\/span><\/span>/.test(main));
+  assert.ok(/data-pr="44">[\s\S]*?<span class="label">review<\/span><span class="text">Checkout with pickup time: Please debounce/.test(main));
+  assert.ok(main.includes('data-key="pr:42"'));
+});
+
+test('signals: only questions, blocked, stale and unplanned; calm sentence when there is nothing', () => {
+  const html = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'signals' });
+  const main = html.match(/<main class="signals">[\s\S]*?<\/main>/)[0];
+  assert.deepStrictEqual(main.match(/data-kind="([a-z]+)"/g), ['data-kind="questions"', 'data-kind="blocked"', 'data-kind="stale"', 'data-kind="unplanned"']);
+  assert.ok(main.includes('<h2 class="section attention">Gone quiet</h2>'));
+  assert.ok(!html.includes('class="unplanned"'), 'unplanned block below is folded into the view');
+  const calm = demoState();
+  calm.data.items.forEach((it) => { delete it.question; if (it.status === 'blocked') it.status = 'todo'; if (it.id === 'order-queue') it.updated = '2026-09-10T10:00:00Z'; });
+  delete calm.data.unplanned;
+  const quiet = view.renderApp(calm, { ...BASE_OPTS(), view: 'signals' });
+  assert.ok(quiet.includes('<p class="big">Nothing needs you.</p>'));
+  assert.ok(quiet.includes('2 in progress, 4 open, 5 done.'));
+});
+
+test('list: one table row per item, default order by milestone then status, headers sort', () => {
+  const html = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'list' });
+  const main = html.match(/<main class="list-view">[\s\S]*?<\/main>/)[0];
+  const ids = main.match(/<tr data-id="([a-z-]+)"/g).map((m) => m.slice(13, -1));
+  assert.deepStrictEqual(ids.slice(0, 3), ['payment', 'checkout', 'menu-editor']);
+  assert.ok(main.includes('<td class="c-status mono attention">blocked</td>'));
+  assert.ok(main.includes('<tr data-id="menu-editor" class="is-done">'));
+  assert.ok(main.includes('<button type="button" data-action="sort" data-key="updated" title="Sort by Updated">Updated</button>'));
+  const sorted = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'list', sort: { key: 'title', dir: 'asc' } });
+  const byTitle = sorted.match(/<tr data-id="([a-z-]+)"/g).map((m) => m.slice(13, -1));
+  assert.deepStrictEqual(byTitle.slice(0, 2), ['app-store', 'analytics']);
+  assert.ok(sorted.includes('<th class="c-title" aria-sort="ascending">'));
+  const desc = view.renderApp(demoState(), { ...BASE_OPTS(), view: 'list', sort: { key: 'updated', dir: 'desc' } });
+  assert.strictEqual(desc.match(/<tr data-id="([a-z-]+)"/g)[0], '<tr data-id="checkout"');
+});
+
+test('every view renders in German and on the static page without fields', () => {
+  for (const v of view.VIEWS) {
+    const de = body(renderPage(demoState(), { theme: 'paper', lang: 'de', live: false, now: NOW, view: v }));
+    assert.ok(de.includes('<nav class="views"'), v);
+    assert.ok(!/<input|<textarea|<form/.test(de), `${v} static page has no fields`);
+    assert.ok(!de.includes('page.'), `${v} has no untranslated key`);
+  }
 });
 
 // Goals on the page
