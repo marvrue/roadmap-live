@@ -145,9 +145,69 @@
     },
     "views": {
       "milestones": "Milestones",
-      "board": "Board"
+      "board": "Board",
+      "focus": "Focus",
+      "timeline": "Timeline",
+      "conversations": "Conversations",
+      "points": "Open points",
+      "prs": "Pull requests",
+      "signals": "Signals",
+      "list": "List"
     },
     "viewTitle": "Switch the view",
+    "timeline": {
+      "today": "today",
+      "yesterday": "yesterday",
+      "resolved": "resolved",
+      "sync": "sync",
+      "syncText": "Pull requests read from {repo}",
+      "empty": "Nothing has happened yet."
+    },
+    "conversations": {
+      "unanswered": "unanswered",
+      "empty": "No conversations yet. Comments and questions show up here.",
+      "others": {
+        "one": "1 item without a conversation",
+        "other": "{n} items without a conversation"
+      }
+    },
+    "points": {
+      "open": {
+        "one": "1 open",
+        "other": "{n} open"
+      },
+      "resolved": {
+        "one": "1 resolved",
+        "other": "{n} resolved"
+      },
+      "empty": "No open points. Reviewers have nothing outstanding."
+    },
+    "prs": {
+      "items": {
+        "one": "1 item",
+        "other": "{n} items"
+      },
+      "review": "review",
+      "empty": "No pull requests linked yet."
+    },
+    "signals": {
+      "questions": "Open questions",
+      "blocked": "Blocked",
+      "stale": "Gone quiet",
+      "unplanned": "Not on the roadmap",
+      "question": "question",
+      "calm": "Nothing needs you.",
+      "counts": "{active} in progress, {open} open, {done} done."
+    },
+    "list": {
+      "status": "Status",
+      "title": "Item",
+      "milestone": "Milestone",
+      "pr": "PR",
+      "updated": "Updated",
+      "points": "Points",
+      "sortTitle": "Sort by {col}"
+    },
     "milestoneCurrent": "current milestone",
     "doneCount": {
       "one": "1 done",

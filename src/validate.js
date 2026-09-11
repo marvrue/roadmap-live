@@ -10,7 +10,7 @@ const path = require('path');
 
 const AGENT_STATUSES = ['todo', 'active', 'done'];
 const STATUSES = ['todo', 'active', 'blocked', 'done'];
-const VIEWS = ['milestones', 'board'];
+const { VIEWS } = require('./page/view');
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?)?$/;
 const ID_RE = /^[a-z0-9][a-z0-9-]*$/;
 const REPO_RE = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
