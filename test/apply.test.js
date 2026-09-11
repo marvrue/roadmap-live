@@ -101,3 +101,14 @@ test('sync never touches titles, notes, milestones or ids', () => {
     assert.strictEqual(it.milestone, before.items[i].milestone);
   });
 });
+
+test('linking a PR records its branch unless the agent already set one', () => {
+  const roadmap = fixture('roadmap-base.json');
+  const pr = { ...prs()[44], branch: 'feat/checkout' };
+  applyClassification(roadmap, pr, fixture('classify/pr-44.json'));
+  assert.strictEqual(roadmap.items.find((it) => it.id === 'checkout').branch, 'feat/checkout');
+  const again = fixture('roadmap-base.json');
+  again.items[1].branch = 'agent/checkout';
+  applyClassification(again, pr, fixture('classify/pr-44.json'));
+  assert.strictEqual(again.items[1].branch, 'agent/checkout');
+});

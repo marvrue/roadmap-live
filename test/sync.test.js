@@ -37,7 +37,7 @@ test('sync end to end: statuses, open points, unplanned, changelog, key order', 
   assert.deepStrictEqual(after.unplanned, [{ title: 'Wishlist alerts', prs: [41], first_seen: '2026-09-06T09:00:00Z' }]);
   assert.deepStrictEqual(after.sync, { last_run: '2026-09-10T12:00:00.000Z', repo: 'acme/storefront' });
   assert.deepStrictEqual(Object.keys(after), ['project', 'milestones', 'items', 'unplanned', 'sync'], 'existing key order kept, new keys appended');
-  assert.deepStrictEqual(Object.keys(by('listing-editor')), ['id', 'title', 'milestone', 'status', 'updated', 'prs']);
+  assert.deepStrictEqual(Object.keys(by('listing-editor')), ['id', 'title', 'milestone', 'status', 'updated', 'prs', 'branch']);
   const raw = fs.readFileSync(file, 'utf8');
   assert.ok(raw.startsWith('{\n  "project"') && raw.endsWith('}\n'), 'two-space indentation and trailing newline');
 

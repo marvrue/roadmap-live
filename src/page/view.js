@@ -159,6 +159,18 @@
     return (item.open_points || []).filter(function (p) { return !p.resolved; });
   }
 
+  function openItem(it) {
+    return it.status !== 'done';
+  }
+
+  function commentsOf(it, opts) {
+    var list = (it.comments || []).slice();
+    (opts.pending || []).forEach(function (p) {
+      if (p.id === it.id) list.push({ from: 'human', text: p.text, at: p.at, pending: true, failed: p.failed });
+    });
+    return list;
+  }
+
   // "Since you last looked": newest first, max 8. Stale items come first
   // because they are a current signal; the time on the right is the last
   // activity.
@@ -176,6 +188,11 @@
       }
       openPoints(it).forEach(function (p) {
         rest.push({ kind: 'point', at: p.opened, pr: prFromSource(p.source), label: null, text: t('page.feed.openPoint', { title: it.title, text: p.text }), id: it.id });
+      });
+      (it.comments || []).forEach(function (c) {
+        if (c.from === 'agent' && openItem(it)) {
+          rest.push({ kind: 'comment', at: c.at, pr: null, label: t('page.feed.agent'), text: it.title + ': ' + c.text, id: it.id });
+        }
       });
     });
     (data.unplanned || []).forEach(function (u) {
@@ -221,6 +238,12 @@
     if (state.mode === 'live') {
       parts.push('<span id="conn" class="conn off">' + esc(t('page.disconnected')) + '</span>');
       parts.push('<span id="updated">' + (state.updatedAt ? esc(t('page.updated', { time: '' })).trim() + ' ' + time(state.updatedAt, opts.now, opts.lang) : esc(t('page.noData'))) + '</span>');
+      if (state.git && state.git.branch) {
+        var g = [esc(state.git.branch)];
+        if (state.git.ahead) g.push(esc(t('page.git.ahead', { n: state.git.ahead })));
+        if (state.git.changed) g.push(esc(t('page.git.changed', { n: state.git.changed })));
+        parts.push('<span class="sep">&middot;</span><span class="git">' + g.join(' &middot; ') + '</span>');
+      }
     } else if (data) {
       var upd = latestUpdate(data);
       parts.push('<span>' + (upd ? esc(t('page.updated', { time: '' })).trim() + ' ' + time(upd, opts.now, opts.lang) : esc(t('page.updatedNever'))) + '</span>');
@@ -268,6 +291,45 @@
     });
     return '<section class="since"><h2 class="section">' + esc(t('page.since.title')) + '</h2>' +
       (rows.length ? '<ul>' + rows.join('') + '</ul>' : '<div class="none">' + esc(t('page.since.empty')) + '</div>') + '</section>';
+  }
+
+  function renderWaiting(state, opts) {
+    var t = opts.t;
+    var asking = state.data.items.filter(function (it) { return it.question && it.question.text && openItem(it); });
+    if (!asking.length) return '';
+    var rows = asking.map(function (it) {
+      var q = it.question;
+      var out = '<li><span class="label attention">' + esc(it.title) + '</span><div class="q">' + esc(q.text);
+      if (state.mode === 'live') {
+        out += '<div class="answers">';
+        (q.options || []).forEach(function (o) {
+          out += '<button type="button" data-action="answer" data-id="' + esc(it.id) + '" data-text="' + esc(o) + '">' + esc(o) + '</button>';
+        });
+        out += '</div>' + renderCommentForm(it, t);
+      } else {
+        out += '<div class="hint">' + esc(t('page.waiting.hint')) + '</div>';
+      }
+      return out + '</div></li>';
+    });
+    return '<section class="waiting"><h2 class="section">' + esc(t('page.waiting.title')) + '</h2><ul>' + rows.join('') + '</ul></section>';
+  }
+
+  function renderCommentForm(it, t) {
+    return '<form class="comment-form" data-id="' + esc(it.id) + '"><input name="text" type="text" maxlength="2000" autocomplete="off" placeholder="' + esc(t('page.comments.placeholder')) + '"><button type="submit">' + esc(t('page.comments.send')) + '</button></form>';
+  }
+
+  function renderConversation(state, opts, it) {
+    var t = opts.t;
+    var list = commentsOf(it, opts);
+    var items = list.map(function (c) {
+      var who = c.from === 'agent' ? t('page.comments.agent') : t('page.comments.you');
+      var when = c.pending ? esc(t(c.failed ? 'page.comments.failed' : 'page.comments.sent')) : time(c.at, opts.now, opts.lang);
+      var whenCls = 'when' + (c.failed ? ' attention' : '');
+      return '<li class="' + esc(c.from) + '"><span class="label">' + esc(who) + '</span><span class="text">' + esc(c.text) + '</span><span class="' + whenCls + '">' + when + '</span></li>';
+    });
+    var out = items.length ? '<ul class="conv">' + items.join('') + '</ul>' : '';
+    if (state.mode === 'live') out += renderCommentForm(it, t);
+    return out;
   }
 
   function renderNow(state, opts) {
@@ -330,14 +392,24 @@
     if (it.prs && it.prs.length) {
       sub.push('<span>' + (it.prs.length === 1 ? prLabel(state, t, it.prs[0]) : esc(t('page.prs', { list: '' })).trim() + ' ' + it.prs.map(function (n) { var u = prUrl(state, n); return u ? '<a href="' + esc(u) + '">#' + n + '</a>' : '#' + n; }).join(', ')) + '</span>');
     }
+    if (it.branch) sub.push('<span>' + esc(it.branch) + '</span>');
     var pts = openPoints(it).length;
     if (pts) sub.push('<span>' + esc(t('page.openPoints', { n: pts })) + '</span>');
     if (!it.prs || !it.prs.length) sub.push('<span>' + esc(titles[it.milestone] || it.milestone) + '</span>');
     if (it.updated && it.status !== 'active') sub.push(time(it.updated, opts.now, opts.lang));
     if (it.note) sub.push('<span class="note">' + esc(it.note) + '</span>');
+    var comments = commentsOf(it, opts);
+    var expanded = opts.expanded && opts.expanded[it.id];
+    if (openItem(it) && (comments.length || state.mode === 'live')) {
+      var label = comments.length ? t('page.comments.count', { n: comments.length }) : t('page.comments.add');
+      sub.push('<button type="button" class="toggle" data-action="expand" data-id="' + esc(it.id) + '" aria-expanded="' + (expanded ? 'true' : 'false') + '">' + esc(label) + ' &middot; ' + esc(t(expanded ? 'page.comments.hide' : 'page.comments.show')) + '</button>');
+    } else if (comments.length) {
+      sub.push('<span>' + esc(t('page.comments.count', { n: comments.length })) + '</span>');
+    }
+    var thread = expanded && openItem(it) ? renderConversation(state, opts, it) : '';
     return '<article class="item' + (changed ? ' flash' : '') + '" data-id="' + esc(it.id) + '" data-status="' + esc(it.status) + '">' +
       '<div class="title"><span>' + esc(it.title) + '</span>' + (it.status === 'blocked' ? '<span class="label attention">' + esc(t('page.blocked')) + '</span>' : '') + '</div>' +
-      (sub.length ? '<div class="sub">' + sub.join('') + '</div>' : '') + '</article>';
+      (sub.length ? '<div class="sub">' + sub.join('') + '</div>' : '') + thread + '</article>';
   }
 
   function renderBoard(state, opts) {
@@ -406,6 +478,7 @@
     out += renderHeader(state, opts);
     out += renderProgress(state, opts);
     out += renderFeed(state, opts);
+    out += renderWaiting(state, opts);
     var now = renderNow(state, opts);
     if (state.mode === 'live') out += '<section class="live">' + now + renderHistory(state, opts) + '</section>';
     else if (now) out += '<section class="live single">' + now + '</section>';

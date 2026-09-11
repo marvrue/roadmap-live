@@ -3,7 +3,7 @@
 // Apply rules: turns one validated classification plus the pull request
 // facts into changes on the roadmap. Pure and idempotent: applying the same
 // classification twice yields no second change. Sync only touches status,
-// updated, prs, open_points, unplanned and sync; it never creates or
+// updated, prs, branch, open_points, unplanned and sync; it never creates or
 // deletes items or milestones.
 
 const DONE_CONFIDENCE = 0.75;
@@ -66,6 +66,7 @@ function applyClassification(roadmap, pr, result, now = new Date().toISOString()
     } else if (item.prs === undefined) {
       item.prs = prs;
     }
+    if (!item.branch && typeof pr.branch === 'string' && pr.branch) item.branch = pr.branch;
     const to = targetStatus(item, pr, best[id].confidence);
     if (to && to !== item.status) {
       changes.push({ kind: 'status', id, title: item.title, from: item.status, to, pr: pr.number, url: pr.url, at });
