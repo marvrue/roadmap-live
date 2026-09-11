@@ -22,6 +22,12 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **When a pull request fails classification twice, `last_run` moves back to just before that pull request's `updated_at`.** The next run fetches it again while the successfully classified ones are simply re-applied, which is a no-op.
 - **CHANGELOG lines carry raw status keys (`active → done`), not translated words.** The file is data that should read the same regardless of who ran sync in which language; the line template itself still comes from the locale.
 - **Existing key order is preserved by mutating objects in place; new keys land at the end.** `JSON.stringify` keeps insertion order, so no key-ordering code is needed.
+- **Comments live in `roadmap.json`, next to the item, not in a second file.** One source of truth; the shared page needs nothing extra, and the write conflict between server and agent is handled by re-reading before an atomic temp-and-rename write.
+- **Answers to the agent's questions are ordinary human comments.** One data path, and the record of what was asked and answered stays in one place.
+- **No new status for "needs a decision".** The `question` field carries it, so the agent's `todo | active | done` and sync's `blocked` stay untouched.
+- **Done items' conversations are not rendered and not covered by the agent rule.** Keeps the board quiet and bounds what the agent has to read.
+- **`--check` warns above 200 KB instead of failing.** Growth is a smell, not an error; the number is far above any roadmap seen so far.
+- **The git header uses `main` as the base and hides "ahead" when there is no `main`.** Guessing the default branch would need a remote query; `main` covers the common case silently.
 
 ## Providers and credentials
 
