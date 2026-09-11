@@ -28,6 +28,17 @@ The human can write to you from the page. Each item may have `comments` (a conve
 - When you set an item to `active`, set `"branch"` to the git branch you work on.
 - Never edit or delete existing comments. Keep your replies to one sentence.
 
+## Goals
+
+An item may carry a `goal`, a number it works towards: `{ "label": "GitHub stars", "target": 100, "current": 34, "source": "github-stars:owner/name", "changed": "<when current last changed>" }`. Goals live on items only, never on milestones. The page will show `current/target` next to the item once the page item lands; `--check` already validates the field.
+
+- Set a `goal` when an item has a measurable outcome (stars, downloads, users, customers). Write `label` and `target`; write `current` and `changed` when you know the number.
+- `source` names where the number comes from, as `kind:argument`: `github-stars:owner/name` or `npm-downloads:package`. A separate pulse command will fetch these without a key (it is not part of this release yet; do not run it until the README documents it); the hosted version knows more kinds. Add a `source` only when you are sure of the repository or package name.
+- `current` and `changed` of a goal with a `source` belong to the pulse. Do not edit them. While the pulse does not exist, leave them unset.
+- For a goal without a `source`: when the human names the number in a comment, write `current` and `changed` and reply in one sentence.
+- When an item's goal reaches `current >= target`, set the item to `done`.
+- Launch items are ordinary items. Do what you can yourself (build the landing page, draft the post, add the badge). Park what needs a human login (publishing the package, sending the post) as a `question` with the options you see.
+
 ## If `.roadmap-live/inbox.json` exists
 
 Sync could not classify pull requests itself and left them for you.
@@ -71,5 +82,7 @@ Exit code 0 means the file is valid. Exit code 1 prints the problems; fix them b
 - `status` is one of `todo`, `active`, `done` for you. `blocked` is set by sync only.
 - `milestone` must reference an existing milestone `id`.
 - `note` and `updated` are optional.
-- `comments`, `question` and `branch` are optional, see above.
-- `theme`, `language` and `stale_after_days` at the top level are optional settings for the page; leave them as they are.
+- `comments`, `question`, `branch` and `goal` are optional, see above.
+- `theme`, `language`, `stale_after_days` and `tagline` at the top level are optional settings for the page; leave them as they are.
+
+`node roadmap-live.js --check` may print notes after the ok line: a done item whose goal is under target, an open item that already reached its goal, or a tagline longer than 140 characters. Notes are hints for the human, not errors.
