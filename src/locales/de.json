@@ -5,25 +5,38 @@
     "updatedNever": "noch keine Aktivität",
     "pr": "PR #{number}",
     "prs": "PRs {list}",
-    "theme": { "system": "System", "light": "Hell", "dark": "Dunkel" },
+    "theme": {
+      "system": "System",
+      "light": "Hell",
+      "dark": "Dunkel"
+    },
     "themeTitle": "Zwischen hell, dunkel und System wechseln",
     "pickTheme": "Theme wechseln ({list})",
     "connected": "verbunden",
     "disconnected": "getrennt",
     "progress": "{done} von {total} erledigt",
-    "todayDone": { "one": "1 heute erledigt", "other": "{n} heute erledigt" },
+    "todayDone": {
+      "one": "1 heute erledigt",
+      "other": "{n} heute erledigt"
+    },
     "milestoneTitle": "{title}: {done} von {total} erledigt",
     "milestoneComplete": "abgeschlossen",
     "filterOnly": "Nur {title}",
     "filterClear": "alle anzeigen",
-    "since": { "title": "Seit dem letzten Blick", "empty": "Nichts Neues." },
+    "since": {
+      "title": "Seit dem letzten Blick",
+      "empty": "Nichts Neues."
+    },
     "feed": {
       "statusChange": "{title} ist jetzt {status}",
       "openPoint": "{title}: {text}",
       "unplanned": "{title}",
       "notOnRoadmap": "Nicht auf der Roadmap",
       "stale": "ruht",
-      "staleText": { "one": "{title}: seit 1 Tag keine Aktivität", "other": "{title}: seit {n} Tagen keine Aktivität" },
+      "staleText": {
+        "one": "{title}: seit 1 Tag keine Aktivität",
+        "other": "{title}: seit {n} Tagen keine Aktivität"
+      },
       "agent": "Agent"
     },
     "now": {
@@ -33,28 +46,68 @@
       "idle": "Gerade ist nichts in Arbeit.",
       "next": "Als Nächstes: {title}",
       "allDone": "Alles erledigt.",
-      "summary": { "one": "1 Meilenstein, {items} Items.", "other": "{n} Meilensteine, {items} Items." },
+      "summary": {
+        "one": "1 Meilenstein, {items} Items.",
+        "other": "{n} Meilensteine, {items} Items."
+      },
       "empty": "Noch keine Items."
     },
-    "history": { "title": "Verlauf", "empty": "Noch keine Änderungen." },
-    "changelog": { "title": "Änderungen", "empty": "Noch keine Einträge." },
-    "columns": { "todo": "Offen", "active": "In Arbeit", "done": "Erledigt" },
+    "history": {
+      "title": "Verlauf",
+      "empty": "Noch keine Änderungen."
+    },
+    "changelog": {
+      "title": "Änderungen",
+      "empty": "Noch keine Einträge."
+    },
+    "columns": {
+      "todo": "Offen",
+      "active": "In Arbeit",
+      "done": "Erledigt"
+    },
     "blocked": "blockiert",
     "parallel": "{n} parallel",
     "empty": "Keine Items",
-    "andMore": { "one": "und 1 weiteres", "other": "und {n} weitere" },
+    "andMore": {
+      "one": "und 1 weiteres",
+      "other": "und {n} weitere"
+    },
     "showAll": "alle anzeigen",
-    "openPoints": { "one": "1 offener Punkt", "other": "{n} offene Punkte" },
-    "status": { "todo": "offen", "active": "in Arbeit", "blocked": "blockiert", "done": "erledigt" },
-    "change": { "done": "erledigt", "active": "begonnen", "blocked": "blockiert", "todo": "zurückgestellt", "added": "neu" },
-    "footer": { "repo": "Repository", "roadmap": "roadmap.json", "builtWith": "Erstellt mit roadmap-live" },
+    "openPoints": {
+      "one": "1 offener Punkt",
+      "other": "{n} offene Punkte"
+    },
+    "status": {
+      "todo": "offen",
+      "active": "in Arbeit",
+      "blocked": "blockiert",
+      "done": "erledigt"
+    },
+    "change": {
+      "done": "erledigt",
+      "active": "begonnen",
+      "blocked": "blockiert",
+      "todo": "zurückgestellt",
+      "added": "neu"
+    },
+    "footer": {
+      "repo": "Repository",
+      "roadmap": "roadmap.json",
+      "builtWith": "Erstellt mit roadmap-live"
+    },
     "invalid": "{file} ist ungültig, der letzte gültige Stand wird angezeigt.",
     "noData": "noch keine gültigen Daten",
     "justNow": "gerade eben",
     "unplannedTitle": "Ungeplant",
-    "waiting": { "title": "Wartet auf dich", "hint": "Antworten geht auf der Live-Seite" },
+    "waiting": {
+      "title": "Wartet auf dich",
+      "hint": "Antworten geht auf der Live-Seite"
+    },
     "comments": {
-      "count": { "one": "1 Kommentar", "other": "{n} Kommentare" },
+      "count": {
+        "one": "1 Kommentar",
+        "other": "{n} Kommentare"
+      },
       "placeholder": "Dem Agenten etwas sagen…",
       "add": "kommentieren",
       "send": "Senden",
@@ -66,8 +119,24 @@
       "hide": "ausblenden"
     },
     "git": {
-      "ahead": { "one": "1 vor main", "other": "{n} vor main" },
-      "changed": { "one": "1 geändert", "other": "{n} geändert" }
+      "ahead": {
+        "one": "1 vor main",
+        "other": "{n} vor main"
+      },
+      "changed": {
+        "one": "1 geändert",
+        "other": "{n} geändert"
+      }
+    },
+    "share": {
+      "button": "Teilen",
+      "copied": "Link kopiert",
+      "off": "Die öffentliche Seite ist noch aus.",
+      "enable": "GitHub Pages einschalten",
+      "enabling": "Wird eingeschaltet…",
+      "enabled": "Eingeschaltet. Die Seite ist in etwa einer Minute erreichbar.",
+      "error": "Einschalten fehlgeschlagen: {message}",
+      "title": "Öffentlichen Link kopieren"
     }
   },
   "cli": {
@@ -78,7 +147,10 @@
     "checkOk": "{file}: ok ({milestones} Meilensteine, {items} Items, {done} erledigt, {active} in Arbeit)",
     "checkParallel": "Hinweis: {n} Items sind gleichzeitig in Arbeit",
     "checkLarge": "Hinweis: {file} ist {kb} KB groß, kürze alte Kommentare und Notizen selbst (der Agent löscht nie Kommentare), damit der Agent weniger liest",
-    "checkProblems": { "one": "{file}: 1 Problem", "other": "{file}: {n} Probleme" },
+    "checkProblems": {
+      "one": "{file}: 1 Problem",
+      "other": "{file}: {n} Probleme"
+    },
     "invalidFile": "{file} ist ungültig:",
     "server": {
       "watching": "roadmap-live: beobachtet {file}",
@@ -119,7 +191,12 @@
       "roadmapMissing": "Roadmap: {file} (nicht gefunden, führe roadmap-live init aus)",
       "repo": "Repository: {repo} ({source})",
       "repoNone": "Repository: nicht gefunden. Setze sync.repo in roadmap.json oder übergib --repo owner/name.",
-      "repoSource": { "flag": "aus --repo", "roadmap": "aus sync.repo", "env": "aus GITHUB_REPOSITORY", "git": "aus dem Git-Remote" },
+      "repoSource": {
+        "flag": "aus --repo",
+        "roadmap": "aus sync.repo",
+        "env": "aus GITHUB_REPOSITORY",
+        "git": "aus dem Git-Remote"
+      },
       "credential": "GitHub-Anmeldung: {name}",
       "credentialWhy": "  weil {reason}",
       "credentialNone": "GitHub-Anmeldung: keine",
@@ -127,7 +204,12 @@
       "providerWhy": "  weil {reason}",
       "skipped": "  übersprungen {name}: {reason}",
       "language": "Sprache: {lang} ({source})",
-      "languageSource": { "roadmap": "aus roadmap.json", "env": "aus ROADMAP_LANG", "system": "aus LANG", "default": "Standard" },
+      "languageSource": {
+        "roadmap": "aus roadmap.json",
+        "env": "aus ROADMAP_LANG",
+        "system": "aus LANG",
+        "default": "Standard"
+      },
       "theme": "Theme: {theme}"
     },
     "why": {
@@ -148,7 +230,10 @@
       "firstRun": "den letzten 30 Tagen (erster Lauf)",
       "fetching": "Lade Pull Requests...",
       "noActivity": "Keine neue Pull-Request-Aktivität.",
-      "prs": { "one": "1 Pull Request mit neuer Aktivität", "other": "{n} Pull Requests mit neuer Aktivität" },
+      "prs": {
+        "one": "1 Pull Request mit neuer Aktivität",
+        "other": "{n} Pull Requests mit neuer Aktivität"
+      },
       "classifying": "Klassifiziere #{number} {title} mit {provider}...",
       "skipped": "Übersprungen #{number}: {reason}",
       "malformed": "der Provider hat zweimal keine gültige Klassifizierung geliefert",

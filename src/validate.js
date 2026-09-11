@@ -91,6 +91,7 @@ function validate(data) {
 
   if (!isText(data.project)) errors.push('"project" must be a non-empty string');
   if (data.theme !== undefined && !isText(data.theme)) errors.push('"theme" must be a non-empty string');
+  if (data.page_url !== undefined && (!isText(data.page_url) || !/^https?:\/\//.test(data.page_url))) errors.push('"page_url" must be an http(s) URL');
   if (data.language !== undefined && (!isText(data.language) || !/^[a-z]{2,3}(-[A-Za-z0-9]+)*$/.test(data.language))) {
     errors.push('"language" must be a language tag such as "en" or "de"');
   }
