@@ -5,7 +5,7 @@
 
 const path = require('path');
 const i18n = require('./i18n');
-const { loadRoadmap, displayName, LARGE_FILE_BYTES } = require('./validate');
+const { loadRoadmap, displayName, warnings, stripControls, LARGE_FILE_BYTES, TAGLINE_MAX } = require('./validate');
 
 const DEFAULT_FILE = 'roadmap.json';
 const DEFAULT_PORT = 4242;
@@ -79,6 +79,14 @@ function runCheck(file, env = process.env) {
     if (active > 1) console.log(t('cli.checkParallel', { n: active }));
     const bytes = Buffer.byteLength(result.raw, 'utf8');
     if (bytes > LARGE_FILE_BYTES) console.log(t('cli.checkLarge', { file: name, kb: Math.round(bytes / 1024) }));
+    for (const w of warnings(result.data)) {
+      // Ids come from the file; strip control characters so a stray newline or
+      // escape sequence cannot forge or rewrite terminal lines.
+      const item = w.item === undefined ? undefined : stripControls(w.item);
+      if (w.key === 'taglineLong') console.log(t('cli.checkTagline', { length: w.length, max: TAGLINE_MAX }));
+      else if (w.key === 'goalDoneUnderTarget') console.log(t('cli.checkGoalDone', { item, current: w.current, target: w.target }));
+      else if (w.key === 'goalReachedButOpen') console.log(t('cli.checkGoalReached', { item, current: w.current, target: w.target }));
+    }
     return 0;
   }
   console.error(t('cli.checkProblems', { file: name, n: result.errors.length }));

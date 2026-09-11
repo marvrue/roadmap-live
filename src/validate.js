@@ -86,11 +86,75 @@ function validateQuestion(errors, q, where) {
   checkDate(errors, q.asked, `${where}.asked`, false);
 }
 
+// A goal is a number an item works towards: { label, target, current?, source?, changed? }.
+// The argument after "kind:" is checked only for the kinds this package fetches;
+// other kinds (hosted sources) pass so the file stays valid everywhere.
+// The argument must not contain whitespace or control characters (C0, DEL, C1):
+// it becomes part of a URL in the pulse and a line in the terminal.
+const SOURCE_RE = /^[a-z0-9-]+:[^\s\x00-\x1f\x7f-\x9f]+$/;
+const NPM_NAME_RE = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
+const NPM_NAME_MAX = 214; // npm registry limit
+// Stricter than REPO_RE: GitHub owners are alphanumeric with inner hyphens, and
+// "." or ".." as a name would point the API request somewhere else.
+const GITHUB_REPO_RE = /^[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\/(?!\.{1,2}$)[A-Za-z0-9_.-]+$/;
+const TAGLINE_MAX = 140;
+// Control characters (C0, DEL, C1), line separators and bidi overrides: an id
+// from the file must not be able to forge or rewrite a terminal or CI log line.
+const CONTROL_RE = /[\x00-\x1f\x7f-\x9f\u2028\u2029\u200e\u200f\u202a-\u202e\u2066-\u2069]/g;
+
+function stripControls(s) {
+  return String(s).replace(CONTROL_RE, '');
+}
+
+function isFiniteNumber(v) {
+  return typeof v === 'number' && Number.isFinite(v);
+}
+
+function validateGoal(errors, goal, where) {
+  if (goal === undefined) return;
+  if (!isObject(goal)) return errors.push(`${where} must be an object`);
+  if (!isText(goal.label)) errors.push(`${where}.label must be a non-empty string`);
+  if (!isFiniteNumber(goal.target) || goal.target <= 0) errors.push(`${where}.target must be a finite number greater than 0`);
+  if (goal.current !== undefined && (!isFiniteNumber(goal.current) || goal.current < 0)) {
+    errors.push(`${where}.current must be a finite number of 0 or more`);
+  }
+  if (goal.source !== undefined) {
+    if (!isText(goal.source) || !SOURCE_RE.test(goal.source)) {
+      errors.push(`${where}.source must look like "kind:argument"`);
+    } else {
+      const kind = goal.source.slice(0, goal.source.indexOf(':'));
+      const arg = goal.source.slice(kind.length + 1);
+      if (kind === 'github-stars' && !GITHUB_REPO_RE.test(arg)) errors.push(`${where}.source for github-stars must look like "owner/name"`);
+      if (kind === 'npm-downloads' && (arg.length > NPM_NAME_MAX || !NPM_NAME_RE.test(arg))) errors.push(`${where}.source for npm-downloads must be an npm package name`);
+    }
+  }
+  checkDate(errors, goal.changed, `${where}.changed`);
+}
+
+// Warnings are hints for the human, not errors: the file stays valid.
+function warnings(data) {
+  const out = [];
+  if (!isObject(data)) return out;
+  if (typeof data.tagline === 'string') {
+    const length = [...data.tagline].length; // code points, so an emoji counts once
+    if (length > TAGLINE_MAX) out.push({ key: 'taglineLong', length });
+  }
+  for (const it of Array.isArray(data.items) ? data.items : []) {
+    const g = isObject(it) && isObject(it.goal) ? it.goal : null;
+    if (!g || typeof g.current !== 'number' || typeof g.target !== 'number') continue;
+    const hit = { item: it.id, current: g.current, target: g.target };
+    if (it.status === 'done' && g.current < g.target && g.source === undefined) out.push({ key: 'goalDoneUnderTarget', ...hit });
+    if (it.status !== 'done' && g.current >= g.target) out.push({ key: 'goalReachedButOpen', ...hit });
+  }
+  return out;
+}
+
 function validate(data) {
   const errors = [];
   if (!isObject(data)) return ['root must be a JSON object'];
 
   if (!isText(data.project)) errors.push('"project" must be a non-empty string');
+  if (data.tagline !== undefined && !isText(data.tagline)) errors.push('"tagline" must be a non-empty string');
   if (data.theme !== undefined && !isText(data.theme)) errors.push('"theme" must be a non-empty string');
   if (data.view !== undefined && !VIEWS.includes(data.view)) errors.push(`"view" must be one of ${VIEWS.join(', ')}`);
   if (data.page_url !== undefined && (!isText(data.page_url) || !/^https?:\/\//.test(data.page_url))) errors.push('"page_url" must be an http(s) URL');
@@ -109,9 +173,10 @@ function validate(data) {
       const where = `milestones[${i}]`;
       if (!isObject(m)) return errors.push(`${where} must be an object`);
       if (!isText(m.id)) errors.push(`${where}.id must be a non-empty string`);
-      else if (milestoneIds.has(m.id)) errors.push(`${where}.id "${m.id}" is used more than once`);
+      else if (milestoneIds.has(m.id)) errors.push(`${where}.id "${stripControls(m.id)}" is used more than once`);
       else milestoneIds.add(m.id);
       if (!isText(m.title)) errors.push(`${where}.title must be a non-empty string`);
+      if (m.goal !== undefined) errors.push(`${where}.goal is not supported, put goals on items`);
     });
   }
 
@@ -120,16 +185,16 @@ function validate(data) {
     errors.push('"items" must be an array');
   } else {
     data.items.forEach((it, i) => {
-      const label = isObject(it) && isText(it.id) ? `items[${i}] ("${it.id}")` : `items[${i}]`;
+      const label = isObject(it) && isText(it.id) ? `items[${i}] ("${stripControls(it.id)}")` : `items[${i}]`;
       if (!isObject(it)) return errors.push(`${label} must be an object`);
       if (!isText(it.id)) errors.push(`${label}.id must be a non-empty string`);
-      else if (itemIds.has(it.id)) errors.push(`${label}.id "${it.id}" is used more than once`);
+      else if (itemIds.has(it.id)) errors.push(`${label}.id "${stripControls(it.id)}" is used more than once`);
       else itemIds.add(it.id);
       if (!isText(it.title)) errors.push(`${label}.title must be a non-empty string`);
       if (!isText(it.milestone)) {
         errors.push(`${label}.milestone must be a non-empty string`);
       } else if (Array.isArray(data.milestones) && !milestoneIds.has(it.milestone)) {
-        errors.push(`${label}.milestone refers to unknown milestone "${it.milestone}"`);
+        errors.push(`${label}.milestone refers to unknown milestone "${stripControls(it.milestone)}"`);
       }
       if (!STATUSES.includes(it.status)) {
         errors.push(`${label}.status must be one of ${STATUSES.join(', ')} (got ${JSON.stringify(it.status)})`);
@@ -143,6 +208,7 @@ function validate(data) {
       if (it.branch !== undefined && !isText(it.branch)) errors.push(`${label}.branch must be a non-empty string`);
       validateComments(errors, it.comments, `${label}.comments`);
       validateQuestion(errors, it.question, `${label}.question`);
+      validateGoal(errors, it.goal, `${label}.goal`);
     });
   }
 
@@ -198,6 +264,7 @@ function displayName(file) {
 
 module.exports = {
   validate,
+  warnings,
   loadRoadmap,
   displayName,
   isObject,
@@ -211,4 +278,6 @@ module.exports = {
   DEFAULT_STALE_DAYS,
   LARGE_FILE_BYTES,
   COMMENT_AUTHORS,
+  stripControls,
+  TAGLINE_MAX,
 };
