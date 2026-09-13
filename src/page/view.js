@@ -124,6 +124,9 @@
 
   // ---- derived data --------------------------------------------------------
 
+  // The current milestone is the first in order that is not complete. A
+  // milestone without items is not started, not finished: a fresh project
+  // shows its empty first milestone as current, not a later seeded one.
   function milestoneStats(data) {
     var stats = data.milestones.map(function (m) {
       var items = data.items.filter(function (it) { return it.milestone === m.id; });
@@ -132,9 +135,44 @@
     });
     var current = null;
     for (var i = 0; i < stats.length; i++) {
-      if (stats[i].total > 0 && !stats[i].complete) { current = stats[i]; break; }
+      if (!stats[i].complete) { current = stats[i]; break; }
     }
     return { stats: stats, current: current };
+  }
+
+  // Goal numbers: plain integers below COMPACT_FROM, then a hand-rolled compact
+  // form (12.3k, 1.5M) that reads the same in every language and fits the label
+  // column. Intl's compact notation would print "12.000" in German. Rounding
+  // that lands on 1000 of a unit moves up a unit (999,950 is 1M, not 1000k).
+  var COMPACT_FROM = 10000;
+  var UNITS = [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'k']];
+  function formatCount(n) {
+    if (typeof n !== 'number' || !isFinite(n)) return '–';
+    if (Math.abs(Math.round(n)) < COMPACT_FROM) return String(Math.round(n));
+    var i = UNITS.length - 1;
+    while (i > 0 && Math.abs(n) >= UNITS[i - 1][0]) i--;
+    for (;;) {
+      var v = n / UNITS[i][0];
+      var s = Math.abs(v) >= 100 ? Math.round(v) : Math.round(v * 10) / 10;
+      if (Math.abs(s) < 1000 || i === 0) return String(s) + UNITS[i][1];
+      i--;
+    }
+  }
+
+  function measured(goal) {
+    return typeof goal.current === 'number';
+  }
+
+  function goalText(goal) {
+    return (measured(goal) ? formatCount(goal.current) : '–') + '/' + formatCount(goal.target);
+  }
+
+  function goalReached(goal) {
+    return measured(goal) && goal.current >= goal.target;
+  }
+
+  function hasGoal(it) {
+    return it.goal && typeof it.goal === 'object' && typeof it.goal.target === 'number';
   }
 
   function lastActivity(item) {
@@ -202,6 +240,17 @@
     (data.unplanned || []).forEach(function (u) {
       rest.push({ kind: 'unplanned', at: u.first_seen, pr: u.prs && u.prs.length ? u.prs[u.prs.length - 1] : null, label: null, text: t('page.feed.unplanned', { title: u.title }), tag: t('page.feed.notOnRoadmap'), attention: true });
     });
+    // At most one goal row, the latest change: a daily pulse must not turn the
+    // feed into a ticker. A moving number is a message, not an attention signal.
+    var latestGoal = null;
+    data.items.forEach(function (it) {
+      // A row needs a measured value and a parsable time; one bad entry must not win by comparing against NaN.
+      if (!hasGoal(it) || !measured(it.goal) || isNaN(Date.parse(it.goal.changed))) return;
+      if (!latestGoal || Date.parse(it.goal.changed) > Date.parse(latestGoal.goal.changed)) latestGoal = it;
+    });
+    if (latestGoal) {
+      rest.push({ kind: 'goal', at: latestGoal.goal.changed, pr: null, label: goalText(latestGoal.goal), text: latestGoal.title + ': ' + latestGoal.goal.label, id: latestGoal.id });
+    }
     var byTime = function (a, b) { return (Date.parse(b.at) || 0) - (Date.parse(a.at) || 0); };
     stale.sort(byTime);
     rest.sort(byTime);
@@ -270,7 +319,9 @@
     else if (note === 'enabling') parts.push('<span class="share-note">' + esc(t('page.share.enabling')) + '</span>');
     else if (note === 'enabled') parts.push('<span class="share-note">' + esc(t('page.share.enabled')) + '</span>');
     else if (note === 'error') parts.push('<span class="share-note attention">' + esc(t('page.share.error', { message: opts.share.message || '' })) + '</span>');
-    return '<header class="top"><h1>' + esc(data ? data.project : 'roadmap-live') + '</h1><div class="meta">' + parts.join('') + '</div></header>';
+    var brand = '<h1>' + esc(data ? data.project : 'roadmap-live') + '</h1>';
+    if (data && typeof data.tagline === 'string' && data.tagline.trim()) brand += '<p class="tagline">' + esc(data.tagline) + '</p>';
+    return '<header class="top"><div class="brand">' + brand + '</div><div class="meta">' + parts.join('') + '</div></header>';
   }
 
   function renderProgress(state, opts) {
@@ -382,6 +433,12 @@
       var info = milestoneStats(data);
       var next = null;
       if (info.current) next = data.items.filter(function (it) { return it.status === 'todo' && it.milestone === info.current.m.id; })[0] || null;
+      // An empty current milestone has nothing to start; point at the first open item in milestone order.
+      if (!next) {
+        var order = {};
+        data.milestones.forEach(function (m, i) { order[m.id] = i; });
+        next = sortItems(data.items.filter(function (it) { return it.status === 'todo'; }), order, 'todo')[0] || null;
+      }
       out += '<div class="eyebrow"><span>' + esc(next ? t('page.now.idle') : t('page.now.allDone')) + '</span></div><div class="idle">';
       if (next) out += esc(t('page.now.next', { title: '' })).replace(/\s*$/, '') + ' <b>' + esc(next.title) + '</b>';
       else if (data.items.length) out += esc(t('page.now.summary', { n: data.milestones.length, items: data.items.length }));
@@ -417,6 +474,11 @@
     var t = opts.t;
     var changed = opts.changed && opts.changed[it.id];
     var sub = [];
+    var goal = hasGoal(it) ? it.goal : null;
+    // The subline carries the goal with its label; in the milestones view the
+    // label column shows the numbers for open and done items, while active and
+    // blocked items keep their status word (blocked keeps its attention color).
+    if (goal) sub.push('<span class="goal' + (goalReached(goal) ? ' reached' : '') + '"' + (measured(goal) ? '' : ' title="' + esc(t('page.goal.unmeasured')) + '"') + '>' + esc(goalText(goal) + ' ' + goal.label) + '</span>');
     if (it.prs && it.prs.length) {
       sub.push('<span>' + (it.prs.length === 1 ? prLabel(state, t, it.prs[0]) : esc(t('page.prs', { list: '' })).trim() + ' ' + it.prs.map(function (n) { var u = prUrl(state, n); return u ? '<a href="' + esc(u) + '">#' + n + '</a>' : '#' + n; }).join(', ')) + '</span>');
     }
@@ -429,14 +491,22 @@
     var comments = commentsOf(it, opts);
     var expanded = opts.expanded && opts.expanded[it.id];
     if (openItem(it) && (comments.length || writable(state, opts))) {
-      var label = comments.length ? t('page.comments.count', { n: comments.length }) : t('page.comments.add');
-      sub.push('<button type="button" class="toggle" data-action="expand" data-id="' + esc(it.id) + '" aria-expanded="' + (expanded ? 'true' : 'false') + '">' + esc(label) + ' &middot; ' + esc(t(expanded ? 'page.comments.hide' : 'page.comments.show')) + '</button>');
+      var toggleText = comments.length ? t('page.comments.count', { n: comments.length }) : t('page.comments.add');
+      sub.push('<button type="button" class="toggle" data-action="expand" data-id="' + esc(it.id) + '" aria-expanded="' + (expanded ? 'true' : 'false') + '">' + esc(toggleText) + ' &middot; ' + esc(t(expanded ? 'page.comments.hide' : 'page.comments.show')) + '</button>');
     } else if (comments.length) {
       sub.push('<span>' + esc(t('page.comments.count', { n: comments.length })) + '</span>');
     }
     var thread = expanded && openItem(it) ? renderConversation(state, opts, it) : '';
+    var label = '';
+    if (opts.statusLabel) {
+      if (goal && (it.status === 'todo' || it.status === 'done')) {
+        label = '<span class="label status goal"' + (measured(goal) ? '' : ' title="' + esc(t('page.goal.unmeasured')) + '"') + '>' + esc(goalText(goal)) + '</span>';
+      } else {
+        label = '<span class="label status' + (it.status === 'blocked' ? ' attention' : '') + '">' + esc(t('page.status.' + it.status)) + '</span>';
+      }
+    }
     return '<article class="item' + (changed ? ' flash' : '') + '" data-id="' + esc(it.id) + '" data-status="' + esc(it.status) + '">' +
-      '<div class="title">' + (opts.statusLabel ? '<span class="label status' + (it.status === 'blocked' ? ' attention' : '') + '">' + esc(t('page.status.' + it.status)) + '</span>' : '') + '<span>' + esc(it.title) + '</span>' + (!opts.statusLabel && it.status === 'blocked' ? '<span class="label attention">' + esc(t('page.blocked')) + '</span>' : '') + '</div>' +
+      '<div class="title">' + label + '<span>' + esc(it.title) + '</span>' + (!opts.statusLabel && it.status === 'blocked' ? '<span class="label attention">' + esc(t('page.blocked')) + '</span>' : '') + '</div>' +
       (sub.length ? '<div class="sub">' + sub.join('') + '</div>' : '') + thread + '</article>';
   }
 
@@ -559,6 +629,8 @@
     VIEWS: VIEWS,
     computeFeed: computeFeed,
     milestoneStats: milestoneStats,
+    formatCount: formatCount,
+    goalText: goalText,
     staleDays: staleDays,
     lastActivity: lastActivity,
     progressPercent: progressPercent,

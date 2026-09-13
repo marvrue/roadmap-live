@@ -99,7 +99,7 @@ Zahlenformat überall gleich: `current/target` ohne Leerzeichen, so wie die Kopf
 - Für die Stale-Erkennung zählt `changed` nicht als Aktivität. Ein Item, das nur gemessen wird, ist trotzdem still. Die Feed-Zeile ist eine Meldung, keine Aktivität im Sinne von `lastActivity`.
 - Das Progress-Bar-Segment misst weiterhin Items, nie Ziele.
 - **Current-Milestone-Regel** (CEO-Review D2): `milestoneStats` in `src/page/view.js` wählt heute den ersten Milestone mit Items, der nicht abgeschlossen ist. Neu: der erste Milestone in Reihenfolge, der nicht abgeschlossen ist, wobei ein Milestone ohne Items als nicht begonnen gilt, nicht als abgeschlossen. Ein frisches Projekt mit leerem MVP und gesätem Launch zeigt dann MVP als current, nicht Launch. Snapshot-Diff prüfen; die Demo-Fixture hat keinen leeren Milestone.
-- `statusLabel` bekommt die Ziel-Fälle als eigene Funktion `goalLabel`, damit die Verzweigung unter fünf bleibt.
+- Umgesetzt (T2) als `formatCount`, `goalText`, `goalReached`, `measured` und `hasGoal` in `view.js` plus eine dreiteilige Verzweigung in `renderItem`; `statusLabel` ist auf main ein Options-Flag, keine Funktion. Rundung, die auf 1000 einer Einheit landet, springt eine Einheit hoch (999.950 ist `1M`). Die Views Focus, Conversations, List, Pull requests und Timeline existieren auf main nicht; ihre Zeilen in der Tabelle gelten, sobald sie landen.
 - Locale-Strings in `page.*` für die Feed-Zeile und den "noch nicht gemessen"-Titel; das Label selbst kommt aus der Datei.
 
 ### 3. Befehl `roadmap-live pulse` (Phase 1: `github-stars`; Phase 2: `npm-downloads`)
@@ -209,6 +209,23 @@ Nicht Teil dieses Repos, aber die Grenze wird hier gezogen:
 - Der tägliche Digest (bereits geplant) nennt Ziele, die sich bewegt haben.
 - Folge-Item in `roadmap-live-cloud/roadmap.json`: "Keyed pulse sources, hourly pulse, pulse results committed like sync results".
 
+### 11. Drift: die Roadmap hält auf dem Weg (Phase 1.5 nach T2, Phase 2 für Wachstum)
+
+Bestätigt vom Autor am 2026-09-11: "gtm roadmap soll außerdem helfen sein ziel zu erreichen, man soll nicht abdriften." Eine Roadmap, die in Zahlen endet, muss auch sagen, wenn man sich vom Ziel entfernt. Was die Datei darüber weiß, und was daraus wird:
+
+| Drift | Woran die Datei es erkennt | Was die Seite tut | Phase |
+|---|---|---|---|
+| Der Agent arbeitet neben dem aktuellen Milestone | `active` Item, dessen Milestone nicht der aktuelle ist | Feed- und Now-Zeile bekommen das Aufmerksamkeitslabel `off track` (Locale `page.feed.offTrack`), wie `stale` und `blocked`. Kein Schema. | 1.5 |
+| Der Backlog tarnt sich als Milestone | mehr offene Items im Milestone als `limit` (optional am Milestone, Standard 7) | `--check`-Hinweis "m1 has 12 open items, split it or park items"; AGENTS.md: über dem Limit wird nichts hinzugefügt, nur geparkt | 1.5 |
+| Der Agent fügt Items hinzu, die das Ziel nicht bewegen | AGENTS.md-Regel, keine Erkennung | Vor jedem neuen Item ein Satz: bringt es den aktuellen Milestone näher an sein Ziel? Wenn nicht, kommt es in den letzten Milestone `later` (angelegt, wenn er fehlt) | 1.5 |
+| Ungeplante Arbeit frisst geplante | `unplanned` gegen `prs` der Items in den letzten 30 Tagen | Eine Zeile unter dem Block "Nicht auf der Roadmap": "3 ungeplante, 2 geplante Pull Requests in 30 Tagen" | 1.5 |
+| Der Milestone wächst schneller, als er fertig wird | braucht `added` (ISO 8601) am Item, vom Agenten gesetzt wie `updated` | Kopfzeile `3/5 (+2)`; ein Milestone, der in `stale_after_days` mehr Items gewonnen als erledigt hat, gilt als `growing`, gleiche Farbe und Ruhe wie `stale` | 2 |
+
+- Keine Fälligkeitsdaten. Sie messen Kalender, nicht Fokus, und bringen Druck in ein Side-Project, das keinen braucht.
+- `off track` und `growing` sind Gründe für die eine Aufmerksamkeitsfarbe, keine neue Farbe. Beides sind Meldungen für den Menschen; der Agent bekommt seine Regel in AGENTS.md, nicht über die Seite.
+- `limit` ist ein Zaun, den der Mensch setzt; ohne Angabe gilt 7, weil mehr niemand im Kopf behält. Die Warnung ist ein Hinweis wie die Ziel-Hinweise, kein Fehler.
+- `later` ist ein gewöhnlicher Milestone am Ende der Liste; die Current-Regel überspringt ihn nie von selbst, aber er ist erst dran, wenn alles davor fertig ist.
+
 ## Open Questions
 
 - npm-Downloads: 30-Tage-Fenster (gewählt) oder kumuliert seit Publish? Kumuliert gibt es bei npm nur als Datumsbereich mit 18-Monats-Grenze; das Fenster ist ehrlicher als Roadmap-Ziel, weil es fallen kann. Darum feuert Warnung (a) nicht für Ziele mit Quelle.
@@ -265,11 +282,11 @@ Jeder Schritt ein eigener PR auf `main`, nie gestapelt. PRs, die Snapshots anfas
 Synthesized from the CEO review's findings. Each task derives from a specific finding. Run with Claude Code or Codex; checkbox as you ship. One PR per task, based on `main`.
 
 **Phase 1**
-- [ ] **T1 (P1, human: ~4h / CC: ~20min)** — validate — `goal` on items only, `warnings(data)` with (a) unsourced goals only, (b), (c) tagline over 140; AGENTS.md "Goals"
+- [x] **T1 (P1, human: ~4h / CC: ~20min)** — validate — `goal` on items only, `warnings(data)` with (a) unsourced goals only, (b), (c) tagline over 140; AGENTS.md "Goals"
   - Surfaced by: Section 1 and 4, outside voice — milestone goals contradict completion; windowed sources make warning (a) fire forever
   - Files: `src/validate.js`, `test/validate.test.js`, `AGENTS.md`, `src/locales/en.json`, `src/locales/de.json`
   - Verify: `npm test`; `node roadmap-live.js --check` on a fixture with a done item under target and no source prints the warning
-- [ ] **T2 (P1, human: ~1d / CC: ~45min)** — renderer — `formatCount` export, `goalLabel`, label column and `.sub`, `–/100`, one goal feed row, current-milestone rule, tagline in the header; fixture and six snapshots
+- [x] **T2 (P1, human: ~1d / CC: ~45min)** — renderer — `formatCount` export, goal label column and `.sub`, `–/100`, one goal feed row, current-milestone rule, tagline in the header; fixture and six snapshots
   - Surfaced by: Section 4 and 11, outside voice — feed becomes a ticker; a fresh init shows Launch as current
   - Files: `src/page/view.js`, `src/page/page.css`, both locales, `test/fixtures/demo-roadmap.json`, `test/render.test.js`
   - Verify: `UPDATE_SNAPSHOTS=1 node --test test/render.test.js`, `npm test`, page at 380 px by hand
@@ -311,6 +328,24 @@ Synthesized from the CEO review's findings. Each task derives from a specific fi
   - Surfaced by: Section 10, outside voice — hosted versus "the file is the product"
   - Files: `../roadmap-live-cloud/roadmap.json`
   - Verify: item present and `--check` passes there
+
+**Phase 1.5 (drift, after T2, before the badge)**
+- [ ] **T12 (P2, human: ~3h / CC: ~20min)** — renderer — `off track` label on the feed and Now rows of an active item outside the current milestone
+  - Surfaced by: section 11 (drift), author request 2026-09-11
+  - Files: `src/page/view.js`, both locales, `test/render.test.js`, fixture, snapshots
+  - Verify: a fixture with an active item in a later milestone renders the label; `npm test`
+- [ ] **T13 (P2, human: ~3h / CC: ~20min)** — validate + AGENTS.md — optional milestone `limit` (default 7) with a `--check` note above it; agent rule: park, do not add; `later` milestone convention
+  - Surfaced by: section 11 (drift)
+  - Files: `src/validate.js`, `src/cli.js`, both locales, `AGENTS.md`, `test/validate.test.js`
+  - Verify: `--check` on a milestone with 8 open items prints the note; `npm test`
+- [ ] **T14 (P3, human: ~2h / CC: ~15min)** — renderer — planned versus unplanned pull requests in the last 30 days, one line under the unplanned block
+  - Surfaced by: section 11 (drift)
+  - Files: `src/page/view.js`, both locales, `test/render.test.js`, snapshots
+  - Verify: fixture renders "1 unplanned, 2 planned pull requests in 30 days"
+- [ ] **T15 (P3, Phase 2, human: ~1d / CC: ~45min)** — schema + renderer — `added` on items, `3/5 (+2)` in the milestone header, `growing` signal
+  - Surfaced by: section 11 (drift)
+  - Files: `src/validate.js`, `src/page/view.js`, `AGENTS.md`, tests, snapshots
+  - Verify: a milestone that gained more items than it finished within `stale_after_days` renders `growing`
 
 _No new tasks from Section 5 (code quality) beyond T2 and T3; Section 7 (performance) produced only the dedupe in T3._
 

@@ -30,7 +30,7 @@ The human can write to you from the page. Each item may have `comments` (a conve
 
 ## Goals
 
-An item may carry a `goal`, a number it works towards: `{ "label": "GitHub stars", "target": 100, "current": 34, "source": "github-stars:owner/name", "changed": "<when current last changed>" }`. Goals live on items only, never on milestones. The page will show `current/target` next to the item once the page item lands; `--check` already validates the field.
+An item may carry a `goal`, a number it works towards: `{ "label": "GitHub stars", "target": 100, "current": 34, "source": "github-stars:owner/name", "changed": "<when current last changed>" }`. Goals live on items only, never on milestones. The page shows `current/target` next to the item (`–/target` until something was measured); `--check` validates the field.
 
 - Set a `goal` when an item has a measurable outcome (stars, downloads, users, customers). Write `label` and `target`; write `current` and `changed` when you know the number.
 - `source` names where the number comes from, as `kind:argument`: `github-stars:owner/name` or `npm-downloads:package`. A separate pulse command will fetch these without a key (it is not part of this release yet; do not run it until the README documents it); the hosted version knows more kinds. Add a `source` only when you are sure of the repository or package name.

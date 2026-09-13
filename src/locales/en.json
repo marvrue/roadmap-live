@@ -20,6 +20,9 @@
       "other": "{n} done today"
     },
     "milestoneTitle": "{title}: {done} of {total} done",
+    "goal": {
+      "unmeasured": "not measured yet"
+    },
     "milestoneComplete": "complete",
     "filterOnly": "Only {title}",
     "filterClear": "show all",
