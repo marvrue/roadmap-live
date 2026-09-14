@@ -139,7 +139,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 .nojs-road { position: absolute; top: 0; bottom: 0; left: 50%; width: 42px; margin-left: -21px; background: #6a7180; border-radius: 21px; }
 .js .nojs-road { display: none; }
 .car { position: absolute; top: 0; left: 0; width: 72px; height: 72px; margin: -42px 0 0 -36px; z-index: 3; pointer-events: none; will-change: transform; font-size: 64px; line-height: 72px; text-align: center; filter: drop-shadow(0 7px 5px rgb(30 50 20 / 0.3)); }
-html:not(.js) .car, html:not(.js) .flag { display: none; }
+html:not(.js) .car, html:not(.js) .flag, html:not(.js) .garage, html:not(.js) .answers, html:not(.js) .copy, html:not(.js) .try-note { display: none; }
 .flag { position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none; font-size: 64px; filter: drop-shadow(0 6px 4px rgb(40 64 20 / 0.25)); }
 .road .hedges { filter: drop-shadow(0 3px 2px rgb(40 64 20 / 0.28)); }
 
@@ -573,7 +573,7 @@ span.deco { white-space: nowrap; filter: drop-shadow(0 8px 5px rgb(40 64 20 / 0.
                 <p>Blocked, not on the roadmap, gone quiet, and a question for you. Everything else stays gray, so one look is enough.</p>
                 <ul class="lights" aria-label="Sample rows">
                   <li class="on"><span class="tag">Blocked</span><span>Card payment with Stripe</span></li>
-                  <li class="on"><span class="tag">Quiet 22 days</span><span>Order queue for the kitchen screen</span></li>
+                  <li class="on"><span class="tag">Gone quiet</span><span>Order queue for the kitchen screen</span></li>
                   <li class="on"><span class="tag">Unplanned</span><span>Customer loyalty points</span></li>
                   <li class="on"><span class="tag">Question</span><span>Pickup time in 15 or 30 minute steps?</span></li>
                   <li><span class="tag">In progress</span><span>Checkout with pickup time</span></li>
@@ -597,9 +597,9 @@ span.deco { white-space: nowrap; filter: drop-shadow(0 8px 5px rgb(40 64 20 / 0.
               <div class="board"><span class="stone">6</span><h3>Answer from the page</h3></div>
               <div class="notice">
                 <p>When the agent needs a decision, it asks on the page. Your answer goes into the same file, and the agent replies on its next run.</p>
-                <p class="note">A sample. Try an answer.</p>
+                <p class="note try-note">A sample. Try an answer.</p>
               </div>
-              <div class="chat" id="chat">
+              <div class="chat" id="chat" aria-live="polite">
                 <p class="bubble ask" id="ask"><span class="who">Agent, on Checkout with pickup time</span>Pickup time in 15 or 30 minute steps?</p>
                 <div class="answers" role="group" aria-label="Your answer">
                   <button type="button" data-answer="15">15</button>
@@ -670,9 +670,12 @@ span.deco { white-space: nowrap; filter: drop-shadow(0 8px 5px rgb(40 64 20 / 0.
         btn._t = setTimeout(function () { label.textContent = 'Copy'; btn.classList.remove('is-done'); }, 1800);
       }
       function fallback() {
-        var r = document.createRange(); r.selectNodeContents($('code', btn));
-        var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
-        show('Press Cmd+C');
+        var ta = document.createElement('textarea'), ok = false;
+        ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { ok = document.execCommand('copy'); } catch (err) {}
+        document.body.removeChild(ta);
+        show(ok ? 'Copied' : 'Copy failed');
       }
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { show('Copied'); }, fallback);
       else fallback();
@@ -715,7 +718,11 @@ span.deco { white-space: nowrap; filter: drop-shadow(0 8px 5px rgb(40 64 20 / 0.
   /* demo window: tabs, scaling, and the frame's own chrome */
   var vp = $('#viewport'), frame = $('#demo');
   $$('.tabs a').forEach(function (a) {
-    a.addEventListener('click', function () { $$('.tabs a').forEach(function (b) { b.setAttribute('aria-current', String(a === b)); }); });
+    a.addEventListener('click', function (e) {
+      $$('.tabs a').forEach(function (b) { b.setAttribute('aria-current', String(a === b)); });
+      /* switch the view without adding a history entry, so Back leaves the page */
+      try { frame.contentWindow.location.replace(a.getAttribute('href')); e.preventDefault(); } catch (err) {}
+    });
   });
   function fit() {
     var w = vp.clientWidth, h = vp.clientHeight, base = w < 760 ? w : 1180, s = w / base;
@@ -723,13 +730,25 @@ span.deco { white-space: nowrap; filter: drop-shadow(0 8px 5px rgb(40 64 20 / 0.
     frame.style.height = Math.ceil(h / s) + 'px';
     frame.style.transform = s === 1 ? 'none' : 'scale(' + s + ')';
   }
-  frame.addEventListener('load', function () {
+  /* the frame's own view row duplicates the tabs; outside links open in a new tab instead of the frame */
+  function dressFrame() {
     try {
-      var d = frame.contentDocument, st = d.createElement('style');
+      var d = frame.contentDocument;
+      if (!d || !d.head || d.URL === 'about:blank' || d.getElementById('landing-frame-style')) return;
+      var st = d.createElement('style');
+      st.id = 'landing-frame-style';
       st.textContent = '.views{display:none!important} html{scrollbar-width:thin;scrollbar-color:#d9ccb2 transparent} ::-webkit-scrollbar{width:8px} ::-webkit-scrollbar-thumb{background:#d9ccb2;border-radius:8px}';
       d.head.appendChild(st);
+      d.addEventListener('click', function (e) {
+        var link = e.target.closest && e.target.closest('a[href]');
+        if (!link || link.origin === location.origin) return;
+        e.preventDefault();
+        window.open(link.href, '_blank', 'noopener');
+      });
     } catch (e) {}
-  });
+  }
+  frame.addEventListener('load', dressFrame);
+  try { if (frame.contentDocument && frame.contentDocument.readyState === 'complete') dressFrame(); } catch (e) {}
   if (window.ResizeObserver) new ResizeObserver(fit).observe(vp); else addEventListener('resize', fit);
   fit();
 
@@ -884,8 +903,19 @@ span.deco { white-space: nowrap; filter: drop-shadow(0 8px 5px rgb(40 64 20 / 0.
 
   if (journey && svg && car) {
     addEventListener('scroll', update, { passive: true });
-    addEventListener('resize', build);
-    if (window.ResizeObserver) new ResizeObserver(build).observe(journey);
+    /* rebuild at most once per frame, and only when the journey's size really changed */
+    var lastW = 0, lastH = 0, buildRaf = 0;
+    var scheduleBuild = function () {
+      if (buildRaf) return;
+      buildRaf = requestAnimationFrame(function () {
+        buildRaf = 0;
+        var w = journey.clientWidth, h = journey.clientHeight;
+        if (w === lastW && h === lastH) return;
+        lastW = w; lastH = h;
+        build();
+      });
+    };
+    if (window.ResizeObserver) new ResizeObserver(scheduleBuild).observe(journey); else addEventListener('resize', scheduleBuild);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(build);
     build();
   }
@@ -898,16 +928,21 @@ span.deco { white-space: nowrap; filter: drop-shadow(0 8px 5px rgb(40 64 20 / 0.
       var b = e.target.closest('[data-answer]');
       if (!b) return;
       var v = b.getAttribute('data-answer');
-      $$('[data-answer]', chat).forEach(function (x) { x.disabled = true; });
-      var you = document.createElement('p');
-      you.className = 'bubble you enter';
-      you.innerHTML = '<span class="who">You</span>' + v + ' minute steps';
+      var bubble = function (cls, who, text) {
+        var p = document.createElement('p'), w = document.createElement('span');
+        p.className = cls; p.tabIndex = -1;
+        w.className = 'who'; w.textContent = who;
+        p.appendChild(w); p.appendChild(document.createTextNode(text));
+        return p;
+      };
+      var you = bubble('bubble you enter', 'You', v + ' minute steps');
       chat.appendChild(you);
+      you.focus({ preventScroll: true });
+      $$('[data-answer]', chat).forEach(function (x) { x.disabled = true; });
       setTimeout(function () {
-        var agent = document.createElement('p');
-        agent.className = 'bubble enter';
-        agent.innerHTML = '<span class="who">Agent</span>' + replies[v];
+        var agent = bubble('bubble enter', 'Agent', replies[v] || 'Ok.');
         chat.appendChild(agent);
+        agent.focus({ preventScroll: true });
         ask.classList.add('settled');
         var q = $$('.lights li')[3];
         if (q) q.classList.remove('on');
