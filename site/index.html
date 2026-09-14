@@ -6,7 +6,7 @@
 <title>roadmap-live: the roadmap your coding agents keep</title>
 <meta name="description" content="Coding agents write roadmap.json while they work. roadmap-live turns it into a page you can look at: progress per milestone, what is in progress, what reviewers still want, and what the agent is asking you.">
 <meta name="theme-color" content="#1b5aa8">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232a73c2'/%3E%3Cpath d='M0 46 C20 40 40 50 64 42 V64 H0Z' fill='%236cbb52'/%3E%3Cpath d='M12 38 C12 32 16 30 20 30 L24 30 C27 24 31 22 36 22 L40 22 C45 22 48 26 50 30 L53 31 C56 32 57 34 57 38 V42 H12Z' fill='%23e8503a'/%3E%3Ccircle cx='22' cy='43' r='5' fill='%232b2f38'/%3E%3Ccircle cx='47' cy='43' r='5' fill='%232b2f38'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E🚗%3C/text%3E%3C/svg%3E">
 <link rel="preload" href="fonts/young-serif.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/onest-400.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -57,6 +57,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 .m-only { display: none; }
 .ink { stroke: rgb(36 58 28 / 0.42); stroke-width: 1.6; stroke-linejoin: round; }
 .grain { position: absolute; inset: 0; pointer-events: none; background-image: var(--grain); mix-blend-mode: multiply; opacity: 0.7; }
+.emoji, .art text, .hero-car-layer text, .road text { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; font-style: normal; line-height: 1; }
 
 /* ---------- primary pill ---------- */
 .pill {
@@ -98,14 +99,19 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 .hero .lead code { font-size: 18px; }
 .hero .actions { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px 28px; }
 .hero .quiet { font-weight: 600; font-size: 17px; color: #fff; }
+.garage { margin-top: 26px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; }
+.garage-label { margin-right: 6px; font-size: 15px; font-weight: 600; text-shadow: 0 1px 8px rgb(10 40 90 / 0.35); }
+.garage button { width: 46px; height: 46px; border-radius: 50%; font-size: 26px; line-height: 46px; text-align: center; background: rgb(255 255 255 / 0.14); transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms; }
+.garage button:hover { transform: translateY(-2px); background: rgb(255 255 255 / 0.28); }
+.garage button[aria-pressed="true"] { background: #fff; box-shadow: 0 6px 14px rgb(10 40 90 / 0.28); }
 
 /* ---------- the real page, rising out of the meadow ---------- */
 .proof { position: relative; z-index: 2; background: linear-gradient(180deg, var(--meadow) 0, var(--meadow-mid) 240px, var(--meadow-soft) 560px); padding-bottom: 80px; }
 .window-wrap { position: relative; max-width: 1120px; margin: -72px auto 0; }
 .window { position: relative; z-index: 1; background: var(--paper); border-radius: 20px; overflow: hidden; box-shadow: 0 32px 64px rgb(28 64 30 / 0.22), 0 4px 12px rgb(28 64 30 / 0.12); }
-.flora { position: absolute; z-index: 0; pointer-events: none; height: auto; }
-.flora.left { left: -92px; bottom: -30px; width: 118px; }
-.flora.right { right: -86px; bottom: -22px; width: 150px; }
+.flora { position: absolute; z-index: 0; pointer-events: none; white-space: nowrap; filter: drop-shadow(0 8px 6px rgb(40 64 20 / 0.22)); }
+.flora.left { left: -66px; bottom: -14px; font-size: 96px; }
+.flora.right { right: -70px; bottom: -8px; font-size: 50px; letter-spacing: -10px; }
 .window-bar { display: flex; align-items: center; gap: 16px; padding: 12px 16px; border-bottom: 1px solid #ece3cf; background: #fbf5e8; }
 .dots { display: flex; gap: 6px; flex: none; }
 .dots i { width: 11px; height: 11px; border-radius: 50%; background: #e4d7bd; }
@@ -134,9 +140,10 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 .journey-bg > .grain { z-index: 1; }
 .nojs-road { position: absolute; top: 0; bottom: 0; left: 50%; width: 42px; margin-left: -21px; background: #6a7180; border-radius: 21px; }
 .js .nojs-road { display: none; }
-.car { position: absolute; top: 0; left: 0; width: 56px; height: 92px; margin: -46px 0 0 -28px; z-index: 3; pointer-events: none; will-change: transform; filter: drop-shadow(0 7px 6px rgb(30 50 20 / 0.3)); }
+.car { position: absolute; top: 0; left: 0; width: 72px; height: 72px; margin: -42px 0 0 -36px; z-index: 3; pointer-events: none; will-change: transform; font-size: 64px; line-height: 72px; text-align: center; filter: drop-shadow(0 7px 5px rgb(30 50 20 / 0.3)); }
 html:not(.js) .car, html:not(.js) .flag { display: none; }
-.flag { position: absolute; top: 0; left: 0; width: 70px; height: 120px; z-index: 2; pointer-events: none; }
+.flag { position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none; font-size: 64px; filter: drop-shadow(0 6px 4px rgb(40 64 20 / 0.25)); }
+.road .hedges { filter: drop-shadow(0 3px 2px rgb(40 64 20 / 0.28)); }
 
 .stops { position: relative; z-index: 2; }
 .stop { position: relative; display: grid; grid-template-columns: minmax(0, 5fr) minmax(128px, 2fr) minmax(0, 5fr); align-items: center; min-height: 500px; }
@@ -194,6 +201,7 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
 
 .scenery { position: relative; min-height: 400px; }
 .deco { position: absolute; height: auto; overflow: visible; }
+span.deco { white-space: nowrap; filter: drop-shadow(0 8px 5px rgb(40 64 20 / 0.22)); }
 
 /* stop 5 */
 .lights { margin-top: 18px; display: grid; gap: 8px; }
@@ -236,8 +244,8 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
 /* ---------- responsive ---------- */
 @media (max-width: 1080px) {
   .window-wrap { margin-inline: var(--gutter); }
-  .flora.left { left: -24px; width: 92px; }
-  .flora.right { right: -16px; width: 116px; }
+  .flora.left { left: -22px; font-size: 72px; }
+  .flora.right { right: -18px; font-size: 40px; }
 }
 @media (max-width: 960px) {
   .stop { grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1fr); }
@@ -251,7 +259,10 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
   .top { padding-block: 16px; }
   .wordmark { font-size: 22px; }
   .top nav a:first-child, .hero .quiet { display: none; }
-  .hero { min-height: 880px; }
+  .hero { min-height: 960px; }
+  .garage { margin-top: 22px; gap: 4px; }
+  .garage-label { width: 100%; margin: 0 0 4px; }
+  .garage button { width: 36px; height: 36px; font-size: 20px; line-height: 36px; }
   .hero-copy { padding-top: 40px; }
   .hero .lead { font-size: 18px; }
   .pill { padding-left: 18px; gap: 10px; }
@@ -277,10 +288,10 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
   .stop:last-child .scenery { display: none; }
   .stop .scenery .deco { display: none; }
   .stop .scenery .deco:nth-child(-n+2) { display: block; }
-  .stop.left .scenery .deco:nth-child(1) { left: 5% !important; right: auto !important; top: 10% !important; width: 62px !important; }
-  .stop.left .scenery .deco:nth-child(2) { left: auto !important; right: 8% !important; top: 44% !important; width: 72px !important; }
-  .stop.right .scenery .deco:nth-child(1) { left: auto !important; right: 5% !important; top: 10% !important; width: 62px !important; }
-  .stop.right .scenery .deco:nth-child(2) { left: 8% !important; right: auto !important; top: 44% !important; width: 72px !important; }
+  .stop.left .scenery .deco:nth-child(1) { left: 5% !important; right: auto !important; top: 10% !important; width: 62px !important; font-size: 52px !important; }
+  .stop.left .scenery .deco:nth-child(2) { left: auto !important; right: 8% !important; top: 44% !important; width: 72px !important; font-size: 48px !important; }
+  .stop.right .scenery .deco:nth-child(1) { left: auto !important; right: 5% !important; top: 10% !important; width: 62px !important; font-size: 52px !important; }
+  .stop.right .scenery .deco:nth-child(2) { left: 8% !important; right: auto !important; top: 44% !important; width: 72px !important; font-size: 48px !important; }
   .board { padding: 12px 14px 12px 12px; gap: 12px; }
   .board h3 { font-size: 22px; }
   .stone { width: 34px; height: 38px; font-size: 17px; }
@@ -296,8 +307,8 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
   .road .tar { stroke-width: 32; }
   .road .mid { stroke-dasharray: 10 12; stroke-width: 2; }
   .nojs-road { left: auto; right: 22px; width: 26px; margin-left: -13px; }
-  .car { width: 42px; height: 69px; margin: -34.5px 0 0 -21px; }
-  .flag { width: 52px; height: 90px; }
+  .car { width: 54px; height: 54px; margin: -32px 0 0 -27px; font-size: 46px; line-height: 54px; }
+  .flag { font-size: 46px; }
   .finish-scene { display: none; }
   .finish-inner { padding-top: 72px; }
 }
@@ -415,13 +426,12 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
         </symbol>
       </defs>
       <rect width="1440" height="900" fill="url(#sky)"/>
-      <g class="d-only"><circle cx="1190" cy="250" r="190" fill="url(#glow)" opacity=".5"/><circle cx="1190" cy="250" r="54" fill="#fff4c9"/></g>
-      <g class="m-only"><circle cx="600" cy="590" r="120" fill="url(#glow)" opacity=".7"/><circle cx="600" cy="590" r="40" fill="#fff4c9"/></g>
-      <g class="cloud c1"><use href="#cloud" x="90" y="120" width="260" height="106" opacity=".95"/></g>
-      <g class="cloud c2"><use href="#cloud" x="1150" y="470" width="220" height="90" opacity=".9"/></g>
-      <g class="cloud c3"><use href="#cloud" x="70" y="500" width="170" height="70" opacity=".85"/></g>
-      <g class="cloud c4"><use href="#cloud" x="1180" y="90" width="150" height="62" opacity=".8"/></g>
-      <g class="cloud c3 m-only"><use href="#cloud" x="780" y="520" width="130" height="54" opacity=".9"/></g>
+      <g class="d-only"><circle cx="1190" cy="250" r="190" fill="url(#glow)" opacity=".5"/><text x="1190" y="296" font-size="124" text-anchor="middle">☀️</text></g>
+      <g class="m-only"><circle cx="640" cy="592" r="110" fill="url(#glow)" opacity=".7"/><text x="640" y="622" font-size="76" text-anchor="middle">☀️</text></g>
+      <g class="cloud c1"><text x="220" y="236" font-size="190" text-anchor="middle">☁️</text></g>
+      <g class="cloud c2"><text x="1260" y="560" font-size="150" text-anchor="middle">☁️</text></g>
+      <g class="cloud c3"><text x="155" y="570" font-size="120" text-anchor="middle">☁️</text></g>
+      <g class="cloud c4"><text x="1255" y="158" font-size="110" text-anchor="middle">☁️</text></g>
 
       <path d="M0 628 C150 580 300 596 450 618 C620 642 700 590 770 588 C860 586 1000 590 1100 600 C1250 614 1320 612 1440 596 V900 H0Z" fill="#a6d3bd"/>
       <g fill="#6fae8c">
@@ -438,25 +448,28 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
       <path d="M0 800 C150 770 300 790 420 830 C480 850 500 880 510 900 H0Z" fill="#7cc05a"/>
       <path d="M1440 780 C1290 770 1150 800 1040 850 C1000 870 985 890 980 900 H1440Z" fill="#7cc05a"/>
 
-      <g class="ink">
-        <use href="#tree" x="1180" y="624" width="88" height="112"/>
-        <use href="#tree" x="1262" y="646" width="66" height="84" style="--c1:#e0973a;--c2:#eaa94a;--c3:#cf7f2c;--c4:#f2c160"/>
-        <use href="#pine" x="1330" y="610" width="54" height="90"/>
-        <use href="#pine" x="90" y="674" width="50" height="84"/>
-        <use href="#tree" x="140" y="688" width="74" height="94"/>
-        <use href="#house" x="330" y="712" width="96" height="82"/>
-        <use href="#tree" x="540" y="652" width="62" height="80"/>
-        <use href="#pine" x="880" y="626" width="42" height="70"/>
-        <use href="#fence" x="1060" y="760" width="130" height="50"/>
-      </g>
-      <g>
-        <use href="#flowers" x="200" y="846" width="64" height="42"/>
-        <use href="#flowers" x="1060" y="842" width="64" height="42"/>
-        <use href="#flowers" x="1320" y="834" width="54" height="36"/>
-        <use href="#grass" x="520" y="846" width="56" height="34"/>
-        <use href="#grass" x="920" y="836" width="56" height="34"/>
-        <use href="#bush" x="1200" y="808" width="116" height="66" class="ink"/>
-        <use href="#bush" x="30" y="796" width="100" height="58" class="ink"/>
+      <use href="#fence" x="1060" y="760" width="130" height="50" class="ink"/>
+      <g text-anchor="middle">
+        <text x="1224" y="728" font-size="100">🌳</text>
+        <text x="1296" y="724" font-size="72">🌳</text>
+        <text x="1357" y="694" font-size="84">🌲</text>
+        <text x="115" y="752" font-size="80">🌲</text>
+        <text x="177" y="776" font-size="90">🌳</text>
+        <text x="378" y="788" font-size="96">🏡</text>
+        <text x="492" y="716" font-size="58">🏘️</text>
+        <text x="1010" y="702" font-size="52">🏠</text>
+        <text x="262" y="808" font-size="42">🐑</text>
+        <text x="1392" y="790" font-size="48">🐄</text>
+        <text x="901" y="690" font-size="62">🌲</text>
+        <text x="232" y="884" font-size="42">🌼</text>
+        <text x="1092" y="880" font-size="42">🌷</text>
+        <text x="1347" y="866" font-size="36">🌸</text>
+        <text x="548" y="878" font-size="36">🌹</text>
+        <text x="948" y="868" font-size="38">🌺</text>
+        <text x="1258" y="866" font-size="62">🌿</text>
+        <text class="m-only" x="588" y="714" font-size="60">🌳</text>
+        <text class="m-only" x="870" y="770" font-size="40">🌷</text>
+        <text x="80" y="846" font-size="58">🌿</text>
       </g>
     </svg>
   </div>
@@ -464,19 +477,8 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
   <!-- car layer: same frame as the art; the car waits behind the start line -->
   <svg class="hero-car-layer" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
     <g id="hero-car" transform="translate(650 812)">
-      <ellipse cx="0" cy="2" rx="68" ry="9" fill="#1f3a14" opacity=".22"/>
-      <rect x="-56" y="-20" width="21" height="24" rx="6" fill="#2b2f38"/>
-      <rect x="35" y="-20" width="21" height="24" rx="6" fill="#2b2f38"/>
-      <path d="M-40 -46 C-38 -74 -27 -82 -10 -82 H10 C27 -82 38 -74 40 -46Z" fill="#d2432f"/>
-      <path d="M-31 -50 C-29 -69 -21 -76 -9 -76 H9 C21 -76 29 -69 31 -50Z" fill="#cfeaff"/>
-      <path d="M-24 -54 L-9 -72" stroke="#fff" stroke-opacity=".6" stroke-width="3" stroke-linecap="round"/>
-      <rect x="-50" y="-64" width="9" height="10" rx="3" fill="#c23a26"/>
-      <rect x="41" y="-64" width="9" height="10" rx="3" fill="#c23a26"/>
-      <rect x="-60" y="-50" width="120" height="44" rx="15" fill="#e8503a"/>
-      <rect x="-52" y="-41" width="19" height="10" rx="4" fill="#ffb347"/>
-      <rect x="33" y="-41" width="19" height="10" rx="4" fill="#ffb347"/>
-      <rect x="-17" y="-29" width="34" height="13" rx="3" fill="#fff6de"/>
-      <rect x="-58" y="-12" width="116" height="8" rx="4" fill="#c23a26"/>
+      <ellipse cx="0" cy="0" rx="72" ry="10" fill="#1f3a14" opacity=".22"/>
+      <text id="hero-car-emoji" x="0" y="-8" font-size="126" text-anchor="middle" transform="scale(-1 1)">🚗</text>
     </g>
   </svg>
 
@@ -491,6 +493,17 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
       <div class="actions">
         <button class="pill" type="button" data-copy="npx roadmap-live"><code><span class="dollar">$</span> npx roadmap-live</code><span class="copy">Copy</span></button>
         <a class="quiet" href="https://github.com/marvrue/roadmap-live">View on GitHub</a>
+      </div>
+      <div class="garage" role="group" aria-label="Pick your car">
+        <span class="garage-label">Pick your car</span>
+        <button type="button" class="emoji" data-car="🚗" aria-label="Car" aria-pressed="true">🚗</button>
+        <button type="button" class="emoji" data-car="🚕" aria-label="Taxi" aria-pressed="false">🚕</button>
+        <button type="button" class="emoji" data-car="🚙" aria-label="SUV" aria-pressed="false">🚙</button>
+        <button type="button" class="emoji" data-car="🏎️" aria-label="Race car" aria-pressed="false">🏎️</button>
+        <button type="button" class="emoji" data-car="🛻" aria-label="Pickup truck" aria-pressed="false">🛻</button>
+        <button type="button" class="emoji" data-car="🚐" aria-label="Van" aria-pressed="false">🚐</button>
+        <button type="button" class="emoji" data-car="🚜" aria-label="Tractor" aria-pressed="false">🚜</button>
+        <button type="button" class="emoji" data-car="🚲" aria-label="Bicycle" aria-pressed="false">🚲</button>
       </div>
     </div>
   </div>
@@ -519,8 +532,8 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
             <iframe name="demo" id="demo" src="demo.html?lang=en&amp;view=focus" title="The roadmap page, rendered from a sample roadmap.json" loading="lazy"></iframe>
           </div>
         </div>
-        <svg class="flora left ink" viewBox="-2 0 74 132" aria-hidden="true"><use href="#sunflower"/></svg>
-        <svg class="flora right" viewBox="0 0 150 90" aria-hidden="true"><use href="#grass" x="0" y="40" width="80" height="48"/><use href="#flowers" x="40" y="30" width="90" height="60"/><use href="#grass" x="96" y="46" width="54" height="40"/></svg>
+        <span class="flora left emoji" aria-hidden="true">🌻</span>
+        <span class="flora right emoji" aria-hidden="true">🌱🌷🌼</span>
       </div>
       <figcaption><strong>This is the real page</strong>, rendered from a sample <code>roadmap.json</code> with nine views. It is quiet on purpose: gray, with one color for what needs you.</figcaption>
     </figure>
@@ -536,27 +549,8 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
       <div class="journey" id="journey">
         <div class="nojs-road" aria-hidden="true"></div>
         <svg class="road" id="road-svg" aria-hidden="true"><g class="fields"></g><g class="hedges"></g><path class="verge"/><path class="shade" transform="translate(4 6)"/><path class="edge"/><path class="tar"/><path class="mid"/></svg>
-        <svg class="car" id="car" viewBox="-28 -46 56 92" aria-hidden="true">
-          <g transform="translate(-27 -31)"><rect width="8" height="18" rx="3" fill="#2b2f38"/><rect class="tread" x="1" y="2" width="6" height="1.8" fill="#5b6272"/><rect class="tread" x="1" y="8" width="6" height="1.8" fill="#5b6272"/><rect class="tread" x="1" y="14" width="6" height="1.8" fill="#5b6272"/></g>
-          <g transform="translate(19 -31)"><rect width="8" height="18" rx="3" fill="#2b2f38"/><rect class="tread" x="1" y="2" width="6" height="1.8" fill="#5b6272"/><rect class="tread" x="1" y="8" width="6" height="1.8" fill="#5b6272"/><rect class="tread" x="1" y="14" width="6" height="1.8" fill="#5b6272"/></g>
-          <g transform="translate(-27 13)"><rect width="8" height="18" rx="3" fill="#2b2f38"/><rect class="tread" x="1" y="2" width="6" height="1.8" fill="#5b6272"/><rect class="tread" x="1" y="8" width="6" height="1.8" fill="#5b6272"/><rect class="tread" x="1" y="14" width="6" height="1.8" fill="#5b6272"/></g>
-          <g transform="translate(19 13)"><rect width="8" height="18" rx="3" fill="#2b2f38"/><rect class="tread" x="1" y="2" width="6" height="1.8" fill="#5b6272"/><rect class="tread" x="1" y="8" width="6" height="1.8" fill="#5b6272"/><rect class="tread" x="1" y="14" width="6" height="1.8" fill="#5b6272"/></g>
-          <rect x="-22" y="-43" width="44" height="86" rx="17" fill="#e8503a"/>
-          <path d="M-17 -18 Q0 -26 17 -18 L15 -6 H-15Z" fill="#cfeaff"/>
-          <rect x="-15.5" y="-4" width="31" height="24" rx="7" fill="#d2432f"/>
-          <rect x="-9" y="-2" width="18" height="2.4" rx="1.2" fill="#fff" opacity=".3"/>
-          <path d="M-15 24 H15 L16 31 Q0 36 -16 31Z" fill="#cfeaff" opacity=".9"/>
-          <circle cx="-12" cy="-38" r="3.6" fill="#fff1b0"/>
-          <circle cx="12" cy="-38" r="3.6" fill="#fff1b0"/>
-          <rect x="-27" y="-15" width="6" height="7" rx="2.5" fill="#c23a26"/>
-          <rect x="21" y="-15" width="6" height="7" rx="2.5" fill="#c23a26"/>
-        </svg>
-        <svg class="flag" id="flag" viewBox="0 0 70 120" aria-hidden="true">
-          <defs><pattern id="fchk" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#fffbf2"/><rect width="8" height="8" fill="#1f2a33"/><rect x="8" y="8" width="8" height="8" fill="#1f2a33"/></pattern></defs>
-          <ellipse cx="12" cy="116" rx="18" ry="4" fill="#2f5a1f" opacity=".18"/>
-          <rect x="9" y="6" width="6" height="110" rx="3" fill="#8a6a4f"/>
-          <path d="M15 10 C30 3 48 17 66 10 V44 C48 51 30 37 15 44Z" fill="url(#fchk)" stroke="#1f2a33" stroke-width="1.5"/>
-        </svg>
+        <div class="car emoji" id="car" aria-hidden="true">🚗</div>
+        <div class="flag emoji" id="flag" aria-hidden="true">🏁</div>
 
         <ol class="stops">
           <li class="stop left">
@@ -570,10 +564,12 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
             </div>
             <div class="lane" aria-hidden="true"></div>
             <div class="scenery" aria-hidden="true">
-              <svg class="deco ink" viewBox="-4 -4 88 112" style="left:12%;top:8%;width:124px"><use href="#tree"/></svg>
-              <svg class="deco ink" viewBox="-4 -4 72 118" style="left:48%;top:0%;width:64px"><use href="#pine"/></svg>
-              <svg class="deco ink" viewBox="-2 8 124 104" style="left:58%;top:44%;width:136px"><use href="#house"/></svg>
+              <span class="deco emoji" style="left:12%;top:8%;font-size:112px">🌳</span>
+              <span class="deco emoji" style="left:48%;top:0%;font-size:72px">🌲</span>
+              <span class="deco emoji" style="left:58%;top:40%;font-size:112px">🏡</span>
               <svg class="deco ink" viewBox="-2 -2 144 56" style="left:14%;top:76%;width:160px"><use href="#fence"/></svg>
+              <span class="deco emoji" style="left:30%;top:58%;font-size:44px">🐑</span>
+              <span class="deco emoji" style="left:80%;top:20%;font-size:40px">🌸</span>
             </div>
           </li>
 
@@ -590,9 +586,11 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
             <div class="lane" aria-hidden="true"></div>
             <div class="scenery" aria-hidden="true">
               <svg class="deco ink" viewBox="0 0 180 90" style="left:10%;top:28%;width:196px"><use href="#pond"/></svg>
-              <svg class="deco ink" viewBox="-2 -2 74 46" style="left:64%;top:10%;width:72px"><use href="#rock"/></svg>
-              <svg class="deco ink" viewBox="-4 -4 88 112" style="left:60%;top:52%;width:104px;--c1:#e0973a;--c2:#eaa94a;--c3:#cf7f2c;--c4:#f2c160"><use href="#tree"/></svg>
-              <svg class="deco" viewBox="0 0 60 36" style="left:22%;top:70%;width:64px"><use href="#grass"/></svg>
+              <span class="deco emoji" style="left:64%;top:10%;font-size:60px">🪨</span>
+              <span class="deco emoji" style="left:60%;top:50%;font-size:96px">🌲</span>
+              <span class="deco emoji" style="left:22%;top:70%;font-size:54px">🌾</span>
+              <span class="deco emoji" style="left:30%;top:36%;font-size:34px">🦆</span>
+              <span class="deco emoji" style="left:40%;top:78%;font-size:42px">🍄</span>
             </div>
           </li>
 
@@ -607,10 +605,11 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
             </div>
             <div class="lane" aria-hidden="true"></div>
             <div class="scenery" aria-hidden="true">
-              <svg class="deco ink" viewBox="-4 -4 88 112" style="left:58%;top:2%;width:134px"><use href="#tree"/></svg>
-              <svg class="deco ink" viewBox="-4 -4 88 112" style="left:24%;top:30%;width:92px;--c1:#6cb85a;--c2:#7cc466;--c3:#5aa84f;--c4:#94d27c"><use href="#tree"/></svg>
-              <svg class="deco ink" viewBox="0 0 64 42" style="left:10%;top:78%;width:72px"><use href="#flowers"/></svg>
-              <svg class="deco ink" viewBox="-2 -2 74 46" style="left:70%;top:74%;width:58px"><use href="#rock"/></svg>
+              <span class="deco emoji" style="left:58%;top:2%;font-size:120px">🌳</span>
+              <span class="deco emoji" style="left:24%;top:30%;font-size:84px">🌴</span>
+              <span class="deco emoji" style="left:10%;top:76%;font-size:48px">🌹</span>
+              <span class="deco emoji" style="left:70%;top:74%;font-size:46px">🍄</span>
+              <span class="deco emoji" style="left:44%;top:66%;font-size:40px">🌼</span>
             </div>
           </li>
 
@@ -626,10 +625,11 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
             </div>
             <div class="lane" aria-hidden="true"></div>
             <div class="scenery" aria-hidden="true">
-              <svg class="deco ink" viewBox="-2 8 124 104" style="left:14%;top:14%;width:128px;--roof:#5c8fc4;--wall:#fff8ea"><use href="#house"/></svg>
-              <svg class="deco ink" viewBox="-4 -4 72 118" style="left:60%;top:4%;width:72px"><use href="#pine"/></svg>
-              <svg class="deco ink" viewBox="-4 -4 72 118" style="left:73%;top:20%;width:56px"><use href="#pine"/></svg>
+              <span class="deco emoji" style="left:14%;top:12%;font-size:108px">🏘️</span>
+              <span class="deco emoji" style="left:60%;top:4%;font-size:76px">🌲</span>
+              <span class="deco emoji" style="left:73%;top:20%;font-size:60px">🌳</span>
               <svg class="deco ink" viewBox="-2 -2 144 56" style="left:30%;top:72%;width:150px"><use href="#fence"/></svg>
+              <span class="deco emoji" style="left:48%;top:48%;font-size:52px">🐄</span>
             </div>
           </li>
 
@@ -651,10 +651,11 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
             </div>
             <div class="lane" aria-hidden="true"></div>
             <div class="scenery" aria-hidden="true">
-              <svg class="deco ink" viewBox="-2 0 74 132" style="left:20%;top:6%;width:86px"><use href="#sunflower"/></svg>
-              <svg class="deco ink" viewBox="-2 0 74 132" style="left:62%;top:0%;width:100px"><use href="#sunflower"/></svg>
-              <svg class="deco ink" viewBox="-2 0 74 132" style="left:43%;top:22%;width:66px"><use href="#sunflower"/></svg>
-              <svg class="deco" viewBox="0 0 60 36" style="left:30%;top:74%;width:70px"><use href="#grass"/></svg>
+              <span class="deco emoji" style="left:20%;top:6%;font-size:88px">🌻</span>
+              <span class="deco emoji" style="left:62%;top:0%;font-size:104px">🌻</span>
+              <span class="deco emoji" style="left:43%;top:24%;font-size:70px">🌻</span>
+              <span class="deco emoji" style="left:30%;top:74%;font-size:50px">🌼</span>
+              <span class="deco emoji" style="left:78%;top:40%;font-size:36px">🦋</span>
             </div>
           </li>
 
@@ -676,9 +677,10 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
             </div>
             <div class="lane" aria-hidden="true"></div>
             <div class="scenery" aria-hidden="true">
-              <svg class="deco ink" viewBox="-4 -4 88 112" style="left:22%;top:10%;width:122px"><use href="#tree"/></svg>
-              <svg class="deco ink" viewBox="-4 -4 118 68" style="left:56%;top:60%;width:124px"><use href="#bush"/></svg>
-              <svg class="deco ink" viewBox="0 0 64 42" style="left:68%;top:18%;width:60px"><use href="#flowers"/></svg>
+              <span class="deco emoji" style="left:22%;top:10%;font-size:104px">🛖</span>
+              <span class="deco emoji" style="left:56%;top:56%;font-size:92px">🌳</span>
+              <span class="deco emoji" style="left:68%;top:18%;font-size:50px">🌺</span>
+              <span class="deco emoji" style="left:18%;top:70%;font-size:44px">🌷</span>
             </div>
           </li>
         </ol>
@@ -690,9 +692,10 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
   <section class="finish" aria-labelledby="finish-h">
     <div class="checker" aria-hidden="true"></div>
     <div class="finish-scene" aria-hidden="true">
-      <svg class="deco ink" viewBox="-2 0 74 132" style="left:6%;top:80px;width:84px"><use href="#sunflower"/></svg>
-      <svg class="deco" viewBox="0 0 60 36" style="left:12%;top:200px;width:70px"><use href="#grass"/></svg>
-      <svg class="deco ink" viewBox="-4 -4 88 112" style="right:7%;top:64px;width:120px;--c1:#e0973a;--c2:#eaa94a;--c3:#cf7f2c;--c4:#f2c160"><use href="#tree"/></svg>
+      <span class="deco emoji" style="left:6%;top:80px;font-size:92px">🌻</span>
+      <span class="deco emoji" style="left:13%;top:176px;font-size:50px">🌷</span>
+      <span class="deco emoji" style="right:8%;top:60px;font-size:108px">🏪</span>
+      <span class="deco emoji" style="right:3%;top:150px;font-size:70px">🌳</span>
       <svg class="deco ink" viewBox="-2 -2 144 56" style="right:14%;top:210px;width:140px"><use href="#fence"/></svg>
     </div>
     <div class="wrap finish-inner">
@@ -743,6 +746,23 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
     });
   });
 
+  /* pick a car: the car at the start line and the car on the road follow the choice */
+  var heroEmoji = $('#hero-car-emoji'), roadCar = $('#car');
+  function setCar(e, hop) {
+    if (heroEmoji) heroEmoji.textContent = e;
+    if (roadCar) roadCar.textContent = e;
+    $$('[data-car]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-car') === e)); });
+    try { localStorage.setItem('rl-car', e); } catch (err) {}
+    if (hop && heroEmoji && heroEmoji.animate && !calm) {
+      heroEmoji.animate([{ transform: 'scale(-1, 1) translateY(0)' }, { transform: 'scale(-1, 1) translateY(-28px)' }, { transform: 'scale(-1, 1) translateY(0)' }], { duration: 440, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' });
+    }
+  }
+  $$('[data-car]').forEach(function (b) { b.addEventListener('click', function () { setCar(b.getAttribute('data-car'), true); }); });
+  try {
+    var savedCar = localStorage.getItem('rl-car');
+    if (savedCar && $$('[data-car]').some(function (b) { return b.getAttribute('data-car') === savedCar; })) setCar(savedCar, false);
+  } catch (err) {}
+
   /* hero car rolls up to the start line */
   var heroCar = $('#hero-car');
   if (heroCar && !calm) {
@@ -783,10 +803,10 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
   /* the road down the page */
   var journey = $('#journey'), svg = $('#road-svg'), car = $('#car'), flag = $('#flag');
   var roadPaths = $$('path', svg), tar = $('.tar', svg), stops = $$('.stop', journey);
-  var treads = $$('.tread', car);
+  var facing = 1;
   var total = 0, H = 0, stopY = [], carL = -1, targetL = 0, raf = 0, rolled = 0, narrow = false;
   var GREENS = ['#cfe7a2', '#b9dd88', '#dcefb6', '#aed47a', '#c6e396', '#d6ecae'];
-  var HEDGE = ['#8cc567', '#7db85c', '#9bd076'];
+  var HEDGE = ['🌳', '🌲', '🌳', '🌿', '🌳', '🌲', '🌴'];
   function rnd(a, b) { var s = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return s - Math.floor(s); }
 
   function bez(a, b, c, d, t) { var m = 1 - t; return m * m * m * a + 3 * m * m * t * b + 3 * m * t * t * c + t * t * t * d; }
@@ -852,9 +872,9 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
         for (var c = 0; c < clump && pos < len; c++) {
           var pt = probe.getPointAtLength(pos), r = (narrow ? 5 : 8) + rnd(pos, k) * (narrow ? 5 : 8), jy = (rnd(c, pos) - 0.5) * 8;
           if (free(pt.x, pt.y)) {
-            hedges += '<circle cx="' + pt.x.toFixed(1) + '" cy="' + (pt.y + jy + 4).toFixed(1) + '" r="' + r.toFixed(1) + '" fill="rgb(52 92 36 / .16)"/><circle cx="' + pt.x.toFixed(1) + '" cy="' + (pt.y + jy).toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + HEDGE[Math.floor(rnd(pos, c) * 3)] + '"/>';
+            hedges += '<text x="' + pt.x.toFixed(1) + '" y="' + (pt.y + jy + r).toFixed(1) + '" font-size="' + (r * 2.4).toFixed(1) + '" text-anchor="middle">' + HEDGE[Math.floor(rnd(pos, c) * HEDGE.length)] + '</text>';
           }
-          pos += r * 1.5;
+          pos += r * 1.9;
         }
         pos += (narrow ? 40 : 70) + rnd(pos, k + 3) * (narrow ? 90 : 220);
       }
@@ -897,10 +917,12 @@ html:not(.js) .car, html:not(.js) .flag { display: none; }
   function placeCar(L) {
     var p = tar.getPointAtLength(L), q = tar.getPointAtLength(Math.min(total, L + 3));
     if (L >= total - 3) { var b = tar.getPointAtLength(Math.max(0, L - 3)); q = { x: p.x + (p.x - b.x), y: p.y + (p.y - b.y) }; }
-    var ang = Math.atan2(q.y - p.y, q.x - p.x) * 180 / Math.PI + 90;
-    car.style.transform = 'translate(' + p.x.toFixed(1) + 'px,' + p.y.toFixed(1) + 'px) rotate(' + ang.toFixed(1) + 'deg)';
-    var off = rolled % 6;
-    treads.forEach(function (tr, i) { tr.setAttribute('y', (((i % 3) * 6 + off) % 18).toFixed(2)); });
+    /* the emoji car looks left by default: face the direction of travel, tilt the nose along the slope */
+    var dx = q.x - p.x, dy = q.y - p.y, dl = Math.hypot(dx, dy) || 1;
+    if (dx / dl > 0.25) facing = 1; else if (dx / dl < -0.25) facing = -1;
+    var tilt = Math.min(38, Math.atan2(Math.abs(dy), Math.abs(dx)) * 180 / Math.PI) * (dy < 0 ? -1 : 1);
+    var bob = Math.sin(rolled / 9) * 1.2;
+    car.style.transform = 'translate(' + p.x.toFixed(1) + 'px,' + (p.y + bob).toFixed(1) + 'px) rotate(' + (facing * tilt).toFixed(1) + 'deg) scaleX(' + (-facing) + ')';
     stops.forEach(function (s, i) { s.classList.toggle('reached', p.y >= stopY[i] - 30); });
   }
 
