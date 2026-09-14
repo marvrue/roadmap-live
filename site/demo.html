@@ -1,0 +1,1915 @@
+<!doctype html>
+<html lang="en" data-mode="light" data-mode-fixed="1">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>45 % · abholbereit</title>
+<link id="favicon" rel="icon" href="data:,">
+<style data-theme="paper" media="all">
+/* paper: warm off-white, warm dark text, serif headings, sans body. */
+:root {
+  color-scheme: light dark;
+  --bg: #f6f1e8;
+  --surface: #fbf8f2;
+  --text: #2b2420;
+  --text-2: #645a52;
+  --text-3: #736860;
+  --line: #e2dacd;
+  --line-strong: #c9bfaf;
+  --attention: #a8441d;
+  --attention-bg: rgba(168, 68, 29, 0.09);
+  --done: #4a423b;
+  --font-heading: Charter, "Bitstream Charter", "Iowan Old Style", "Source Serif Pro", Georgia, serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 2px;
+  --measure: 62ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --bg: #211d1a;
+    --surface: #282320;
+    --text: #ece5da;
+    --text-2: #b0a698;
+    --text-3: #978d80;
+    --line: #363029;
+    --line-strong: #4d453c;
+    --attention: #eb9a6c;
+    --attention-bg: rgba(235, 154, 108, 0.12);
+    --done: #cfc6b9;
+  }
+}
+:root[data-mode="dark"] {
+  --bg: #211d1a;
+  --surface: #282320;
+  --text: #ece5da;
+  --text-2: #b0a698;
+  --text-3: #978d80;
+  --line: #363029;
+  --line-strong: #4d453c;
+  --attention: #eb9a6c;
+  --attention-bg: rgba(235, 154, 108, 0.12);
+  --done: #cfc6b9;
+}
+:root[data-mode="light"] { color-scheme: light; }
+:root[data-mode="dark"] { color-scheme: dark; }
+</style>
+<style data-theme="neutral" media="not all">
+/* neutral: near-white and near-black, system sans, mono for labels. Default. */
+:root {
+  color-scheme: light dark;
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --text: #1a1a1c;
+  --text-2: #55555b;
+  --text-3: #6f6f75;
+  --line: #e4e4e6;
+  --line-strong: #c6c6ca;
+  --attention: #b1381f;
+  --attention-bg: rgba(177, 56, 31, 0.08);
+  --done: #3a3a3e;
+  --font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 3px;
+  --measure: 64ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --bg: #131315;
+    --surface: #1a1a1d;
+    --text: #ebebec;
+    --text-2: #a4a4aa;
+    --text-3: #8b8b91;
+    --line: #29292d;
+    --line-strong: #3e3e44;
+    --attention: #f09070;
+    --attention-bg: rgba(240, 144, 112, 0.12);
+    --done: #c8c8cc;
+  }
+}
+:root[data-mode="dark"] {
+  --bg: #131315;
+  --surface: #1a1a1d;
+  --text: #ebebec;
+  --text-2: #a4a4aa;
+  --text-3: #8b8b91;
+  --line: #29292d;
+  --line-strong: #3e3e44;
+  --attention: #f09070;
+  --attention-bg: rgba(240, 144, 112, 0.12);
+  --done: #c8c8cc;
+}
+:root[data-mode="light"] { color-scheme: light; }
+:root[data-mode="dark"] { color-scheme: dark; }
+</style>
+<style data-theme="mono" media="not all">
+/* mono: cool grays, everything monospace, tighter spacing. */
+:root {
+  color-scheme: light dark;
+  --bg: #f3f4f6;
+  --surface: #f9fafb;
+  --text: #16181d;
+  --text-2: #4f5560;
+  --text-3: #676d78;
+  --line: #dcdfe4;
+  --line-strong: #b9bec7;
+  --attention: #b23a1a;
+  --attention-bg: rgba(178, 58, 26, 0.08);
+  --done: #363a42;
+  --font-heading: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --font-body: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 0px;
+  --measure: 72ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --bg: #111318;
+    --surface: #171a20;
+    --text: #e6e8ec;
+    --text-2: #a0a6b0;
+    --text-3: #878d98;
+    --line: #262a32;
+    --line-strong: #3a3f4a;
+    --attention: #f29066;
+    --attention-bg: rgba(242, 144, 102, 0.12);
+    --done: #c4c8d0;
+  }
+}
+:root[data-mode="dark"] {
+  --bg: #111318;
+  --surface: #171a20;
+  --text: #e6e8ec;
+  --text-2: #a0a6b0;
+  --text-3: #878d98;
+  --line: #262a32;
+  --line-strong: #3a3f4a;
+  --attention: #f29066;
+  --attention-bg: rgba(242, 144, 102, 0.12);
+  --done: #c4c8d0;
+}
+:root[data-mode="light"] { color-scheme: light; }
+:root[data-mode="dark"] { color-scheme: dark; }
+</style>
+<style>
+/* Layout and structure. Colors and fonts come only from the theme variables. */
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  padding: 0 28px 56px;
+  max-width: 1180px;
+  margin: 0 auto;
+  -webkit-font-smoothing: antialiased;
+  /* one label column width for every row grid, so every block shares one left edge */
+  --label-col: 105px;
+}
+h1, h2, h3, p, ul { margin: 0; }
+ul { list-style: none; padding: 0; }
+a { color: inherit; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+a:hover { text-decoration-color: currentColor; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; border-radius: var(--radius); }
+[hidden] { display: none !important; }
+time { white-space: nowrap; }
+::selection { background: var(--attention-bg); }
+input { caret-color: var(--text); }
+
+.mono { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.01em; }
+.muted { color: var(--text-2); }
+.faint { color: var(--text-3); }
+.attention { color: var(--attention); }
+.label { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); white-space: nowrap; }
+.label.attention { color: var(--attention); }
+h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-3); letter-spacing: 0.02em; text-transform: none; }
+h2.section.attention { color: var(--attention); }
+
+/* banner */
+.banner {
+  color: var(--attention);
+  background: var(--attention-bg);
+  border-bottom: 1px solid var(--attention);
+  margin: 0 -28px 8px; padding: 10px 28px; font-size: 13px; white-space: pre-line;
+}
+.banner strong { font-weight: 500; }
+
+/* header */
+.top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 30px 0 18px; }
+.top h1 { font-family: var(--font-heading); font-size: 24px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+.top .meta { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }
+.top .meta .sep { color: var(--text-3); }
+.conn::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--text-3); margin-right: 6px; vertical-align: 1px; }
+.conn.on::before { background: var(--text); }
+.conn.off::before { background: var(--attention); }
+.conn.off { color: var(--attention); }
+.theme { border-bottom: 1px solid var(--line-strong); margin-left: 10px; }
+.theme:hover { border-bottom-color: var(--text); }
+.share-note { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); flex-basis: 100%; text-align: right; }
+.share-note.attention { color: var(--attention); }
+.share-note button { border-bottom: 1px solid var(--line-strong); margin-left: 8px; }
+
+/* progress */
+.progress { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; padding: 6px 0 24px; border-bottom: 1px solid var(--line); margin-bottom: 26px; }
+.segments { display: flex; gap: 4px; flex: 1 1 360px; min-width: 0; }
+.seg { flex: 1 1 0; min-width: 64px; }
+.seg[role="button"] { cursor: pointer; }
+.track { height: 5px; background: var(--line); overflow: hidden; border-radius: var(--radius); }
+.fill { height: 100%; background: var(--done); transition: width 0.5s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.seg.is-done .fill { background: var(--text-3); }
+.seg .info { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; font-size: 13px; line-height: 1.3; }
+.seg .name { color: var(--text-2); overflow-wrap: anywhere; }
+.seg.is-current .name { color: var(--text); font-weight: 500; }
+.seg.is-done .name { color: var(--text-3); }
+.seg .count { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
+.seg:hover .name { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+.seg.is-filter .name { text-decoration: underline; text-decoration-color: var(--text); text-underline-offset: 3px; }
+.total { text-align: right; line-height: 1.3; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }
+.total .big { font-size: 15px; color: var(--text); font-weight: 500; white-space: nowrap; }
+.total .today { display: block; margin-top: 4px; color: var(--text-3); }
+
+.filterbar { display: flex; align-items: baseline; gap: 12px; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); margin: -10px 0 18px; }
+.filterbar button { border-bottom: 1px solid var(--line-strong); }
+
+/* since you last looked */
+.since { margin-bottom: 32px; }
+.since h2 { margin-bottom: 4px; }
+.since .none { padding: 8px 0; color: var(--text-3); font-size: 13px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+
+/* now + history */
+.live { display: grid; grid-template-columns: minmax(0, 3fr) minmax(240px, 2fr); gap: 32px; margin-bottom: 36px; }
+.live.single { grid-template-columns: minmax(0, 1fr); }
+.now { border-top: 1px solid var(--line-strong); padding-top: 12px; }
+.now .eyebrow { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--text-3); margin-bottom: 10px; }
+.now.has-active .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--text); animation: breathe 2.2s ease-in-out infinite; }
+@keyframes breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.now .item + .item { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 14px; }
+.now .head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.now .title { font-family: var(--font-heading); font-size: 22px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.25; overflow-wrap: anywhere; }
+.now .elapsed { font-family: var(--font-mono); font-size: 20px; white-space: nowrap; color: var(--text); }
+.now .elapsed small { font-size: 12px; color: var(--text-3); margin-right: 6px; }
+.now .sub { margin-top: 6px; color: var(--text-2); font-size: 13px; display: flex; gap: 12px; flex-wrap: wrap; }
+.now .note { margin-top: 8px; font-size: 14px; color: var(--text); overflow-wrap: anywhere; max-width: var(--measure); }
+.now .idle { font-size: 16px; color: var(--text-2); }
+.now .idle b { color: var(--text); font-weight: 500; }
+.history { border-top: 1px solid var(--line-strong); padding-top: 12px; min-height: 0; }
+.history h2 { margin-bottom: 6px; }
+.history ul { max-height: 176px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+.history li { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; padding: 5px 0; border-top: 1px solid var(--line); font-size: 13px; }
+.history li:first-child { border-top: 0; }
+.history .what { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.history .what em { font-style: normal; color: var(--text-2); font-family: var(--font-mono); font-size: 12px; margin-left: 6px; }
+.history .none { color: var(--text-3); font-size: 13px; padding: 4px 0 8px; }
+
+/* board */
+.board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.col { min-width: 0; }
+.col > header { display: flex; align-items: baseline; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--line-strong); }
+.col h2 { font-size: 14px; font-weight: 500; }
+.col .count { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
+.col .hint { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); margin-left: auto; }
+.items { display: flex; flex-direction: column; }
+.empty { color: var(--text-3); font-size: 13px; padding: 12px 0; }
+
+.item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.3s ease, background-color 0.3s ease;
+  will-change: transform;
+}
+.item.enter { animation: enter 0.35s ease; }
+@keyframes enter { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.item.flash { animation: flash 1.6s ease; }
+@keyframes flash { 0% { background: var(--attention-bg); } 100% { background: transparent; } }
+.item .title { overflow-wrap: anywhere; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.item .title .label { font-size: 11px; }
+.col.active .item .title { font-weight: 500; }
+.item .sub { display: flex; align-items: baseline; gap: 10px; margin-top: 3px; font-family: var(--font-mono); font-size: 12px; color: var(--text-3); flex-wrap: wrap; }
+.item .sub .note { font-family: var(--font-body); font-size: 13px; color: var(--text-2); overflow-wrap: anywhere; }
+.col.done .item { padding: 7px 0; }
+.col.done .item .title { color: var(--text-2); }
+.col.done .item .sub .note { display: none; }
+.more { padding: 10px 0; }
+.more button { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); border-bottom: 1px solid var(--line-strong); }
+
+/* milestones view */
+.milestones .ms { margin-bottom: 34px; }
+.milestones .ms > header { display: flex; align-items: baseline; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--line-strong); }
+.milestones .ms h2 { font-family: var(--font-heading); font-size: 18px; font-weight: 500; }
+.milestones .ms.is-done h2 { color: var(--text-3); font-weight: 400; }
+.milestones .ms .count { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
+.milestones .ms > header .label { margin-left: auto; }
+.milestones .item .title { display: grid; grid-template-columns: 6.5em minmax(0, 1fr); column-gap: 16px; align-items: baseline; }
+.milestones .item .title .label.status { font-size: 12px; }
+.milestones .item .title > span:not(.label) { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+.milestones .item .sub, .milestones .item .conv, .milestones .item .comment-form { margin-left: calc(6.5em + 16px); }
+.milestones .item[data-status="active"] .title { font-weight: 500; }
+.fold { margin-top: 4px; }
+.fold summary { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); cursor: pointer; padding: 8px 0; list-style: none; }
+.fold summary::-webkit-details-marker { display: none; }
+.fold summary::before { content: "+ "; }
+.fold[open] summary::before { content: "\2013 "; }
+.fold summary:hover { color: var(--text); }
+.ms-done .item .title > span:not(.label) { color: var(--text-2); }
+.ms-done .item .sub .note { display: none; }
+
+/* the row of view names above the content */
+.views { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--font-mono); font-size: 12px; padding-bottom: 10px; margin-bottom: 24px; border-bottom: 1px solid var(--line-strong); }
+.views a { position: relative; color: var(--text-3); text-decoration: none; padding-bottom: 2px; border-bottom: 1px solid transparent; }
+/* the tappable box reaches into the gaps, the underline stays where it is */
+.views a::before { content: ""; position: absolute; inset: -8px -8px -6px; }
+.views a:hover { color: var(--text); }
+.views a[aria-current="page"] { color: var(--text); border-bottom-color: var(--text); }
+
+/* shared row grammar of the page: mono label, text, mono column on the right */
+.rows li { display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr) auto; column-gap: 16px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; }
+.rows li:last-child { border-bottom: 1px solid var(--line); }
+.rows .label, .timeline .label { white-space: normal; overflow-wrap: anywhere; }
+.rows .text { overflow-wrap: anywhere; }
+.rows .text .note { display: block; color: var(--text-2); }
+.rows.resolved .text { color: var(--text-3); }
+.when, .timeline .at { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); white-space: nowrap; }
+.tag { font-family: var(--font-mono); font-size: 12px; color: var(--attention); margin-left: 8px; white-space: nowrap; }
+.tag.quiet { color: var(--text-3); }
+.group { margin-bottom: 30px; }
+.group > header { display: flex; align-items: baseline; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line-strong); }
+.group h2 { font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+.group.is-done h2 { color: var(--text-2); font-weight: 400; }
+.group .meta { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); white-space: nowrap; }
+.group > .rows li:first-child { border-top: 0; }
+.q { overflow-wrap: anywhere; }
+.answers { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-top: 6px; }
+.answers button { font-family: var(--font-mono); font-size: 12px; border-bottom: 1px solid var(--line-strong); }
+.answers button:hover { border-bottom-color: var(--text); }
+.q .hint { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); margin-top: 6px; }
+.item .q { margin-top: 12px; display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr); column-gap: 16px; padding-top: 10px; border-top: 1px solid var(--line); }
+.item .q .answers, .item .q .hint { grid-column: 2; }
+
+/* focus view */
+.focus .item { padding: 0 0 24px; margin-bottom: 24px; border-bottom: 1px solid var(--line-strong); }
+.focus .item:last-child { margin-bottom: 0; }
+.focus .head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.focus h2.title { display: block; font-family: var(--font-heading); font-size: 32px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.15; overflow-wrap: anywhere; max-width: var(--measure); }
+.focus .elapsed { font-family: var(--font-mono); font-size: 28px; white-space: nowrap; color: var(--text); }
+.focus .elapsed small { font-size: 12px; color: var(--text-3); margin-right: 8px; }
+.focus .head .state { font-size: 13px; }
+.focus .item .sub { margin-top: 10px; gap: 14px; color: var(--text-2); }
+.focus .note { margin-top: 14px; font-size: 16px; line-height: 1.5; max-width: var(--measure); overflow-wrap: anywhere; }
+.focus .rows, .focus .conv { margin-top: 16px; }
+.focus .item .q { margin-top: 16px; }
+.focus .now { border-top: 0; padding-top: 0; }
+
+/* timeline view */
+.timeline .day { margin-bottom: 26px; }
+.timeline .day h2 { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-3); padding-bottom: 6px; border-bottom: 1px solid var(--line-strong); }
+.timeline li { display: grid; grid-template-columns: 52px var(--label-col) minmax(0, 1fr); column-gap: 16px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.timeline .text { overflow-wrap: anywhere; }
+.timeline li.is-quiet .text { color: var(--text-2); }
+.timeline .fold { margin-top: 0; }
+
+/* conversations view */
+.conversations .item { padding: 14px 0 16px; }
+.conversations .item:first-child { padding-top: 0; }
+.conversations .item .title { font-size: 15px; font-weight: 500; }
+.conversations .item .title .label { font-size: 12px; font-weight: 400; }
+.conversations .item .sub { margin-top: 4px; }
+.conversations .conv { margin-top: 10px; }
+.conversations .fold { margin-top: 12px; }
+.conversations .fold .item { padding: 10px 0; }
+.conversations .fold .item .title { font-size: 14px; font-weight: 400; }
+
+/* signals view */
+.signals .sig { margin-bottom: 30px; }
+.signals .sig h2 { margin-bottom: 4px; }
+.signals .calm { padding: 4px 0 20px; max-width: var(--measure); }
+.signals .calm .big { font-family: var(--font-heading); font-size: 22px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+.signals .calm .counts { margin-top: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }
+
+/* list view */
+.list { width: 100%; border-collapse: collapse; font-size: 13px; }
+.list th { text-align: left; font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-3); padding: 0 16px 8px 0; border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
+.list th button { border-bottom: 1px solid transparent; }
+.list th button:hover { color: var(--text); }
+.list th[aria-sort] button { color: var(--text); border-bottom-color: var(--text); }
+.list th[aria-sort="descending"] button::after { content: " \2193"; }
+.list th[aria-sort="ascending"] button::after { content: " \2191"; }
+.list td { padding: 7px 16px 7px 0; border-bottom: 1px solid var(--line); vertical-align: baseline; }
+.list .mono { color: var(--text-3); white-space: nowrap; }
+.list .mono.attention { color: var(--attention); }
+.list .c-title { overflow-wrap: anywhere; width: 100%; }
+.list tr.is-done td { color: var(--text-2); }
+.list th:last-child, .list td:last-child { padding-right: 0; text-align: right; }
+
+/* unplanned below the view (static and live) */
+.unplanned { margin-top: 40px; }
+.unplanned h2 { margin-bottom: 4px; }
+
+/* changelog (static) */
+.changelog { margin-top: 44px; }
+.changelog h2 { margin-bottom: 4px; }
+.changelog li { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); padding: 6px 0; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
+.changelog li:last-child { border-bottom: 1px solid var(--line); }
+.changelog .none { color: var(--text-3); font-size: 13px; padding: 6px 0; }
+
+/* footer */
+.foot { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--line-strong); font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
+.foot a { color: var(--text-2); }
+
+/* waiting for you */
+.waiting { margin-bottom: 32px; }
+.waiting h2 { margin-bottom: 4px; color: var(--attention); }
+.waiting li { display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr); column-gap: 16px; padding: 10px 0; border-top: 1px solid var(--line); }
+.waiting li .label { white-space: normal; overflow-wrap: anywhere; }
+.waiting li:last-child { border-bottom: 1px solid var(--line); }
+
+/* comments */
+.item .toggle { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); border-bottom: 1px solid var(--line); }
+.item .toggle:hover { color: var(--text); border-bottom-color: var(--line-strong); }
+.conv { margin-top: 8px; border-top: 1px solid var(--line); }
+.conv li { display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr) auto; column-gap: 16px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.conv li.agent .text { color: var(--text-2); }
+.conv .text { overflow-wrap: anywhere; }
+.conv .when.attention { color: var(--attention); }
+.comment-form { display: flex; gap: 10px; align-items: baseline; margin-top: 8px; }
+.comment-form input { flex: 1 1 auto; min-width: 0; font: inherit; color: var(--text); background: var(--surface); border: 0; border-bottom: 1px solid var(--line-strong); padding: 6px 0; border-radius: 0; }
+.comment-form input::placeholder { color: var(--text-3); }
+.comment-form input:focus { outline: none; border-bottom-color: var(--text); }
+.comment-form button { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); border-bottom: 1px solid var(--line-strong); }
+.col.done .conv, .col.done .comment-form { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .item, .fill { transition: none; }
+  .item.enter, .item.flash, .now.has-active .eyebrow::before { animation: none; }
+}
+@media (max-width: 900px) {
+  .live { grid-template-columns: 1fr; gap: 24px; }
+  .history ul { max-height: 132px; }
+}
+@media (max-width: 760px) {
+  body { padding: 0 16px 40px; }
+  .banner { margin: 0 -16px 8px; padding: 10px 16px; }
+  .board { grid-template-columns: 1fr; gap: 28px; }
+  .milestones .item .title { grid-template-columns: 5.5em minmax(0, 1fr); }
+  .milestones .item .sub, .milestones .item .conv, .milestones .item .comment-form { margin-left: 0; }
+  .now .title, .now .elapsed { font-size: 18px; }
+  .total { text-align: left; }
+  .segments { flex-wrap: wrap; }
+  .seg { min-width: 40%; }
+  body { --label-col: 77px; }
+  .rows li, .conv li { grid-template-columns: var(--label-col) minmax(0, 1fr); }
+  .rows .when, .conv .when { grid-column: 2; }
+  .waiting li, .item .q { grid-template-columns: 1fr; row-gap: 4px; }
+  .item .q .answers, .item .q .hint { grid-column: 1; }
+  .views { gap: 6px 16px; }
+  .focus h2.title { font-size: 24px; }
+  .focus .elapsed { font-size: 20px; }
+  .timeline li { grid-template-columns: var(--label-col) minmax(0, 1fr); }
+  .timeline .text { grid-column: 2; }
+  .list .c-milestone, .list .c-pr, .list .c-points { display: none; }
+  .list th, .list td { padding-right: 12px; }
+  .list .c-updated { padding-right: 0; text-align: right; }
+}
+</style>
+</head>
+<body>
+<div id="app"><header class="top"><h1>abholbereit</h1><div class="meta"><span>updated <time class="" datetime="2026-09-09T10:00:00.000Z" data-rel="2026-09-09T10:00:00.000Z" title="Sep 9, 2026, 12:00 PM">5 days ago</time></span><span class="sep">&middot;</span><span><a href="https://github.com/acme/abholbereit/pull/44">PR #44</a></span><button type="button" class="theme" data-action="theme-name" title="Switch the theme (paper, neutral, mono)">paper</button><button type="button" class="theme" data-action="theme" title="Switch between light, dark and system">Light</button><button type="button" class="theme" data-action="share" title="Copy the public link">Share</button></div></header><section class="progress"><div class="segments"><div class="seg is-current" role="button" tabindex="0" data-action="filter" data-id="m1" aria-pressed="false" style="flex-grow:3" title="Ordering flow: 1 of 3 done"><div class="track"><div class="fill" style="width:33.333333333333336%"></div></div><div class="info"><span class="name">Ordering flow</span><span class="count">1/3</span></div></div><div class="seg" role="button" tabindex="0" data-action="filter" data-id="m2" aria-pressed="false" style="flex-grow:3" title="Kitchen: 0 of 3 done"><div class="track"><div class="fill" style="width:0%"></div></div><div class="info"><span class="name">Kitchen</span><span class="count">0/3</span></div></div><div class="seg" role="button" tabindex="0" data-action="filter" data-id="m3" aria-pressed="false" style="flex-grow:5" title="Launch: 4 of 5 done"><div class="track"><div class="fill" style="width:80%"></div></div><div class="info"><span class="name">Launch</span><span class="count">4/5</span></div></div></div><div class="total"><span class="big">5/11 &middot; 45 %</span></div></section><section class="since"><h2 class="section">Since you last looked</h2><ul class="rows"><li data-kind="stale"><span class="label attention">stale</span><span class="text">Order queue for the kitchen screen: no activity for 25 days</span><span class="when"><time class="" datetime="2026-08-20T10:00:00.000Z" data-rel="2026-08-20T10:00:00.000Z" title="Aug 20, 2026, 12:00 PM">25 days ago</time></span></li><li data-kind="comment"><span class="label">agent</span><span class="text">Checkout with pickup time: Ok, cart first, checkout after that.</span><span class="when"><time class="" datetime="2026-09-09T09:41:00Z" data-rel="2026-09-09T09:41:00Z" title="Sep 9, 2026, 11:41 AM">5 days ago</time></span></li><li data-kind="status"><span class="label"><a href="https://github.com/acme/abholbereit/pull/44">PR #44</a></span><span class="text">Checkout with pickup time moved to in progress</span><span class="when"><time class="" datetime="2026-09-09T09:00:00Z" data-rel="2026-09-09T09:00:00Z" title="Sep 9, 2026, 11:00 AM">5 days ago</time></span></li><li data-kind="point"><span class="label"><a href="https://github.com/acme/abholbereit/pull/44">PR #44</a></span><span class="text">Checkout with pickup time: Add a test for the empty cart case</span><span class="when"><time class="" datetime="2026-09-09T08:31:00Z" data-rel="2026-09-09T08:31:00Z" title="Sep 9, 2026, 10:31 AM">5 days ago</time></span></li></ul><div class="more"><button type="button" data-action="more-feed">show all 8</button></div></section><section class="waiting"><h2 class="section">Waiting for you</h2><ul><li><span class="label attention">Checkout with pickup time</span><div class="q">Pickup time in 15 or 30 minute steps?<div class="hint">Answering works on the live page</div></div></li></ul></section><section class="live single"><div id="now" class="now has-active"><div class="eyebrow"><span>2 items in progress</span></div><div class="item"><div class="head"><div class="title">Checkout with pickup time</div><div class="elapsed" data-since="2026-09-09T09:00:00Z"><small>since</small><span>5d 3h</span></div></div><div class="sub"><span>Ordering flow</span><time class="" datetime="2026-09-09T09:00:00Z" data-rel="2026-09-09T09:00:00Z" title="Sep 9, 2026, 11:00 AM">5 days ago</time></div></div><div class="item"><div class="head"><div class="title">Order queue for the kitchen screen</div><div class="elapsed" data-since="2026-08-20T10:00:00Z"><small>since</small><span>25d 2h</span></div></div><div class="sub"><span>Kitchen</span><time class="" datetime="2026-08-20T10:00:00Z" data-rel="2026-08-20T10:00:00Z" title="Aug 20, 2026, 12:00 PM">25 days ago</time></div></div></div></section><nav class="views" aria-label="Switch the view"><a href="?view=milestones" data-action="view" data-view="milestones" aria-current="page">Milestones</a><a href="?view=board" data-action="view" data-view="board">Board</a><a href="?view=focus" data-action="view" data-view="focus">Focus</a><a href="?view=timeline" data-action="view" data-view="timeline">Timeline</a><a href="?view=conversations" data-action="view" data-view="conversations">Conversations</a><a href="?view=points" data-action="view" data-view="points">Open points</a><a href="?view=prs" data-action="view" data-view="prs">Pull requests</a><a href="?view=signals" data-action="view" data-view="signals">Signals</a><a href="?view=list" data-action="view" data-view="list">List</a></nav><main class="milestones"><section class="ms is-current" data-milestone="m1"><header><h2>Ordering flow</h2><span class="count">1/3</span><span class="label">current milestone</span></header><div class="items"><article class="item" data-id="payment" data-status="blocked"><div class="title"><span class="label status attention">blocked</span><span>Card payment with Stripe</span></div><div class="sub"><span><a href="https://github.com/acme/abholbereit/pull/43">PR #43</a></span><time class="" datetime="2026-09-07T16:00:00Z" data-rel="2026-09-07T16:00:00Z" title="Sep 7, 2026, 6:00 PM">7 days ago</time><span class="note">Waiting for the Stripe sandbox account.</span></div></article><article class="item" data-id="checkout" data-status="active"><div class="title"><span class="label status">in progress</span><span>Checkout with pickup time</span></div><div class="sub"><span><a href="https://github.com/acme/abholbereit/pull/44">PR #44</a></span><span>feat/checkout</span><span>2 open points</span><button type="button" class="toggle" data-action="expand" data-id="checkout" aria-expanded="false">2 comments &middot; show</button></div></article></div><details class="ms-done fold" data-key="ms:m1" data-milestone="m1"><summary>1 done</summary><div class="items"><article class="item" data-id="menu-editor" data-status="done"><div class="title"><span class="label status">done</span><span>Menu editor</span></div><div class="sub"><span><a href="https://github.com/acme/abholbereit/pull/42">PR #42</a></span><span>feat/menu-editor</span><time class="" datetime="2026-09-08T14:02:00Z" data-rel="2026-09-08T14:02:00Z" title="Sep 8, 2026, 4:02 PM">6 days ago</time><span class="note">Images are resized on upload.</span><span>1 comment</span></div></article></div></details></section><section class="ms" data-milestone="m2"><header><h2>Kitchen</h2><span class="count">0/3</span></header><div class="items"><article class="item" data-id="order-queue" data-status="active"><div class="title"><span class="label status">in progress</span><span>Order queue for the kitchen screen</span></div><div class="sub"><button type="button" class="toggle" data-action="expand" data-id="order-queue" aria-expanded="false">1 comment &middot; show</button></div></article><article class="item" data-id="printer" data-status="todo"><div class="title"><span class="label status">open</span><span>Receipt printer support</span></div></article><article class="item" data-id="notifications" data-status="todo"><div class="title"><span class="label status">open</span><span>Notify the customer when the order is ready</span></div><div class="sub"><span class="note">SMS first, push later.</span></div></article></div></section><section class="ms" data-milestone="m3"><header><h2>Launch</h2><span class="count">4/5</span></header><div class="items"><article class="item" data-id="app-store" data-status="todo"><div class="title"><span class="label status">open</span><span>App store listing</span></div></article></div><details class="ms-done fold" data-key="ms:m3" data-milestone="m3"><summary>4 done</summary><div class="items"><article class="item" data-id="landing-page" data-status="done"><div class="title"><span class="label status">done</span><span>Landing page</span></div><div class="sub"><time class="" datetime="2026-09-05T11:00:00Z" data-rel="2026-09-05T11:00:00Z" title="Sep 5, 2026, 1:00 PM">9 days ago</time></div></article><article class="item" data-id="analytics" data-status="done"><div class="title"><span class="label status">done</span><span>Basic analytics</span></div><div class="sub"><time class="" datetime="2026-09-04T11:00:00Z" data-rel="2026-09-04T11:00:00Z" title="Sep 4, 2026, 1:00 PM">10 days ago</time></div></article><article class="item" data-id="legal" data-status="done"><div class="title"><span class="label status">done</span><span>Terms and privacy pages</span></div><div class="sub"><time class="" datetime="2026-09-03T11:00:00Z" data-rel="2026-09-03T11:00:00Z" title="Sep 3, 2026, 1:00 PM">11 days ago</time></div></article><article class="item" data-id="seo" data-status="done"><div class="title"><span class="label status">done</span><span>Search engine basics</span></div><div class="sub"><time class="" datetime="2026-09-02T11:00:00Z" data-rel="2026-09-02T11:00:00Z" title="Sep 2, 2026, 1:00 PM">12 days ago</time></div></article></div></details></section></main><section class="unplanned"><h2 class="section">Unplanned &middot; Not on the roadmap</h2><ul class="rows"><li><span class="label attention"><a href="https://github.com/acme/abholbereit/pull/41">PR #41</a></span><span class="text">Customer loyalty points</span><span class="when"><time class="" datetime="2026-09-06T09:00:00Z" data-rel="2026-09-06T09:00:00Z" title="Sep 6, 2026, 11:00 AM">8 days ago</time></span></li></ul></section><section class="changelog"><h2 class="section">Changelog</h2><div class="none">No entries yet.</div></section><footer class="foot"><a href="https://github.com/acme/abholbereit">Repository</a><a href="https://github.com/acme/abholbereit/blob/HEAD/demo-roadmap.json">roadmap.json</a><a href="https://github.com/marvrue/roadmap-live">Built with roadmap-live</a></footer></div>
+<script id="roadmap-state" type="application/json">{"mode":"static","ok":true,"data":{"project":"abholbereit","theme":"neutral","stale_after_days":7,"milestones":[{"id":"m1","title":"Ordering flow"},{"id":"m2","title":"Kitchen"},{"id":"m3","title":"Launch"}],"items":[{"id":"menu-editor","title":"Menu editor","milestone":"m1","status":"done","note":"Images are resized on upload.","updated":"2026-09-08T14:02:00Z","branch":"feat/menu-editor","prs":[42],"open_points":[{"text":"Please validate the image size before upload","source":"pr:42#comment:1893","opened":"2026-09-08T13:40:00Z","resolved":"2026-09-08T14:02:00Z"}],"comments":[{"from":"agent","text":"Images are resized on upload now.","at":"2026-09-08T14:00:00Z"}]},{"id":"checkout","title":"Checkout with pickup time","milestone":"m1","status":"active","updated":"2026-09-09T09:00:00Z","branch":"feat/checkout","prs":[44],"open_points":[{"text":"Please debounce the quantity buttons, double taps add two items","source":"pr:44#review_comment:2001","opened":"2026-09-09T08:30:00Z","resolved":null},{"text":"Add a test for the empty cart case","source":"pr:44#review_comment:2002","opened":"2026-09-09T08:31:00Z","resolved":null}],"comments":[{"from":"human","text":"Finish the cart first, the checkout can wait","at":"2026-09-09T09:30:00Z"},{"from":"agent","text":"Ok, cart first, checkout after that.","at":"2026-09-09T09:41:00Z"}],"question":{"text":"Pickup time in 15 or 30 minute steps?","options":["15","30"],"asked":"2026-09-09T09:41:00Z"}},{"id":"payment","title":"Card payment with Stripe","milestone":"m1","status":"blocked","note":"Waiting for the Stripe sandbox account.","updated":"2026-09-07T16:00:00Z","prs":[43]},{"id":"order-queue","title":"Order queue for the kitchen screen","milestone":"m2","status":"active","updated":"2026-08-20T10:00:00Z","comments":[{"from":"human","text":"Is this still needed for the launch?","at":"2026-09-08T12:00:00Z"}]},{"id":"printer","title":"Receipt printer support","milestone":"m2","status":"todo"},{"id":"notifications","title":"Notify the customer when the order is ready","milestone":"m2","status":"todo","note":"SMS first, push later."},{"id":"landing-page","title":"Landing page","milestone":"m3","status":"done","updated":"2026-09-05T11:00:00Z"},{"id":"analytics","title":"Basic analytics","milestone":"m3","status":"done","updated":"2026-09-04T11:00:00Z"},{"id":"legal","title":"Terms and privacy pages","milestone":"m3","status":"done","updated":"2026-09-03T11:00:00Z"},{"id":"seo","title":"Search engine basics","milestone":"m3","status":"done","updated":"2026-09-02T11:00:00Z"},{"id":"app-store","title":"App store listing","milestone":"m3","status":"todo"}],"unplanned":[{"title":"Customer loyalty points","prs":[41],"first_seen":"2026-09-06T09:00:00Z"}],"sync":{"last_run":"2026-09-09T10:00:00Z","repo":"acme/abholbereit"}},"error":null,"file":"test/fixtures/demo-roadmap.json","changelog":[],"generatedAt":"2026-09-14T12:27:05.534Z","repoUrl":"https://github.com/acme/abholbereit","roadmapUrl":"https://github.com/acme/abholbereit/blob/HEAD/demo-roadmap.json","fixedLang":null,"theme":"paper","themes":["paper","neutral","mono"],"base":"/"}</script>
+<script id="roadmap-locales" type="application/json">{"de":{"page":{"live":"live","updated":"aktualisiert {time}","updatedNever":"noch keine Aktivität","pr":"PR #{number}","prs":"PRs {list}","theme":{"system":"System","light":"Hell","dark":"Dunkel"},"themeTitle":"Zwischen hell, dunkel und System wechseln","pickTheme":"Theme wechseln ({list})","connected":"verbunden","disconnected":"getrennt","progress":"{done} von {total} erledigt","todayDone":{"one":"1 heute erledigt","other":"{n} heute erledigt"},"milestoneTitle":"{title}: {done} von {total} erledigt","milestoneComplete":"abgeschlossen","filterOnly":"Nur {title}","filterClear":"alle anzeigen","since":{"title":"Seit dem letzten Blick","empty":"Nichts Neues.","showAll":"alle {n} anzeigen"},"feed":{"statusChange":"{title} ist jetzt {status}","openPoint":"{title}: {text}","unplanned":"{title}","notOnRoadmap":"Nicht auf der Roadmap","stale":"ruht","staleText":{"one":"{title}: seit 1 Tag keine Aktivität","other":"{title}: seit {n} Tagen keine Aktivität"},"agent":"Agent"},"now":{"inProgress":"In Arbeit","inProgressN":"{n} Items in Arbeit","since":"seit","idle":"Gerade ist nichts in Arbeit.","next":"Als Nächstes: {title}","allDone":"Alles erledigt.","summary":{"one":"1 Meilenstein, {items} Items.","other":"{n} Meilensteine, {items} Items."},"empty":"Noch keine Items."},"history":{"title":"Verlauf","empty":"Noch keine Änderungen."},"changelog":{"title":"Änderungen","empty":"Noch keine Einträge."},"columns":{"todo":"Offen","active":"In Arbeit","done":"Erledigt"},"blocked":"blockiert","parallel":"{n} parallel","empty":"Keine Items","andMore":{"one":"und 1 weiteres","other":"und {n} weitere"},"showAll":"alle anzeigen","openPoints":{"one":"1 offener Punkt","other":"{n} offene Punkte"},"status":{"todo":"offen","active":"in Arbeit","blocked":"blockiert","done":"erledigt"},"change":{"done":"erledigt","active":"begonnen","blocked":"blockiert","todo":"zurückgestellt","added":"neu"},"footer":{"repo":"Repository","roadmap":"roadmap.json","builtWith":"Erstellt mit roadmap-live"},"invalid":"{file} ist ungültig, der letzte gültige Stand wird angezeigt.","noData":"noch keine gültigen Daten","justNow":"gerade eben","unplannedTitle":"Ungeplant","waiting":{"title":"Wartet auf dich","hint":"Antworten geht auf der Live-Seite"},"readOnly":"Nur lesen. Zum Schreiben den Link mit Schlüssel öffnen.","comments":{"count":{"one":"1 Kommentar","other":"{n} Kommentare"},"placeholder":"Dem Agenten etwas sagen…","add":"kommentieren","send":"Senden","sent":"gesendet","failed":"nicht gesendet, noch einmal versuchen","you":"du","agent":"Agent","show":"anzeigen","hide":"ausblenden"},"git":{"ahead":{"one":"1 vor main","other":"{n} vor main"},"changed":{"one":"1 geändert","other":"{n} geändert"}},"share":{"button":"Teilen","copied":"Link kopiert","off":"Die öffentliche Seite ist noch aus.","enable":"GitHub Pages einschalten","enabling":"Wird eingeschaltet…","enabled":"Eingeschaltet. Die Seite ist in etwa einer Minute erreichbar.","error":"Einschalten fehlgeschlagen: {message}","title":"Öffentlichen Link kopieren"},"views":{"milestones":"Meilensteine","board":"Board","focus":"Fokus","timeline":"Chronik","conversations":"Gespräche","points":"Offene Punkte","prs":"Pull Requests","signals":"Signale","list":"Liste"},"viewTitle":"Ansicht wechseln","timeline":{"today":"heute","yesterday":"gestern","resolved":"erledigt","sync":"Sync","syncText":"Pull Requests aus {repo} gelesen","empty":"Noch nichts passiert."},"conversations":{"unanswered":"unbeantwortet","empty":"Noch keine Gespräche. Kommentare und Fragen erscheinen hier.","others":{"one":"1 Item ohne Gespräch","other":"{n} Items ohne Gespräch"}},"points":{"open":{"one":"1 offen","other":"{n} offen"},"resolved":{"one":"1 erledigt","other":"{n} erledigt"},"empty":"Keine offenen Punkte. Die Reviewer wollen nichts mehr."},"pullRequests":{"items":{"one":"1 Item","other":"{n} Items"},"review":"Review","empty":"Noch keine Pull Requests verknüpft."},"signals":{"questions":"Offene Fragen","blocked":"Blockiert","stale":"Eingeschlafen","unplanned":"Nicht auf der Roadmap","question":"Frage","calm":"Nichts braucht dich.","counts":"{active} in Arbeit, {open} offen, {done} erledigt."},"list":{"status":"Status","title":"Item","milestone":"Meilenstein","pr":"PR","updated":"Geändert","points":"Punkte","sortTitle":"Sortieren nach {col}"},"milestoneCurrent":"aktueller Meilenstein","doneCount":{"one":"1 erledigt","other":"{n} erledigt"}},"cli":{"usage":"Aufruf: roadmap-live [Befehl] [Datei] [Optionen]\n\nBefehle:\n  (keiner)               Live-Server starten (Standard)\n  sync                   Pull-Request-Aktivität von GitHub lesen und die Roadmap aktualisieren\n  render                 statische HTML-Seite aus dem aktuellen Stand schreiben\n  init                   roadmap.json, AGENTS.md und die Workflow-Datei anlegen\n  auth                   im Browser bei GitHub anmelden (--logout entfernt das Token)\n  doctor                 erklären, welche GitHub-Anmeldung und welcher Provider verwendet würden\n\nOptionen:\n  Datei                  Pfad zur roadmap.json (Standard: ./roadmap.json)\n  --port \u003cn>             HTTP-Port für den Live-Server (Standard: 4242)\n  --key \u003cgeheim>         Schreibschlüssel für die Live-Seite (Standard: beim Start erzeugt, oder ROADMAP_KEY)\n  --check                Datei prüfen und mit 0 (ok) oder 1 (Probleme) beenden\n  --repo owner/name      Repository für sync und init (Standard: sync.repo, GITHUB_REPOSITORY oder das Git-Remote)\n  --dry-run              sync: geplante Änderungen anzeigen, nichts schreiben\n  --apply                sync: .roadmap-live/result.json vom Coding-Agenten übernehmen\n  --no-bootstrap         init: leere Roadmap schreiben, statt eine aus dem Repository zu entwerfen\n  --provider \u003cname>      sync, init: anthropic, claude-cli, codex-cli, gemini-cli oder agent\n  --public               auth: nur den Scope public_repo anfordern\n  --out \u003cPfad>           render: Ausgabedatei (Standard: roadmap/index.html)\n  --theme \u003cname>         render: neutral, paper, mono oder eine Datei in roadmap-themes/\n  --mode light|dark      render: Farbmodus festlegen statt dem System zu folgen\n  -h, --help             diese Hilfe anzeigen","unknownOption":"unbekannte Option: {option}","unknownCommand":"unbekannter Befehl: {command}","invalidPort":"ungültiger Port: {port}","checkOk":"{file}: ok ({milestones} Meilensteine, {items} Items, {done} erledigt, {active} in Arbeit)","checkParallel":"Hinweis: {n} Items sind gleichzeitig in Arbeit","checkLarge":"Hinweis: {file} ist {kb} KB groß, kürze alte Kommentare und Notizen selbst (der Agent löscht nie Kommentare), damit der Agent weniger liest","checkGoalDone":"Hinweis: \"{item}\" ist erledigt, aber das Ziel steht bei {current}/{target}","checkGoalReached":"Hinweis: \"{item}\" hat sein Ziel erreicht ({current}/{target}), ist aber noch offen","checkTagline":"Hinweis: die Tagline hat {length} Zeichen, höchstens {max} halten sie eine kurze Zeile","checkProblems":{"one":"{file}: 1 Problem","other":"{file}: {n} Probleme"},"invalidFile":"{file} ist ungültig:","server":{"watching":"roadmap-live: beobachtet {file}","readUrl":"  lesen      {url}","writeUrl":"  schreiben  {url}   (diesen öffnen, um zu kommentieren)","stop":"  Strg+C zum Beenden","stopped":"roadmap-live: beendet","portInUse":"roadmap-live: Port {port} ist bereits belegt, versuche --port \u003cNummer>","updated":"aktualisiert ({items} Items, in Arbeit: {active})","none":"keins","invalid":"ungültig, der letzte gültige Stand bleibt:"},"auth":{"envToken":"Umgebungsvariable GITHUB_TOKEN","ghCli":"GitHub CLI (gh auth token)","stored":"Token gespeichert in {path}","deviceFlow":"Anmeldung im Browser (Device Flow)","openUrl":"Öffne {url} und gib den Code {code} ein","waiting":"Warte auf die Bestätigung im Browser...","success":"Bei GitHub angemeldet. Das Token liegt in {path}.","loggedOut":"Das gespeicherte GitHub-Token wurde entfernt.","nothingToLogout":"Es gibt kein gespeichertes GitHub-Token.","expired":"Der Code ist abgelaufen, bevor er bestätigt wurde. Führe roadmap-live auth erneut aus.","denied":"Die Anmeldung wurde im Browser abgebrochen.","noClientId":"Die Anmeldung im Browser ist in diesem Build nicht eingerichtet. Setze GITHUB_TOKEN, melde dich mit der GitHub CLI an (gh auth login) oder setze ROADMAP_GITHUB_CLIENT_ID auf die Client-ID einer GitHub-OAuth-App.","none":"Keine GitHub-Anmeldung gefunden: setze GITHUB_TOKEN, melde dich mit der GitHub CLI an (gh auth login) oder führe roadmap-live auth aus, um dich im Browser anzumelden."},"provider":{"anthropic":"Anthropic API (ANTHROPIC_API_KEY)","claude-cli":"Claude Code CLI (claude)","codex-cli":"Codex CLI (codex)","gemini-cli":"Gemini CLI (gemini)","agent":"dein Coding-Agent über .roadmap-live/inbox.json","unknown":"unbekannter Provider: {name}","notAvailable":"Provider {name} ist nicht verfügbar: {reason}"},"doctor":{"title":"roadmap-live doctor","roadmap":"Roadmap: {file}","roadmapMissing":"Roadmap: {file} (nicht gefunden, führe roadmap-live init aus)","repo":"Repository: {repo} ({source})","repoNone":"Repository: nicht gefunden. Setze sync.repo in roadmap.json oder übergib --repo owner/name.","repoSource":{"flag":"aus --repo","roadmap":"aus sync.repo","env":"aus GITHUB_REPOSITORY","git":"aus dem Git-Remote"},"credential":"GitHub-Anmeldung: {name}","credentialWhy":"  weil {reason}","credentialNone":"GitHub-Anmeldung: keine","provider":"Klassifizierung: {name}","providerWhy":"  weil {reason}","skipped":"  übersprungen {name}: {reason}","language":"Sprache: {lang} ({source})","languageSource":{"roadmap":"aus roadmap.json","env":"aus ROADMAP_LANG","system":"aus LANG","default":"Standard"},"theme":"Theme: {theme}"},"why":{"envSet":"{name} ist gesetzt","envUnset":"{name} ist nicht gesetzt","flag":"mit --provider gewählt","envProvider":"mit ROADMAP_PROVIDER gewählt","onPath":"{name} ist installiert und antwortet auf --version","notOnPath":"{name} ist nicht installiert oder antwortet nicht innerhalb von zwei Sekunden auf --version","ghLoggedIn":"gh ist installiert und angemeldet","ghNotLoggedIn":"gh ist nicht installiert oder nicht angemeldet","storedToken":"ein Token aus roadmap-live auth existiert","noStoredToken":"kein Token aus roadmap-live auth","fallback":"nichts anderes verfügbar ist"},"sync":{"repo":"Synchronisiere {repo} seit {since}","firstRun":"den letzten 30 Tagen (erster Lauf)","fetching":"Lade Pull Requests...","noActivity":"Keine neue Pull-Request-Aktivität.","prs":{"one":"1 Pull Request mit neuer Aktivität","other":"{n} Pull Requests mit neuer Aktivität"},"classifying":"Klassifiziere #{number} {title} mit {provider}...","skipped":"Übersprungen #{number}: {reason}","malformed":"der Provider hat zweimal keine gültige Klassifizierung geliefert","agentHandoff":"Dein Coding-Agent klassifiziert {n} Pull Requests beim nächsten Lauf. Danach: roadmap-live sync --apply","noInbox":"Es gibt nichts zu übernehmen: .roadmap-live/result.json existiert nicht. Führe zuerst roadmap-live sync aus.","noPending":"Die Pull-Request-Daten in .roadmap-live/pending.json fehlen. Führe roadmap-live sync erneut aus.","applied":"{n} Klassifizierungen aus .roadmap-live/result.json übernommen.","dryRun":"Probelauf, nichts wurde geschrieben.","planned":"Geplante Änderungen:","noChanges":"Keine Änderungen an der Roadmap.","wrote":"{file} und {changelog} geschrieben.","wroteRoadmap":"{file} geschrieben.","change":{"status":"{title}: {from} → {to} (PR #{number})","pr":"{title}: PR #{number} verknüpft","openPoint":"{title}: neuer offener Punkt aus PR #{number}","resolved":"{title}: offener Punkt erledigt (PR #{number})","unplanned":"Nicht auf der Roadmap: {title} (PR #{number})","unplannedRemoved":"Aus Ungeplant entfernt: {title} (PR #{number})"},"rateLimit":"GitHub-Rate-Limit erreicht, warte {seconds} Sekunden...","providerFailed":"Provider {name} ist fehlgeschlagen: {reason}"},"changelog":{"header":"# Changelog\n\nStatusänderungen, aufgezeichnet von roadmap-live sync. Eine Zeile pro Änderung.\n","line":"- {date}: {title} {from} → {to} ({url})"},"render":{"wrote":"{file} geschrieben (Theme {theme}, {lang})","unknownTheme":"unbekanntes Theme: {theme}. Eingebaut: {list}. Eigene Themes liegen in roadmap-themes/\u003cname>.css."},"init":{"wrote":"{file} geschrieben","exists":"{file} behalten (existiert bereits)","done":"Fertig. Als Nächstes: sag deinem Coding-Agenten, dass er AGENTS.md lesen soll. Dann roadmap-live zum Zuschauen oder roadmap-live sync, um Pull-Request-Aktivität zu übernehmen.","reading":"Lese das Repository (Commits: {commits}, Pull Requests: {prs}, README-Überschriften: {headings})","drafting":"Entwerfe die erste Roadmap mit {provider}","drafted":"Roadmap aus dem Repository entworfen (Meilensteine: {milestones}, Items: {items}). Ab hier pflegt sie dein Coding-Agent.","noSources":"Nichts, woraus sich eine Roadmap entwerfen ließe (keine Commits, Pull Requests oder README-Überschriften). Leere Roadmap geschrieben.","noProvider":"Kein Provider kann die Roadmap entwerfen (kein API-Key, kein Claude Code, Codex oder Gemini CLI). Leere Roadmap geschrieben; dein Coding-Agent füllt sie, sobald er AGENTS.md liest.","failed":"Roadmap konnte nicht entworfen werden ({reason}). Leere Roadmap geschrieben.","noPrs":"Pull Requests konnten nicht gelesen werden ({reason}), Entwurf nur aus Git-Historie und README"},"action":{"noKey":"anthropic_api_key ist leer: sync wird übersprungen, nur die Seite wird gerendert.","noPullsPermission":"Das Workflow-Token darf keine Pull Requests lesen. Ergänze \"pull-requests: read\" unter permissions im Workflow.","noWritePermission":"Das Workflow-Token darf nicht pushen. Ergänze \"contents: write\" unter permissions im Workflow.","nothingToCommit":"Nichts geändert, nichts zu committen.","committed":"{files} committet und gepusht.","commitMessage":"Roadmap aus Pull-Request-Aktivität aktualisieren"}}},"en":{"page":{"live":"live","updated":"updated {time}","updatedNever":"no activity yet","pr":"PR #{number}","prs":"PRs {list}","theme":{"system":"System","light":"Light","dark":"Dark"},"themeTitle":"Switch between light, dark and system","pickTheme":"Switch the theme ({list})","connected":"connected","disconnected":"disconnected","progress":"{done} of {total} done","todayDone":{"one":"1 done today","other":"{n} done today"},"milestoneTitle":"{title}: {done} of {total} done","milestoneComplete":"complete","filterOnly":"Only {title}","filterClear":"show all","since":{"title":"Since you last looked","empty":"Nothing new.","showAll":"show all {n}"},"feed":{"statusChange":"{title} moved to {status}","openPoint":"{title}: {text}","unplanned":"{title}","notOnRoadmap":"Not on the roadmap","stale":"stale","staleText":{"one":"{title}: no activity for 1 day","other":"{title}: no activity for {n} days"},"agent":"agent"},"now":{"inProgress":"In progress","inProgressN":"{n} items in progress","since":"since","idle":"Nothing in progress right now.","next":"Next up: {title}","allDone":"Everything is done.","summary":{"one":"1 milestone, {items} items.","other":"{n} milestones, {items} items."},"empty":"No items yet."},"history":{"title":"History","empty":"No changes yet."},"changelog":{"title":"Changelog","empty":"No entries yet."},"columns":{"todo":"Open","active":"In progress","done":"Done"},"blocked":"blocked","parallel":"{n} in parallel","empty":"No items","andMore":{"one":"and 1 more","other":"and {n} more"},"showAll":"show all","openPoints":{"one":"1 open point","other":"{n} open points"},"status":{"todo":"open","active":"in progress","blocked":"blocked","done":"done"},"change":{"done":"done","active":"started","blocked":"blocked","todo":"reopened","added":"added"},"footer":{"repo":"Repository","roadmap":"roadmap.json","builtWith":"Built with roadmap-live"},"invalid":"{file} is invalid, showing the last valid state.","noData":"no valid data yet","justNow":"just now","unplannedTitle":"Unplanned","waiting":{"title":"Waiting for you","hint":"Answering works on the live page"},"readOnly":"Read-only. To write, open the link with the key.","comments":{"count":{"one":"1 comment","other":"{n} comments"},"placeholder":"Tell the agent something…","add":"comment","send":"Send","sent":"sent","failed":"not sent, try again","you":"you","agent":"agent","show":"show","hide":"hide"},"git":{"ahead":{"one":"1 ahead of main","other":"{n} ahead of main"},"changed":{"one":"1 changed","other":"{n} changed"}},"share":{"button":"Share","copied":"Link copied","off":"The public page is off.","enable":"Turn on GitHub Pages","enabling":"Turning on…","enabled":"Turned on. The page appears within about a minute.","error":"Could not turn it on: {message}","title":"Copy the public link"},"views":{"milestones":"Milestones","board":"Board","focus":"Focus","timeline":"Timeline","conversations":"Conversations","points":"Open points","prs":"Pull requests","signals":"Signals","list":"List"},"viewTitle":"Switch the view","timeline":{"today":"today","yesterday":"yesterday","resolved":"resolved","sync":"sync","syncText":"Pull requests read from {repo}","empty":"Nothing has happened yet."},"conversations":{"unanswered":"unanswered","empty":"No conversations yet. Comments and questions show up here.","others":{"one":"1 item without a conversation","other":"{n} items without a conversation"}},"points":{"open":{"one":"1 open","other":"{n} open"},"resolved":{"one":"1 resolved","other":"{n} resolved"},"empty":"No open points. Reviewers have nothing outstanding."},"pullRequests":{"items":{"one":"1 item","other":"{n} items"},"review":"review","empty":"No pull requests linked yet."},"signals":{"questions":"Open questions","blocked":"Blocked","stale":"Gone quiet","unplanned":"Not on the roadmap","question":"question","calm":"Nothing needs you.","counts":"{active} in progress, {open} open, {done} done."},"list":{"status":"Status","title":"Item","milestone":"Milestone","pr":"PR","updated":"Updated","points":"Points","sortTitle":"Sort by {col}"},"milestoneCurrent":"current milestone","doneCount":{"one":"1 done","other":"{n} done"}},"cli":{"usage":"Usage: roadmap-live [command] [file] [options]\n\nCommands:\n  (none)                 start the live server (default)\n  sync                   read pull request activity from GitHub and update the roadmap\n  render                 write a static HTML page from the current state\n  init                   create roadmap.json (drafted from the repository), AGENTS.md and the workflow file\n  auth                   log in to GitHub in the browser (--logout removes the token)\n  doctor                 explain which GitHub credential and which provider would be used\n\nOptions:\n  file                   path to roadmap.json (default: ./roadmap.json)\n  --port \u003cn>             HTTP port for the live server (default: 4242)\n  --key \u003csecret>         write key for the live page (default: generated at start, or ROADMAP_KEY)\n  --check                validate the file and exit with 0 (ok) or 1 (problems)\n  --repo owner/name      repository for sync and init (default: sync.repo, GITHUB_REPOSITORY or the git remote)\n  --dry-run              sync: print the planned changes and write nothing\n  --apply                sync: apply .roadmap-live/result.json written by your coding agent\n  --no-bootstrap         init: write an empty roadmap instead of drafting one from the repository\n  --provider \u003cname>      sync, init: anthropic, claude-cli, codex-cli, gemini-cli or agent\n  --public               auth: ask for the public_repo scope only\n  --out \u003cpath>           render: output file (default: roadmap/index.html)\n  --theme \u003cname>         render: neutral, paper, mono or a file in roadmap-themes/\n  --mode light|dark      render: fix the color mode instead of following the system\n  -h, --help             show this help","unknownOption":"unknown option: {option}","unknownCommand":"unknown command: {command}","invalidPort":"invalid port: {port}","checkOk":"{file}: ok ({milestones} milestones, {items} items, {done} done, {active} active)","checkParallel":"note: {n} items are active at the same time","checkLarge":"note: {file} is {kb} KB, trim old comments and notes yourself (the agent never deletes comments) so the agent reads less","checkGoalDone":"note: \"{item}\" is done but its goal stands at {current}/{target}","checkGoalReached":"note: \"{item}\" reached its goal ({current}/{target}) but is still open","checkTagline":"note: the tagline is {length} characters, keep it at {max} or fewer so it stays one short line","checkProblems":{"one":"{file}: 1 problem","other":"{file}: {n} problems"},"invalidFile":"{file} is invalid:","server":{"watching":"roadmap-live: watching {file}","readUrl":"  read   {url}","writeUrl":"  write  {url}   (open this one to comment)","stop":"  press Ctrl+C to stop","stopped":"roadmap-live: stopped","portInUse":"roadmap-live: port {port} is already in use, try --port \u003cnumber>","updated":"updated ({items} items, active: {active})","none":"none","invalid":"invalid, keeping last valid state:"},"auth":{"envToken":"GITHUB_TOKEN environment variable","ghCli":"GitHub CLI (gh auth token)","stored":"token stored in {path}","deviceFlow":"browser login (device flow)","openUrl":"Open {url} and enter the code {code}","waiting":"Waiting for you to confirm in the browser...","success":"Logged in to GitHub. The token is stored in {path}.","loggedOut":"Removed the stored GitHub token.","nothingToLogout":"There is no stored GitHub token.","expired":"The code expired before it was confirmed. Run roadmap-live auth to try again.","denied":"Login was cancelled in the browser.","noClientId":"Browser login is not configured in this build. Set GITHUB_TOKEN, log in with the GitHub CLI (gh auth login), or set ROADMAP_GITHUB_CLIENT_ID to the client id of a GitHub OAuth app.","none":"No GitHub credentials found: set GITHUB_TOKEN, log in with the GitHub CLI (gh auth login), or run roadmap-live auth to log in in the browser."},"provider":{"anthropic":"Anthropic API (ANTHROPIC_API_KEY)","claude-cli":"Claude Code CLI (claude)","codex-cli":"Codex CLI (codex)","gemini-cli":"Gemini CLI (gemini)","agent":"your coding agent via .roadmap-live/inbox.json","unknown":"unknown provider: {name}","notAvailable":"provider {name} is not available: {reason}"},"doctor":{"title":"roadmap-live doctor","roadmap":"Roadmap: {file}","roadmapMissing":"Roadmap: {file} (not found, run roadmap-live init)","repo":"Repository: {repo} ({source})","repoNone":"Repository: not found. Set sync.repo in roadmap.json or pass --repo owner/name.","repoSource":{"flag":"from --repo","roadmap":"from sync.repo","env":"from GITHUB_REPOSITORY","git":"from the git remote"},"credential":"GitHub credential: {name}","credentialWhy":"  because {reason}","credentialNone":"GitHub credential: none","provider":"Classification provider: {name}","providerWhy":"  because {reason}","skipped":"  skipped {name}: {reason}","language":"Language: {lang} ({source})","languageSource":{"roadmap":"from roadmap.json","env":"from ROADMAP_LANG","system":"from LANG","default":"default"},"theme":"Theme: {theme}"},"why":{"envSet":"{name} is set","envUnset":"{name} is not set","flag":"chosen with --provider","envProvider":"chosen with ROADMAP_PROVIDER","onPath":"{name} is installed and answers to --version","notOnPath":"{name} is not installed or does not answer to --version within two seconds","ghLoggedIn":"gh is installed and logged in","ghNotLoggedIn":"gh is not installed or not logged in","storedToken":"a token from roadmap-live auth exists","noStoredToken":"no token from roadmap-live auth","fallback":"nothing else is available"},"sync":{"repo":"Syncing {repo} since {since}","firstRun":"the last 30 days (first run)","fetching":"Fetching pull requests...","noActivity":"No new pull request activity.","prs":{"one":"1 pull request with new activity","other":"{n} pull requests with new activity"},"classifying":"Classifying #{number} {title} with {provider}...","skipped":"Skipped #{number}: {reason}","malformed":"the provider returned no valid classification twice","agentHandoff":"Your coding agent will classify {n} pull requests on its next run. Then run: roadmap-live sync --apply","noInbox":"There is nothing to apply: .roadmap-live/result.json does not exist. Run roadmap-live sync first.","noPending":"The pending pull request data in .roadmap-live/pending.json is missing. Run roadmap-live sync again.","applied":"Applied {n} classifications from .roadmap-live/result.json.","dryRun":"Dry run, nothing was written.","planned":"Planned changes:","noChanges":"No changes to the roadmap.","wrote":"Wrote {file} and {changelog}.","wroteRoadmap":"Wrote {file}.","change":{"status":"{title}: {from} → {to} (PR #{number})","pr":"{title}: linked PR #{number}","openPoint":"{title}: new open point from PR #{number}","resolved":"{title}: open point resolved (PR #{number})","unplanned":"Not on the roadmap: {title} (PR #{number})","unplannedRemoved":"Removed from unplanned: {title} (PR #{number})"},"rateLimit":"GitHub rate limit reached, waiting {seconds} seconds...","providerFailed":"Provider {name} failed: {reason}"},"changelog":{"header":"# Changelog\n\nStatus changes recorded by roadmap-live sync. One line per change.\n","line":"- {date}: {title} {from} → {to} ({url})"},"render":{"wrote":"Wrote {file} ({theme} theme, {lang})","unknownTheme":"unknown theme: {theme}. Built in: {list}. Custom themes go in roadmap-themes/\u003cname>.css."},"init":{"wrote":"Wrote {file}","exists":"Kept {file} (already exists)","done":"Done. Next: tell your coding agent to read AGENTS.md, then run roadmap-live to watch, or roadmap-live sync to pull in pull request activity.","reading":"Reading the repository (commits: {commits}, pull requests: {prs}, README headings: {headings})","drafting":"Drafting the first roadmap with {provider}","drafted":"Drafted the roadmap from the repository (milestones: {milestones}, items: {items}). From here on your coding agent keeps it.","noSources":"Nothing to draft from (no commits, pull requests or README headings). Wrote an empty roadmap.","noProvider":"No provider can draft the roadmap (no API key, no Claude Code, Codex or Gemini CLI). Wrote an empty one; your coding agent fills it in when it reads AGENTS.md.","failed":"Could not draft the roadmap ({reason}). Wrote an empty one.","noPrs":"Could not read pull requests ({reason}), drafting from git history and the README only"},"action":{"noKey":"anthropic_api_key is empty: skipping sync and only rendering the page.","noPullsPermission":"The workflow token cannot read pull requests. Add \"pull-requests: read\" under permissions in the workflow.","noWritePermission":"The workflow token cannot push. Add \"contents: write\" under permissions in the workflow.","nothingToCommit":"Nothing changed, nothing to commit.","committed":"Committed and pushed {files}.","commitMessage":"Update roadmap from pull request activity"}}}}</script>
+<script>/*
+ * Shared page renderer. Runs in Node (static render, live server) and in the
+ * browser (live updates, language and filter changes). It renders HTML from a
+ * state object and a translator; it never touches the DOM or the filesystem.
+ *
+ * state = {
+ *   mode: 'live' | 'static',
+ *   data: roadmap | null, ok, error, file,
+ *   updatedAt, changes: [...],        live view
+ *   changelog: [lines], generatedAt,  static view
+ *   repoUrl, roadmapUrl
+ * }
+ * opts = { t, lang, now, filter, colorMode, theme, view, showAllDone, showAllFeed,
+ *          sort, open, expanded, pending, share, canWrite, changed }
+ */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.RoadmapView = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  var DEFAULT_STALE_DAYS = 7;
+  var FEED_MAX = 8;
+  var FEED_SHORT = 4;
+  // Views, in the order of the row above the content. Adding one: a render
+  // function, a case in renderView, an entry here, a label under
+  // page.views.<name> in the locales. Views that need synced data (prs,
+  // points) are listed only when the roadmap has such data; see availableViews.
+  var VIEWS = ['milestones', 'board', 'focus', 'timeline', 'conversations', 'points', 'prs', 'signals', 'list'];
+  var DONE_VISIBLE = 3;
+  var TIMELINE_SHORT = 40;
+  var LIST_COLS = ['status', 'title', 'milestone', 'pr', 'updated', 'points'];
+  // Columns whose first click sorts descending (newest, highest first).
+  var LIST_DESC_FIRST = { updated: true, pr: true, points: true };
+  var STATUS_ORDER = { blocked: 0, active: 1, todo: 2, done: 3 };
+
+  // ---- small helpers ------------------------------------------------------
+
+  function esc(s) {
+    return String(s === undefined || s === null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function get(obj, key) {
+    return key.split('.').reduce(function (o, k) { return o && o[k] !== undefined ? o[k] : undefined; }, obj);
+  }
+
+  function interpolate(str, params) {
+    return String(str).replace(/\{(\w+)\}/g, function (m, k) {
+      return params && params[k] !== undefined ? String(params[k]) : m;
+    });
+  }
+
+  function makeT(dict, fallback, lang) {
+    var rules = null;
+    try { rules = new Intl.PluralRules(lang || 'en'); } catch (e) { rules = null; }
+    var t = function (key, params) {
+      var value = get(dict, key);
+      if (value === undefined && fallback) value = get(fallback, key);
+      if (value === undefined) return key;
+      if (value && typeof value === 'object') {
+        var n = params && typeof params.n === 'number' ? params.n : 0;
+        var cat = rules ? rules.select(n) : (n === 1 ? 'one' : 'other');
+        value = value[cat] !== undefined ? value[cat] : value.other;
+      }
+      return interpolate(value, params);
+    };
+    t.lang = lang || 'en';
+    return t;
+  }
+
+  // Intl formatters are the expensive part of a render; one per language
+  // and option set serves every row.
+  var formatters = {};
+  function formatter(kind, lang, options) {
+    var key = kind + ':' + (lang || 'en') + ':' + JSON.stringify(options);
+    if (!formatters[key]) {
+      var Ctor = Intl[kind];
+      try { formatters[key] = new Ctor(lang || 'en', options); } catch (e) { formatters[key] = new Ctor('en', options); }
+    }
+    return formatters[key];
+  }
+
+  function relativeTime(iso, now, lang) {
+    var t = Date.parse(iso);
+    if (isNaN(t)) return '';
+    var diff = (t - now) / 1000;
+    var abs = Math.abs(diff);
+    var rtf = formatter('RelativeTimeFormat', lang, { numeric: 'auto' });
+    if (abs < 45) return rtf.format(0, 'second');
+    if (abs < 3600) return rtf.format(Math.round(diff / 60), 'minute');
+    if (abs < 86400) return rtf.format(Math.round(diff / 3600), 'hour');
+    if (abs < 86400 * 30) return rtf.format(Math.round(diff / 86400), 'day');
+    if (abs < 86400 * 365) return rtf.format(Math.round(diff / (86400 * 30)), 'month');
+    return rtf.format(Math.round(diff / (86400 * 365)), 'year');
+  }
+
+  function formatDateTime(iso, lang) {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    try { return formatter('DateTimeFormat', lang, { dateStyle: 'medium', timeStyle: 'short' }).format(d); } catch (e) { return d.toISOString(); }
+  }
+
+  function elapsed(iso, now) {
+    var t = Date.parse(iso);
+    if (isNaN(t)) return '';
+    var s = Math.max(0, Math.floor((now - t) / 1000));
+    var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    if (h >= 48) return Math.floor(h / 24) + 'd ' + (h % 24) + 'h';
+    return (h ? h + ':' + pad(m) : m) + ':' + pad(sec);
+  }
+
+  function isSameDay(iso, now) {
+    var d = new Date(iso), n = new Date(now);
+    return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
+  }
+
+  function time(iso, now, lang, cls) {
+    if (!iso) return '';
+    return '<time class="' + (cls || '') + '" datetime="' + esc(iso) + '" data-rel="' + esc(iso) + '" title="' + esc(formatDateTime(iso, lang)) + '">' + esc(relativeTime(iso, now, lang)) + '</time>';
+  }
+
+  function prFromSource(source) {
+    var m = /^pr:(\d+)/.exec(source || '');
+    return m ? Number(m[1]) : null;
+  }
+
+  function lastPr(item) {
+    return item.prs && item.prs.length ? item.prs[item.prs.length - 1] : null;
+  }
+
+  function prUrl(state, number) {
+    return state.repoUrl ? state.repoUrl + '/pull/' + number : null;
+  }
+
+  function prLabel(state, t, number) {
+    var text = t('page.pr', { number: number });
+    var url = prUrl(state, number);
+    return url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text);
+  }
+
+  // "#44, #45", each a link when the repository is known.
+  function prLinks(state, prs) {
+    return prs.map(function (n) { var u = prUrl(state, n); return u ? '<a href="' + esc(u) + '">#' + n + '</a>' : '#' + n; }).join(', ');
+  }
+
+  // "PR #44", or "PRs #44, #45" for items with several pull requests.
+  function prList(state, t, it) {
+    if (it.prs.length === 1) return prLabel(state, t, it.prs[0]);
+    return esc(t('page.prs', { list: '' })).trim() + ' ' + prLinks(state, it.prs);
+  }
+
+  // The GitHub address of the comment an open point came from. Sources look
+  // like pr:44#review_comment:2001, pr:42#comment:1893 or pr:42#review:7.
+  function pointUrl(state, source) {
+    var m = /^pr:(\d+)(?:#(review_comment|comment|review):(\d+))?/.exec(source || '');
+    if (!m) return null;
+    var base = prUrl(state, m[1]);
+    if (!base) return null;
+    if (m[2] === 'review_comment') return base + '#discussion_r' + m[3];
+    if (m[2] === 'comment') return base + '#issuecomment-' + m[3];
+    if (m[2] === 'review') return base + '#pullrequestreview-' + m[3];
+    return base;
+  }
+
+  function pointLabel(state, t, p) {
+    var n = prFromSource(p.source);
+    if (!n) return '';
+    var url = pointUrl(state, p.source);
+    var text = t('page.pr', { number: n });
+    return url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text);
+  }
+
+  function formatDay(iso, now, lang, t) {
+    var d = new Date(iso), n = new Date(now);
+    if (isNaN(d.getTime())) return '';
+    if (isSameDay(iso, now)) return t('page.timeline.today');
+    var y = new Date(now);
+    y.setDate(y.getDate() - 1);
+    if (isSameDay(iso, y.getTime())) return t('page.timeline.yesterday');
+    var o = { weekday: 'short', day: 'numeric', month: 'short' };
+    if (d.getFullYear() !== n.getFullYear()) o.year = 'numeric';
+    try { return formatter('DateTimeFormat', lang, o).format(d); } catch (e) { return d.toDateString(); }
+  }
+
+  function formatClock(iso, lang) {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    try { return formatter('DateTimeFormat', lang, { hour: '2-digit', minute: '2-digit' }).format(d); } catch (e) { return ''; }
+  }
+
+  // The views this roadmap can show. Pull requests and open points only
+  // exist after a sync; until then their views would be empty, so their
+  // names stay out of the row.
+  function availableViews(data) {
+    if (!data) return VIEWS.slice();
+    var hasPrs = data.items.some(function (it) { return it.prs && it.prs.length; }) || (data.unplanned || []).some(function (u) { return u.prs && u.prs.length; });
+    var hasPoints = data.items.some(function (it) { return it.open_points && it.open_points.length; });
+    return VIEWS.filter(function (v) { return v === 'prs' ? hasPrs : v === 'points' ? hasPoints : true; });
+  }
+
+  function resolveView(data, v) {
+    var avail = availableViews(data);
+    return avail.indexOf(v) >= 0 ? v : avail[0];
+  }
+
+  function visibleItems(data, opts) {
+    return opts.filter ? data.items.filter(function (it) { return it.milestone === opts.filter; }) : data.items;
+  }
+
+  function isOpen(opts, key) {
+    return !!(opts.open && opts.open[key]);
+  }
+
+  // A folded list that remembers being open across re-renders by its key.
+  function fold(opts, key, summary, body, cls, attrs) {
+    return '<details class="' + (cls ? cls + ' ' : '') + 'fold" data-key="' + esc(key) + '"' + (attrs || '') + (isOpen(opts, key) ? ' open' : '') + '><summary>' + summary + '</summary>' + body + '</details>';
+  }
+
+  function hasQuestion(it) {
+    return !!(it.question && it.question.text && openItem(it));
+  }
+
+  function milestoneIndex(data) {
+    var order = {}, titles = {};
+    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
+    return { order: order, titles: titles };
+  }
+
+  function sortedUnplanned(data) {
+    return (data.unplanned || []).slice().sort(function (a, b) { return (Date.parse(b.first_seen) || 0) - (Date.parse(a.first_seen) || 0); });
+  }
+
+  // One row of the shared grammar: mono label, text, mono time on the right.
+  // label and text are HTML, at is an ISO time.
+  function row(opts, label, text, at, labelCls) {
+    return '<li><span class="label' + (labelCls ? ' ' + labelCls : '') + '">' + label + '</span><span class="text">' + text + '</span><span class="when">' + time(at, opts.now, opts.lang) + '</span></li>';
+  }
+
+  // ---- derived data --------------------------------------------------------
+
+  function milestoneStats(data) {
+    var stats = data.milestones.map(function (m) {
+      var items = data.items.filter(function (it) { return it.milestone === m.id; });
+      var done = items.filter(function (it) { return it.status === 'done'; }).length;
+      return { m: m, total: items.length, done: done, complete: items.length > 0 && done === items.length };
+    });
+    var current = null;
+    for (var i = 0; i < stats.length; i++) {
+      if (stats[i].total > 0 && !stats[i].complete) { current = stats[i]; break; }
+    }
+    return { stats: stats, current: current };
+  }
+
+  function lastActivity(item) {
+    var times = [];
+    if (item.updated) times.push(Date.parse(item.updated));
+    (item.open_points || []).forEach(function (p) {
+      if (p.opened) times.push(Date.parse(p.opened));
+      if (p.resolved) times.push(Date.parse(p.resolved));
+    });
+    times = times.filter(function (x) { return !isNaN(x); });
+    return times.length ? Math.max.apply(null, times) : null;
+  }
+
+  // Stale: active or blocked, or linked to PRs and not done, with no activity
+  // for stale_after_days. Computed here, never stored.
+  function staleDays(item, now, staleAfter) {
+    var busy = item.status === 'active' || item.status === 'blocked' || (item.prs && item.prs.length && item.status !== 'done');
+    if (!busy) return 0;
+    var last = lastActivity(item);
+    if (last === null) return 0;
+    var days = Math.floor((now - last) / 86400000);
+    return days >= staleAfter ? days : 0;
+  }
+
+  function openPoints(item) {
+    return (item.open_points || []).filter(function (p) { return !p.resolved; });
+  }
+
+  function openItem(it) {
+    return it.status !== 'done';
+  }
+
+  function commentsOf(it, opts) {
+    var list = (it.comments || []).slice();
+    (opts.pending || []).forEach(function (p) {
+      if (p.id === it.id) list.push({ from: 'human', text: p.text, at: p.at, pending: true, failed: p.failed });
+    });
+    return list;
+  }
+
+  // "Since you last looked": newest first, max 8. Stale items come first
+  // because they are a current signal; the time on the right is the last
+  // activity.
+  function computeFeed(data, now, t) {
+    var staleAfter = data.stale_after_days || DEFAULT_STALE_DAYS;
+    var stale = [], rest = [];
+    data.items.forEach(function (it) {
+      var days = staleDays(it, now, staleAfter);
+      if (days) {
+        stale.push({ kind: 'stale', at: new Date(lastActivity(it)).toISOString(), label: t('page.feed.stale'), attention: true, text: t('page.feed.staleText', { n: days, title: it.title }), id: it.id });
+      }
+      if (it.updated && it.status !== 'todo') {
+        var pr = lastPr(it);
+        rest.push({ kind: 'status', at: it.updated, pr: pr, label: pr ? null : t('page.status.' + it.status), text: t('page.feed.statusChange', { title: it.title, status: t('page.status.' + it.status) }), id: it.id, attention: it.status === 'blocked' });
+      }
+      openPoints(it).forEach(function (p) {
+        rest.push({ kind: 'point', at: p.opened, pr: prFromSource(p.source), label: null, text: t('page.feed.openPoint', { title: it.title, text: p.text }), id: it.id });
+      });
+      (it.comments || []).forEach(function (c) {
+        if (c.from === 'agent' && openItem(it)) {
+          rest.push({ kind: 'comment', at: c.at, pr: null, label: t('page.feed.agent'), text: it.title + ': ' + c.text, id: it.id });
+        }
+      });
+    });
+    (data.unplanned || []).forEach(function (u) {
+      rest.push({ kind: 'unplanned', at: u.first_seen, pr: lastPr(u), label: null, text: t('page.feed.unplanned', { title: u.title }), tag: t('page.feed.notOnRoadmap'), attention: true });
+    });
+    var byTime = function (a, b) { return (Date.parse(b.at) || 0) - (Date.parse(a.at) || 0); };
+    stale.sort(byTime);
+    rest.sort(byTime);
+    return stale.concat(rest).slice(0, FEED_MAX);
+  }
+
+  // ---- sections ------------------------------------------------------------
+
+  function renderBanner(state, t) {
+    if (!state.error) return '';
+    return '<div class="banner"><strong>' + esc(t('page.invalid', { file: state.file || 'roadmap.json' })) + '</strong>\n' + esc(state.error) + '</div>';
+  }
+
+  function latestPr(data) {
+    var best = null;
+    data.items.forEach(function (it) { (it.prs || []).forEach(function (n) { if (best === null || n > best) best = n; }); });
+    (data.unplanned || []).forEach(function (u) { (u.prs || []).forEach(function (n) { if (best === null || n > best) best = n; }); });
+    return best;
+  }
+
+  function latestUpdate(data) {
+    var best = null;
+    data.items.forEach(function (it) {
+      var l = lastActivity(it);
+      if (l !== null && (best === null || l > best)) best = l;
+    });
+    if (data.sync && data.sync.last_run) {
+      var s = Date.parse(data.sync.last_run);
+      if (!isNaN(s) && (best === null || s > best)) best = s;
+    }
+    return best === null ? null : new Date(best).toISOString();
+  }
+
+  function renderHeader(state, opts) {
+    var t = opts.t;
+    var data = state.data;
+    var parts = [];
+    if (state.mode === 'live') {
+      parts.push('<span id="conn" class="conn off">' + esc(t('page.disconnected')) + '</span>');
+      parts.push('<span id="updated">' + (state.updatedAt ? esc(t('page.updated', { time: '' })).trim() + ' ' + time(state.updatedAt, opts.now, opts.lang) : esc(t('page.noData'))) + '</span>');
+      if (state.git && state.git.branch) {
+        var g = [esc(state.git.branch)];
+        if (state.git.ahead) g.push(esc(t('page.git.ahead', { n: state.git.ahead })));
+        if (state.git.changed) g.push(esc(t('page.git.changed', { n: state.git.changed })));
+        parts.push('<span class="sep">&middot;</span><span class="git">' + g.join(' &middot; ') + '</span>');
+      }
+    } else if (data) {
+      var upd = latestUpdate(data);
+      parts.push('<span>' + (upd ? esc(t('page.updated', { time: '' })).trim() + ' ' + time(upd, opts.now, opts.lang) : esc(t('page.updatedNever'))) + '</span>');
+      var pr = latestPr(data);
+      if (pr) parts.push('<span class="sep">&middot;</span><span>' + prLabel(state, t, pr) + '</span>');
+    }
+    if (opts.theme && state.themes && state.themes.length > 1) {
+      parts.push('<button type="button" class="theme" data-action="theme-name" title="' + esc(t('page.pickTheme', { list: state.themes.join(', ') })) + '">' + esc(opts.theme) + '</button>');
+    }
+    parts.push('<button type="button" class="theme" data-action="theme" title="' + esc(t('page.themeTitle')) + '">' + esc(t('page.theme.' + (opts.colorMode || 'system'))) + '</button>');
+    var canShare = state.mode !== 'live' || state.shareUrl || (state.pages && !state.pages.enabled);
+    if (canShare) parts.push('<button type="button" class="theme" data-action="share" title="' + esc(t('page.share.title')) + '">' + esc(t('page.share.button')) + '</button>');
+    var note = opts.share && opts.share.note;
+    if (note === 'copied') parts.push('<span class="share-note">' + esc(t('page.share.copied')) + '</span>');
+    else if (note === 'off') parts.push('<span class="share-note attention">' + esc(t('page.share.off')) + '<button type="button" data-action="enable-pages">' + esc(t('page.share.enable')) + '</button></span>');
+    else if (note === 'enabling') parts.push('<span class="share-note">' + esc(t('page.share.enabling')) + '</span>');
+    else if (note === 'enabled') parts.push('<span class="share-note">' + esc(t('page.share.enabled')) + '</span>');
+    else if (note === 'error') parts.push('<span class="share-note attention">' + esc(t('page.share.error', { message: opts.share.message || '' })) + '</span>');
+    return '<header class="top"><h1>' + esc(data ? data.project : 'roadmap-live') + '</h1><div class="meta">' + parts.join('') + '</div></header>';
+  }
+
+  function renderProgress(state, opts) {
+    var t = opts.t, data = state.data;
+    var info = milestoneStats(data);
+    var segs = info.stats.map(function (s) {
+      var cls = 'seg' + (s.complete ? ' is-done' : '') + (s === info.current ? ' is-current' : '') + (opts.filter === s.m.id ? ' is-filter' : '');
+      var pct = s.total ? (100 * s.done / s.total) : 0;
+      return '<div class="' + cls + '" role="button" tabindex="0" data-action="filter" data-id="' + esc(s.m.id) + '" aria-pressed="' + (opts.filter === s.m.id ? 'true' : 'false') + '" style="flex-grow:' + Math.max(s.total, 1) + '" title="' + esc(t('page.milestoneTitle', { title: s.m.title, done: s.done, total: s.total })) + '">' +
+        '<div class="track"><div class="fill" style="width:' + pct + '%"></div></div>' +
+        '<div class="info"><span class="name">' + esc(s.m.title) + '</span><span class="count">' + s.done + '/' + s.total + '</span></div></div>';
+    });
+    var total = data.items.length;
+    var done = data.items.filter(function (it) { return it.status === 'done'; }).length;
+    var pct = total ? Math.round(100 * done / total) : 0;
+    var today = data.items.filter(function (it) { return it.status === 'done' && it.updated && isSameDay(it.updated, opts.now); }).length;
+    var filterbar = '';
+    if (opts.filter) {
+      var ms = data.milestones.filter(function (m) { return m.id === opts.filter; })[0];
+      if (ms) filterbar = '<div class="filterbar"><span>' + esc(t('page.filterOnly', { title: ms.title })) + '</span><button type="button" data-action="clear-filter">' + esc(t('page.filterClear')) + '</button></div>';
+    }
+    return '<section class="progress"><div class="segments">' + segs.join('') + '</div>' +
+      '<div class="total"><span class="big">' + done + '/' + total + ' &middot; ' + pct + ' %</span>' + (today ? '<span class="today">' + esc(t('page.todayDone', { n: today })) + '</span>' : '') + '</div></section>' + filterbar;
+  }
+
+  function renderFeed(state, opts) {
+    var t = opts.t;
+    var feed = computeFeed(state.data, opts.now, t);
+    var rows = feed.map(function (e) {
+      var label = e.pr ? prLabel(state, t, e.pr) : esc(e.label || '');
+      return '<li data-kind="' + e.kind + '"><span class="label' + (e.attention ? ' attention' : '') + '">' + label + '</span>' +
+        '<span class="text">' + esc(e.text) + (e.tag ? '<span class="tag">' + esc(e.tag) + '</span>' : '') + '</span>' +
+        '<span class="when">' + time(e.at, opts.now, opts.lang) + '</span></li>';
+    });
+    var more = '';
+    if (!opts.showAllFeed && rows.length > FEED_SHORT) {
+      more = '<div class="more"><button type="button" data-action="more-feed">' + esc(t('page.since.showAll', { n: rows.length })) + '</button></div>';
+      rows = rows.slice(0, FEED_SHORT);
+    }
+    return '<section class="since"><h2 class="section">' + esc(t('page.since.title')) + '</h2>' +
+      (rows.length ? '<ul class="rows">' + rows.join('') + '</ul>' + more : '<div class="none">' + esc(t('page.since.empty')) + '</div>') + '</section>';
+  }
+
+  function renderWaiting(state, opts) {
+    var t = opts.t;
+    var asking = state.data.items.filter(hasQuestion);
+    if (!asking.length) return '';
+    var rows = asking.map(function (it) {
+      return '<li><span class="label attention">' + esc(it.title) + '</span><div class="q">' + renderQuestionBody(state, opts, it, false) + '</div></li>';
+    });
+    return '<section class="waiting"><h2 class="section">' + esc(t('page.waiting.title')) + '</h2><ul>' + rows.join('') + '</ul></section>';
+  }
+
+  // The question text with its answer buttons. inThread: the item's
+  // conversation follows and brings its own field and read-only hint.
+  function renderQuestionBody(state, opts, it, inThread) {
+    var t = opts.t, q = it.question;
+    var out = esc(q.text);
+    if (writable(state, opts)) {
+      out += '<div class="answers">';
+      (q.options || []).forEach(function (o) {
+        out += '<button type="button" data-action="answer" data-id="' + esc(it.id) + '" data-text="' + esc(o) + '">' + esc(o) + '</button>';
+      });
+      out += '</div>' + (inThread ? '' : renderCommentForm(it, t));
+    } else if (!inThread || state.mode !== 'live') {
+      out += '<div class="hint">' + esc(t(state.mode === 'live' ? 'page.readOnly' : 'page.waiting.hint')) + '</div>';
+    }
+    return out;
+  }
+
+  // A question inside an item block (focus, conversations).
+  function renderQuestion(state, opts, it) {
+    if (!hasQuestion(it)) return '';
+    return '<div class="q"><span class="label attention">' + esc(opts.t('page.signals.question')) + '</span>' + renderQuestionBody(state, opts, it, true) + '</div>';
+  }
+
+  // Writing needs the live page and the write key in the browser. The
+  // server renders without the key; the page re-renders once it holds one.
+  function writable(state, opts) {
+    return state.mode === 'live' && opts.canWrite === true;
+  }
+
+  function renderCommentForm(it, t) {
+    return '<form class="comment-form" data-id="' + esc(it.id) + '"><input name="text" type="text" maxlength="2000" autocomplete="off" placeholder="' + esc(t('page.comments.placeholder')) + '"><button type="submit">' + esc(t('page.comments.send')) + '</button></form>';
+  }
+
+  function renderConversation(state, opts, it) {
+    var t = opts.t;
+    var list = commentsOf(it, opts);
+    var items = list.map(function (c) {
+      var who = c.from === 'agent' ? t('page.comments.agent') : t('page.comments.you');
+      var when = c.pending ? esc(t(c.failed ? 'page.comments.failed' : 'page.comments.sent')) : time(c.at, opts.now, opts.lang);
+      var whenCls = 'when' + (c.failed ? ' attention' : '');
+      return '<li class="' + esc(c.from) + '"><span class="label">' + esc(who) + '</span><span class="text">' + esc(c.text) + '</span><span class="' + whenCls + '">' + when + '</span></li>';
+    });
+    var out = items.length ? '<ul class="conv">' + items.join('') + '</ul>' : '';
+    if (writable(state, opts)) out += renderCommentForm(it, t);
+    else if (state.mode === 'live') out += '<div class="hint">' + esc(t('page.readOnly')) + '</div>';
+    return out;
+  }
+
+  function renderNow(state, opts) {
+    var t = opts.t, data = state.data;
+    var titles = milestoneIndex(data).titles;
+    var active = data.items.filter(function (it) { return it.status === 'active'; });
+    if (state.mode !== 'live' && !active.length) return '';
+    var out = '<div id="now" class="now' + (active.length ? ' has-active' : '') + '">';
+    if (active.length) {
+      out += '<div class="eyebrow"><span>' + esc(active.length === 1 ? t('page.now.inProgress') : t('page.now.inProgressN', { n: active.length })) + '</span></div>';
+      active.forEach(function (it) {
+        out += '<div class="item"><div class="head"><div class="title">' + esc(it.title) + '</div>';
+        if (it.updated) out += '<div class="elapsed" data-since="' + esc(it.updated) + '"><small>' + esc(t('page.now.since')) + '</small><span>' + elapsed(it.updated, opts.now) + '</span></div>';
+        out += '</div><div class="sub"><span>' + esc(titles[it.milestone] || it.milestone) + '</span>';
+        if (it.updated) out += time(it.updated, opts.now, opts.lang);
+        out += '</div>';
+        if (it.note) out += '<p class="note">' + esc(it.note) + '</p>';
+        out += '</div>';
+      });
+    } else {
+      out += renderIdle(state, opts);
+    }
+    return out + '</div>';
+  }
+
+  // Nothing in progress: name the next open item of the current milestone,
+  // or of the given items when a milestone filter narrows the view.
+  function renderIdle(state, opts, items) {
+    var t = opts.t, data = state.data;
+    var next = null;
+    if (items) {
+      next = items.filter(function (it) { return it.status === 'todo'; })[0] || null;
+    } else {
+      var info = milestoneStats(data);
+      if (info.current) next = data.items.filter(function (it) { return it.status === 'todo' && it.milestone === info.current.m.id; })[0] || null;
+    }
+    var out = '<div class="eyebrow"><span>' + esc(next ? t('page.now.idle') : t('page.now.allDone')) + '</span></div><div class="idle">';
+    if (next) out += esc(t('page.now.next', { title: '' })).replace(/\s*$/, '') + ' <b>' + esc(next.title) + '</b>';
+    else if (data.items.length) out += esc(t('page.now.summary', { n: data.milestones.length, items: data.items.length }));
+    else out += esc(t('page.now.empty'));
+    return out + '</div>';
+  }
+
+  function renderHistory(state, opts) {
+    var t = opts.t;
+    var changes = state.changes || [];
+    var items = changes.map(function (c) {
+      var kind = c.from === null && c.to !== 'done' && c.to !== 'active' && c.to !== 'blocked' ? 'added' : c.to;
+      return '<li><span class="what" title="' + esc(c.title + ': ' + (c.from || '–') + ' → ' + c.to) + '">' + esc(c.title) + '<em>' + esc(t('page.change.' + kind)) + '</em></span><span class="when">' + time(c.at, opts.now, opts.lang) + '</span></li>';
+    });
+    return '<aside class="history"><h2 class="section">' + esc(t('page.history.title')) + '</h2><ul id="history">' +
+      (items.length ? items.join('') : '<li class="none">' + esc(t('page.history.empty')) + '</li>') + '</ul></aside>';
+  }
+
+  // mode: a board column ('todo', 'active', 'done') or 'focus'. Done sorts
+  // newest first, the active column puts blocked first, focus puts active
+  // first; everything else follows the milestone order.
+  function sortItems(items, order, mode) {
+    return items.slice().sort(function (a, b) {
+      if (mode === 'done') {
+        var ta = Date.parse(a.updated) || 0, tb = Date.parse(b.updated) || 0;
+        if (ta !== tb) return tb - ta;
+      }
+      if (mode === 'active' && a.status !== b.status) return STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
+      if (mode === 'focus' && a.status !== b.status) return (a.status === 'active' ? 0 : 1) - (b.status === 'active' ? 0 : 1);
+      return (order[a.milestone] || 0) - (order[b.milestone] || 0);
+    });
+  }
+
+  function renderItem(state, opts, it, titles) {
+    var t = opts.t;
+    var changed = opts.changed && opts.changed[it.id];
+    var sub = [];
+    if (it.prs && it.prs.length) sub.push('<span>' + prList(state, t, it) + '</span>');
+    if (it.branch) sub.push('<span>' + esc(it.branch) + '</span>');
+    var pts = openPoints(it).length;
+    if (pts) sub.push('<span>' + esc(t('page.openPoints', { n: pts })) + '</span>');
+    if ((!it.prs || !it.prs.length) && !opts.statusLabel) sub.push('<span>' + esc(titles[it.milestone] || it.milestone) + '</span>');
+    if (it.updated && it.status !== 'active') sub.push(time(it.updated, opts.now, opts.lang));
+    if (it.note) sub.push('<span class="note">' + esc(it.note) + '</span>');
+    var comments = commentsOf(it, opts);
+    var expanded = opts.expanded && opts.expanded[it.id];
+    if (openItem(it) && (comments.length || writable(state, opts))) {
+      var label = comments.length ? t('page.comments.count', { n: comments.length }) : t('page.comments.add');
+      sub.push('<button type="button" class="toggle" data-action="expand" data-id="' + esc(it.id) + '" aria-expanded="' + (expanded ? 'true' : 'false') + '">' + esc(label) + ' &middot; ' + esc(t(expanded ? 'page.comments.hide' : 'page.comments.show')) + '</button>');
+    } else if (comments.length) {
+      sub.push('<span>' + esc(t('page.comments.count', { n: comments.length })) + '</span>');
+    }
+    var thread = expanded && openItem(it) ? renderConversation(state, opts, it) : '';
+    return '<article class="item' + (changed ? ' flash' : '') + '" data-id="' + esc(it.id) + '" data-status="' + esc(it.status) + '">' +
+      '<div class="title">' + (opts.statusLabel ? '<span class="label status' + (it.status === 'blocked' ? ' attention' : '') + '">' + esc(t('page.status.' + it.status)) + '</span>' : '') + '<span>' + esc(it.title) + '</span>' + (!opts.statusLabel && it.status === 'blocked' ? '<span class="label attention">' + esc(t('page.blocked')) + '</span>' : '') + '</div>' +
+      (sub.length ? '<div class="sub">' + sub.join('') + '</div>' : '') + thread + '</article>';
+  }
+
+  function renderBoard(state, opts) {
+    var t = opts.t, data = state.data;
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
+    var visible = visibleItems(data, opts);
+    var cols = [
+      { key: 'todo', match: function (it) { return it.status === 'todo'; } },
+      { key: 'active', match: function (it) { return it.status === 'active' || it.status === 'blocked'; } },
+      { key: 'done', match: function (it) { return it.status === 'done'; } },
+    ];
+    var html = cols.map(function (col) {
+      var items = sortItems(visible.filter(col.match), order, col.key);
+      var hint = '';
+      if (col.key === 'active') {
+        var running = items.filter(function (it) { return it.status === 'active'; }).length;
+        if (running >= 2) hint = '<span class="hint">' + esc(t('page.parallel', { n: running })) + '</span>';
+      }
+      var shown = items;
+      var more = '';
+      if (col.key === 'done' && !opts.showAllDone && items.length > DONE_VISIBLE) {
+        shown = items.slice(0, DONE_VISIBLE);
+        more = '<div class="more"><button type="button" data-action="more-done">' + esc(t('page.andMore', { n: items.length - DONE_VISIBLE })) + '</button></div>';
+      }
+      var body = shown.length ? shown.map(function (it) { return renderItem(state, opts, it, titles); }).join('') : '<div class="empty">' + esc(t('page.empty')) + '</div>';
+      return '<section class="col ' + col.key + '" data-status="' + col.key + '"><header><h2>' + esc(t('page.columns.' + col.key)) + '</h2><span class="count">' + items.length + '</span>' + hint + '</header><div class="items">' + body + more + '</div></section>';
+    });
+    return '<main class="board">' + html.join('') + '</main>';
+  }
+
+  // One list per milestone: open items first with a status label, done
+  // items collapsed. Answers "where are we" without clicking.
+  function renderMilestones(state, opts) {
+    var t = opts.t, data = state.data;
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
+    var info = milestoneStats(data);
+    var itemOpts = Object.assign({}, opts, { statusLabel: true });
+    var sections = info.stats.filter(function (s) { return !opts.filter || s.m.id === opts.filter; }).map(function (s) {
+      var items = data.items.filter(function (it) { return it.milestone === s.m.id; });
+      var open = sortItems(items.filter(function (it) { return it.status !== 'done'; }), order, 'active');
+      var done = sortItems(items.filter(function (it) { return it.status === 'done'; }), order, 'done');
+      var cls = 'ms' + (s === info.current ? ' is-current' : '') + (s.complete ? ' is-done' : '');
+      var tag = s === info.current ? t('page.milestoneCurrent') : s.complete ? t('page.milestoneComplete') : '';
+      var out = '<section class="' + cls + '" data-milestone="' + esc(s.m.id) + '"><header><h2>' + esc(s.m.title) + '</h2><span class="count">' + s.done + '/' + s.total + '</span>' + (tag ? '<span class="label">' + esc(tag) + '</span>' : '') + '</header>';
+      if (open.length) out += '<div class="items">' + open.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>';
+      else if (!done.length) out += '<div class="empty">' + esc(t('page.empty')) + '</div>';
+      if (done.length) {
+        out += fold(opts, 'ms:' + s.m.id, esc(t('page.doneCount', { n: done.length })), '<div class="items">' + done.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>', 'ms-done', ' data-milestone="' + esc(s.m.id) + '"');
+      }
+      return out + '</section>';
+    });
+    if (!sections.length) return '<main class="milestones"><div class="empty">' + esc(t('page.now.empty')) + '</div></main>';
+    return '<main class="milestones">' + sections.join('') + '</main>';
+  }
+
+  // The active item as a whole block: title and timer large, then note,
+  // open points, question and conversation. Blocked items follow the active
+  // ones with the blocked label where the timer would be.
+  function renderFocus(state, opts) {
+    var t = opts.t, data = state.data;
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
+    var list = sortItems(visibleItems(data, opts).filter(function (it) { return it.status === 'active' || it.status === 'blocked'; }), order, 'focus');
+    if (!list.length) return '<main class="focus"><div class="now">' + renderIdle(state, opts, opts.filter ? visibleItems(data, opts) : null) + '</div></main>';
+    var out = list.map(function (it) {
+      var h = '<article class="item" data-id="' + esc(it.id) + '" data-status="' + esc(it.status) + '"><div class="head"><h2 class="title">' + esc(it.title) + '</h2>';
+      if (it.status === 'blocked') h += '<span class="label attention state">' + esc(t('page.blocked')) + '</span>';
+      else if (it.updated) h += '<div class="elapsed" data-since="' + esc(it.updated) + '"><small>' + esc(t('page.now.since')) + '</small><span>' + elapsed(it.updated, opts.now) + '</span></div>';
+      h += '</div>';
+      var sub = ['<span>' + esc(titles[it.milestone] || it.milestone) + '</span>'];
+      if (it.prs && it.prs.length) sub.push('<span>' + prList(state, t, it) + '</span>');
+      if (it.branch) sub.push('<span>' + esc(it.branch) + '</span>');
+      if (it.updated) sub.push(time(it.updated, opts.now, opts.lang));
+      h += '<div class="sub">' + sub.join('') + '</div>';
+      if (it.note) h += '<p class="note">' + esc(it.note) + '</p>';
+      var pts = openPoints(it);
+      if (pts.length) h += '<ul class="rows pts">' + pts.map(function (p) { return row(opts, pointLabel(state, t, p), esc(p.text), p.opened); }).join('') + '</ul>';
+      h += renderQuestion(state, opts, it);
+      h += renderConversation(state, opts, it);
+      return h + '</article>';
+    });
+    return '<main class="focus">' + out.join('') + '</main>';
+  }
+
+  // Everything with a time, newest first: status changes, open points
+  // opened and resolved, comments, questions, unplanned work, sync runs.
+  function computeTimeline(state, opts) {
+    var t = opts.t, data = state.data;
+    var rows = [];
+    visibleItems(data, opts).forEach(function (it) {
+      if (it.updated && it.status !== 'todo') {
+        var pr = lastPr(it);
+        rows.push({ kind: 'status', at: it.updated, label: pr ? prLabel(state, t, pr) : esc(t('page.status.' + it.status)), attention: it.status === 'blocked', text: esc(t('page.feed.statusChange', { title: it.title, status: t('page.status.' + it.status) })), id: it.id });
+      }
+      (it.open_points || []).forEach(function (p) {
+        var text = esc(t('page.feed.openPoint', { title: it.title, text: p.text }));
+        if (p.opened) rows.push({ kind: 'point', at: p.opened, label: pointLabel(state, t, p), text: text, id: it.id });
+        if (p.resolved) rows.push({ kind: 'resolved', at: p.resolved, label: pointLabel(state, t, p), text: text, tag: t('page.timeline.resolved'), quiet: true, id: it.id });
+      });
+      (it.comments || []).forEach(function (c) {
+        rows.push({ kind: 'comment', at: c.at, label: esc(t(c.from === 'agent' ? 'page.comments.agent' : 'page.comments.you')), text: esc(it.title + ': ' + c.text), quiet: c.from === 'agent', id: it.id });
+      });
+      if (hasQuestion(it) && it.question.asked) {
+        rows.push({ kind: 'question', at: it.question.asked, label: esc(t('page.signals.question')), attention: true, text: esc(it.title + ': ' + it.question.text), id: it.id });
+      }
+    });
+    if (!opts.filter) {
+      (data.unplanned || []).forEach(function (u) {
+        var pr = lastPr(u);
+        rows.push({ kind: 'unplanned', at: u.first_seen, label: pr ? prLabel(state, t, pr) : esc(t('page.unplannedTitle')), attention: true, text: esc(u.title), tag: t('page.feed.notOnRoadmap') });
+      });
+      if (data.sync && data.sync.last_run) {
+        rows.push({ kind: 'sync', at: data.sync.last_run, label: esc(t('page.timeline.sync')), text: esc(t('page.timeline.syncText', { repo: data.sync.repo || '' })), quiet: true });
+      }
+    }
+    rows = rows.filter(function (r) { return !isNaN(Date.parse(r.at)); });
+    rows.sort(function (a, b) { return Date.parse(b.at) - Date.parse(a.at); });
+    return rows;
+  }
+
+  // Rows grouped by the viewer's local day, newest day first.
+  function daySections(rows, opts) {
+    var t = opts.t, days = [];
+    rows.forEach(function (r) {
+      var k = new Date(r.at).toDateString();
+      if (!days.length || days[days.length - 1].key !== k) days.push({ key: k, at: r.at, rows: [] });
+      days[days.length - 1].rows.push(r);
+    });
+    return days.map(function (d) {
+      return '<section class="day"><h2>' + esc(formatDay(d.at, opts.now, opts.lang, t)) + '</h2><ul>' + d.rows.map(function (r) {
+        return '<li data-kind="' + r.kind + '"' + (r.quiet ? ' class="is-quiet"' : '') + '><time class="at" datetime="' + esc(r.at) + '" title="' + esc(formatDateTime(r.at, opts.lang)) + '">' + esc(formatClock(r.at, opts.lang)) + '</time>' +
+          '<span class="label' + (r.attention ? ' attention' : '') + '">' + r.label + '</span>' +
+          '<span class="text">' + r.text + (r.tag ? '<span class="tag' + (r.attention ? '' : ' quiet') + '">' + esc(r.tag) + '</span>' : '') + '</span></li>';
+      }).join('') + '</ul></section>';
+    }).join('');
+  }
+
+  // The first 40 rows stand open; the rest fold away in a native <details>,
+  // so the static page shows everything without JavaScript.
+  function renderTimeline(state, opts) {
+    var t = opts.t;
+    var rows = computeTimeline(state, opts);
+    if (!rows.length) return '<main class="timeline"><div class="empty">' + esc(t('page.timeline.empty')) + '</div></main>';
+    var out = '<main class="timeline">' + daySections(rows.slice(0, TIMELINE_SHORT), opts);
+    if (rows.length > TIMELINE_SHORT) out += fold(opts, 'timeline:more', esc(t('page.since.showAll', { n: rows.length })), daySections(rows.slice(TIMELINE_SHORT), opts));
+    return out + '</main>';
+  }
+
+  function lastComment(it) {
+    var c = it.comments || [];
+    return c.length ? c[c.length - 1] : null;
+  }
+
+  // Open items with a thread or a question: questions first, then threads
+  // waiting for the agent, then by the last comment. On the live page with
+  // the key, the remaining open items fold away below to start a thread.
+  function renderConversations(state, opts) {
+    var t = opts.t, data = state.data;
+    var titles = milestoneIndex(data).titles;
+    var open = visibleItems(data, opts).filter(openItem);
+    var withThread = open.filter(function (it) { return commentsOf(it, opts).length || hasQuestion(it); });
+    var rank = function (it) {
+      if (hasQuestion(it)) return 0;
+      var last = lastComment(it);
+      return last && last.from === 'human' ? 1 : 2;
+    };
+    var lastAt = function (it) {
+      var list = commentsOf(it, opts);
+      var last = list[list.length - 1];
+      if (last) return Date.parse(last.at) || 0;
+      return hasQuestion(it) ? Date.parse(it.question.asked) || 0 : 0;
+    };
+    withThread.sort(function (a, b) {
+      var ra = rank(a), rb = rank(b);
+      return ra !== rb ? ra - rb : lastAt(b) - lastAt(a);
+    });
+    var out = withThread.map(function (it) {
+      var last = lastComment(it);
+      var unanswered = last && last.from === 'human' && !hasQuestion(it);
+      var h = '<article class="item" data-id="' + esc(it.id) + '" data-status="' + esc(it.status) + '">' +
+        '<div class="title"><span>' + esc(it.title) + '</span>' + (unanswered ? '<span class="label">' + esc(t('page.conversations.unanswered')) + '</span>' : '') + '</div>' +
+        '<div class="sub"><span>' + esc(titles[it.milestone] || it.milestone) + '</span><span' + (it.status === 'blocked' ? ' class="attention"' : '') + '>' + esc(t('page.status.' + it.status)) + '</span></div>';
+      h += renderQuestion(state, opts, it);
+      h += renderConversation(state, opts, it);
+      return h + '</article>';
+    });
+    var body = out.length ? out.join('') : '<div class="empty">' + esc(t('page.conversations.empty')) + '</div>';
+    if (writable(state, opts)) {
+      var others = open.filter(function (it) { return withThread.indexOf(it) < 0; });
+      if (others.length) {
+        var itemOpts = Object.assign({}, opts, { statusLabel: true });
+        body += fold(opts, 'conv:others', esc(t('page.conversations.others', { n: others.length })), '<div class="items">' + others.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>');
+      }
+    }
+    return '<main class="conversations">' + body + '</main>';
+  }
+
+  // Reviewer requests grouped by item: items with open points first, oldest
+  // open point on top; resolved points fold away per item.
+  function renderPoints(state, opts) {
+    var t = opts.t, data = state.data;
+    var titles = milestoneIndex(data).titles;
+    var items = visibleItems(data, opts).filter(function (it) { return it.open_points && it.open_points.length; });
+    var oldestOpen = function (it) {
+      var o = openPoints(it).map(function (p) { return Date.parse(p.opened) || 0; });
+      return o.length ? Math.min.apply(null, o) : null;
+    };
+    var lastResolved = function (it) { return Math.max.apply(null, [0].concat((it.open_points || []).map(function (p) { return Date.parse(p.resolved) || 0; }))); };
+    items.sort(function (a, b) {
+      var oa = oldestOpen(a), ob = oldestOpen(b);
+      if ((oa === null) !== (ob === null)) return oa === null ? 1 : -1;
+      if (oa !== null) return oa - ob;
+      return lastResolved(b) - lastResolved(a);
+    });
+    var anyOpen = false;
+    var out = items.map(function (it) {
+      var open = openPoints(it), resolved = (it.open_points || []).filter(function (p) { return p.resolved; });
+      if (open.length) anyOpen = true;
+      var h = '<section class="group' + (open.length ? '' : ' is-done') + '" data-id="' + esc(it.id) + '"><header><h2>' + esc(it.title) + '</h2><span class="meta">' + esc(titles[it.milestone] || it.milestone) + '</span>' + (open.length ? '<span class="meta">' + esc(t('page.points.open', { n: open.length })) + '</span>' : '') + '</header>';
+      if (open.length) h += '<ul class="rows pts">' + open.map(function (p) { return row(opts, pointLabel(state, t, p), esc(p.text), p.opened); }).join('') + '</ul>';
+      if (resolved.length) {
+        h += fold(opts, 'pt:' + it.id, esc(t('page.points.resolved', { n: resolved.length })), '<ul class="rows pts resolved">' + resolved.map(function (p) { return row(opts, pointLabel(state, t, p), esc(p.text), p.resolved); }).join('') + '</ul>');
+      }
+      return h + '</section>';
+    });
+    return '<main class="points">' + (anyOpen ? '' : '<div class="empty">' + esc(t('page.points.empty')) + '</div>') + out.join('') + '</main>';
+  }
+
+  // Grouped by pull request number, newest first: linked items with their
+  // status, then the reviewer points from that pull request, then unplanned
+  // work it brought. The page knows no PR state and claims none.
+  function renderPrs(state, opts) {
+    var t = opts.t, data = state.data;
+    var titles = milestoneIndex(data).titles;
+    var groups = {};
+    var group = function (n) { return groups[n] || (groups[n] = { items: [], points: [], unplanned: [] }); };
+    visibleItems(data, opts).forEach(function (it) {
+      (it.prs || []).forEach(function (n) { group(n).items.push(it); });
+      (it.open_points || []).forEach(function (p) { var n = prFromSource(p.source); if (n) group(n).points.push({ p: p, it: it }); });
+    });
+    if (!opts.filter) (data.unplanned || []).forEach(function (u) { (u.prs || []).forEach(function (n) { group(n).unplanned.push(u); }); });
+    var numbers = Object.keys(groups).map(Number).sort(function (a, b) { return b - a; });
+    if (!numbers.length) return '<main class="prs"><div class="empty">' + esc(t('page.pullRequests.empty')) + '</div></main>';
+    var out = numbers.map(function (n) {
+      var g = groups[n];
+      var open = g.points.filter(function (x) { return !x.p.resolved; }), resolved = g.points.filter(function (x) { return x.p.resolved; });
+      var h = '<section class="group" data-pr="' + n + '"><header><h2>' + prLabel(state, t, n) + '</h2>' +
+        (g.items.length ? '<span class="meta">' + esc(t('page.pullRequests.items', { n: g.items.length })) + '</span>' : '') +
+        (open.length ? '<span class="meta">' + esc(t('page.points.open', { n: open.length })) + '</span>' : '') + '</header>';
+      if (g.items.length) {
+        h += '<ul class="rows">' + g.items.map(function (it) {
+          return '<li><span class="label' + (it.status === 'blocked' ? ' attention' : '') + '">' + esc(t('page.status.' + it.status)) + '</span><span class="text">' + esc(it.title) + '</span><span class="when">' + esc(titles[it.milestone] || it.milestone) + '</span></li>';
+        }).join('') + '</ul>';
+      }
+      if (g.unplanned.length) h += '<ul class="rows">' + g.unplanned.map(function (u) { return row(opts, esc(t('page.unplannedTitle')), esc(u.title) + '<span class="tag">' + esc(t('page.feed.notOnRoadmap')) + '</span>', u.first_seen, 'attention'); }).join('') + '</ul>';
+      if (open.length) h += '<ul class="rows pts">' + open.map(function (x) { return row(opts, esc(t('page.pullRequests.review')), esc(x.it.title + ': ' + x.p.text), x.p.opened); }).join('') + '</ul>';
+      if (resolved.length) {
+        h += fold(opts, 'pr:' + n, esc(t('page.points.resolved', { n: resolved.length })), '<ul class="rows pts resolved">' + resolved.map(function (x) { return row(opts, esc(t('page.pullRequests.review')), esc(x.it.title + ': ' + x.p.text), x.p.resolved); }).join('') + '</ul>');
+      }
+      return h + '</section>';
+    });
+    return '<main class="prs">' + out.join('') + '</main>';
+  }
+
+  // Only what needs the human: questions, blocked, stale, unplanned. Empty
+  // is the message.
+  function renderSignals(state, opts) {
+    var t = opts.t, data = state.data;
+    var staleAfter = data.stale_after_days || DEFAULT_STALE_DAYS;
+    var items = visibleItems(data, opts);
+    var lists = [];
+    var asking = items.filter(hasQuestion);
+    if (asking.length) lists.push({ key: 'questions', rows: asking.map(function (it) { return row(opts, esc(t('page.signals.question')), esc(it.title + ': ' + it.question.text), it.question.asked, 'attention'); }) });
+    var blocked = items.filter(function (it) { return it.status === 'blocked'; });
+    if (blocked.length) lists.push({ key: 'blocked', rows: blocked.map(function (it) { var pr = lastPr(it); return row(opts, pr ? prLabel(state, t, pr) : esc(t('page.blocked')), esc(it.title) + (it.note ? '<span class="note">' + esc(it.note) + '</span>' : ''), it.updated, 'attention'); }) });
+    var stale = items.map(function (it) { return { it: it, days: staleDays(it, opts.now, staleAfter) }; }).filter(function (x) { return x.days; }).sort(function (a, b) { return b.days - a.days; });
+    if (stale.length) lists.push({ key: 'stale', rows: stale.map(function (x) { return row(opts, esc(t('page.feed.stale')), esc(t('page.feed.staleText', { n: x.days, title: x.it.title })), new Date(lastActivity(x.it)).toISOString(), 'attention'); }) });
+    var unplanned = opts.filter ? [] : sortedUnplanned(data);
+    if (unplanned.length) lists.push({ key: 'unplanned', rows: unplanned.map(function (u) { var pr = lastPr(u); return row(opts, pr ? prLabel(state, t, pr) : esc(t('page.unplannedTitle')), esc(u.title), u.first_seen, 'attention'); }) });
+    if (!lists.length) {
+      var count = function (s) { return items.filter(function (it) { return it.status === s; }).length; };
+      return '<main class="signals"><div class="calm"><p class="big">' + esc(t('page.signals.calm')) + '</p><p class="counts">' + esc(t('page.signals.counts', { active: count('active'), open: count('todo'), done: count('done') })) + '</p></div></main>';
+    }
+    return '<main class="signals">' + lists.map(function (l) {
+      return '<section class="sig" data-kind="' + l.key + '"><h2 class="section attention">' + esc(t('page.signals.' + l.key)) + '</h2><ul class="rows">' + l.rows.join('') + '</ul></section>';
+    }).join('') + '</main>';
+  }
+
+  // Every item as one table row. Default order: milestone, then blocked,
+  // in progress, open, done. A column header sorts; opts.sort = { key, dir }.
+  function renderList(state, opts) {
+    var t = opts.t, data = state.data;
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
+    var items = visibleItems(data, opts).slice();
+    if (!items.length) return '<main class="list-view"><div class="empty">' + esc(t('page.empty')) + '</div></main>';
+    var sort = opts.sort && LIST_COLS.indexOf(opts.sort.key) >= 0 ? opts.sort : null;
+    var keyOf = {
+      status: function (it) { return STATUS_ORDER[it.status] || 0; },
+      title: function (it) { return String(it.title).toLowerCase(); },
+      milestone: function (it) { return order[it.milestone] || 0; },
+      pr: function (it) { return lastPr(it) || 0; },
+      updated: function (it) { return Date.parse(it.updated) || 0; },
+      points: function (it) { return openPoints(it).length; },
+    };
+    items.sort(function (a, b) {
+      if (sort) {
+        var ka = keyOf[sort.key](a), kb = keyOf[sort.key](b);
+        if (ka !== kb) return (ka < kb ? -1 : 1) * (sort.dir === 'desc' ? -1 : 1);
+      }
+      var d = (order[a.milestone] || 0) - (order[b.milestone] || 0);
+      return d || (STATUS_ORDER[a.status] || 0) - (STATUS_ORDER[b.status] || 0);
+    });
+    var head = LIST_COLS.map(function (c) {
+      var active = sort && sort.key === c;
+      return '<th class="c-' + c + '"' + (active ? ' aria-sort="' + (sort.dir === 'desc' ? 'descending' : 'ascending') + '"' : '') + '><button type="button" data-action="sort" data-key="' + c + '" data-dir="' + (LIST_DESC_FIRST[c] ? 'desc' : 'asc') + '" title="' + esc(t('page.list.sortTitle', { col: t('page.list.' + c) })) + '">' + esc(t('page.list.' + c)) + '</button></th>';
+    }).join('');
+    var rows = items.map(function (it) {
+      var pts = openPoints(it).length;
+      return '<tr data-id="' + esc(it.id) + '"' + (it.status === 'done' ? ' class="is-done"' : '') + '>' +
+        '<td class="c-status mono' + (it.status === 'blocked' ? ' attention' : '') + '">' + esc(t('page.status.' + it.status)) + '</td>' +
+        '<td class="c-title">' + esc(it.title) + '</td>' +
+        '<td class="c-milestone mono">' + esc(titles[it.milestone] || it.milestone) + '</td>' +
+        '<td class="c-pr mono">' + (it.prs && it.prs.length ? prLinks(state, it.prs) : '') + '</td>' +
+        '<td class="c-updated mono">' + (it.updated ? time(it.updated, opts.now, opts.lang) : '') + '</td>' +
+        '<td class="c-points mono">' + (pts || '') + '</td></tr>';
+    });
+    return '<main class="list-view"><table class="list"><thead><tr>' + head + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></main>';
+  }
+
+  // The row of view names above the content. Links, so every view has an
+  // address: the live server renders the named view before any script runs,
+  // the browser switches in place, the static page switches once its script
+  // has run.
+  function renderViewsNav(state, opts, current) {
+    var t = opts.t;
+    return '<nav class="views" aria-label="' + esc(t('page.viewTitle')) + '">' + availableViews(state.data).map(function (v) {
+      return '<a href="?view=' + esc(v) + '" data-action="view" data-view="' + esc(v) + '"' + (v === current ? ' aria-current="page"' : '') + '>' + esc(t('page.views.' + v)) + '</a>';
+    }).join('') + '</nav>';
+  }
+
+  function renderView(state, opts, v) {
+    switch (v) {
+      case 'board': return renderBoard(state, opts);
+      case 'focus': return renderFocus(state, opts);
+      case 'timeline': return renderTimeline(state, opts);
+      case 'conversations': return renderConversations(state, opts);
+      case 'points': return renderPoints(state, opts);
+      case 'prs': return renderPrs(state, opts);
+      case 'signals': return renderSignals(state, opts);
+      case 'list': return renderList(state, opts);
+      default: return renderMilestones(state, opts);
+    }
+  }
+
+  function renderUnplanned(state, opts) {
+    var t = opts.t;
+    var list = sortedUnplanned(state.data);
+    if (!list.length) return '';
+    var rows = list.map(function (u) {
+      var pr = lastPr(u);
+      return '<li><span class="label attention">' + (pr ? prLabel(state, t, pr) : esc(t('page.feed.notOnRoadmap'))) + '</span><span class="text">' + esc(u.title) + '</span><span class="when">' + time(u.first_seen, opts.now, opts.lang) + '</span></li>';
+    });
+    return '<section class="unplanned"><h2 class="section">' + esc(t('page.unplannedTitle')) + ' &middot; ' + esc(t('page.feed.notOnRoadmap')) + '</h2><ul class="rows">' + rows.join('') + '</ul></section>';
+  }
+
+  function renderChangelog(state, opts) {
+    var t = opts.t;
+    var lines = (state.changelog || []).map(function (l) { return l.replace(/^\s*[-*]\s+/, ''); });
+    return '<section class="changelog"><h2 class="section">' + esc(t('page.changelog.title')) + '</h2>' +
+      (lines.length ? '<ul>' + lines.map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' : '<div class="none">' + esc(t('page.changelog.empty')) + '</div>') + '</section>';
+  }
+
+  function renderFooter(state, opts) {
+    var t = opts.t;
+    var parts = [];
+    if (state.repoUrl) parts.push('<a href="' + esc(state.repoUrl) + '">' + esc(t('page.footer.repo')) + '</a>');
+    if (state.roadmapUrl) parts.push('<a href="' + esc(state.roadmapUrl) + '">' + esc(t('page.footer.roadmap')) + '</a>');
+    parts.push('<a href="https://github.com/marvrue/roadmap-live">' + esc(t('page.footer.builtWith')) + '</a>');
+    return '<footer class="foot">' + parts.join('') + '</footer>';
+  }
+
+  // ---- page ----------------------------------------------------------------
+
+  function renderApp(state, opts) {
+    var out = renderBanner(state, opts.t);
+    if (!state.data) {
+      return out + renderHeader(state, opts) + renderFooter(state, opts);
+    }
+    var v = resolveView(state.data, opts.view);
+    out += renderHeader(state, opts);
+    out += renderProgress(state, opts);
+    out += renderFeed(state, opts);
+    // Conversations show the questions in their threads, focus is the now
+    // block at full size (the live history steps aside with it; the timeline
+    // holds the file's history), signals list the unplanned work: no duplicates.
+    if (v !== 'conversations') out += renderWaiting(state, opts);
+    if (v !== 'focus') {
+      var now = renderNow(state, opts);
+      if (state.mode === 'live') out += '<section class="live">' + now + renderHistory(state, opts) + '</section>';
+      else if (now) out += '<section class="live single">' + now + '</section>';
+    }
+    out += renderViewsNav(state, opts, v);
+    out += renderView(state, opts, v);
+    if (v !== 'signals') out += renderUnplanned(state, opts);
+    if (state.mode !== 'live') out += renderChangelog(state, opts);
+    out += renderFooter(state, opts);
+    return out;
+  }
+
+  function progressPercent(data) {
+    var total = data.items.length;
+    var done = data.items.filter(function (it) { return it.status === 'done'; }).length;
+    return total ? Math.round(100 * done / total) : 0;
+  }
+
+  return {
+    renderApp: renderApp,
+    VIEWS: VIEWS,
+    availableViews: availableViews,
+    resolveView: resolveView,
+    computeFeed: computeFeed,
+    computeTimeline: computeTimeline,
+    milestoneStats: milestoneStats,
+    staleDays: staleDays,
+    lastActivity: lastActivity,
+    progressPercent: progressPercent,
+    makeT: makeT,
+    relativeTime: relativeTime,
+    formatDateTime: formatDateTime,
+    elapsed: elapsed,
+    esc: esc,
+    DEFAULT_STALE_DAYS: DEFAULT_STALE_DAYS,
+  };
+});
+</script>
+<script>/*
+ * Browser bootstrap for both the static and the live page. Reads the embedded
+ * state and locales, picks the language, remembers the color mode, renders
+ * with RoadmapView and keeps relative times ticking. The live page adds
+ * live.js on top, which feeds new snapshots into RoadmapPage.setState.
+ */
+(function () {
+  'use strict';
+  var V = window.RoadmapView;
+  var app = document.getElementById('app');
+  var read = function (id) {
+    var el = document.getElementById(id);
+    try { return el ? JSON.parse(el.textContent) : null; } catch (e) { return null; }
+  };
+  var state = read('roadmap-state') || { mode: 'static', data: null };
+  var locales = read('roadmap-locales') || {};
+  var MODE_KEY = 'roadmap-live-mode';
+  var THEME_KEY = 'roadmap-live-theme';
+  var themes = Array.isArray(state.themes) ? state.themes : [];
+  var theme = state.theme || themes[0] || null;
+  // Where the page's own routes live (data, events, comment). The server
+  // sets it when it renders the page; a host serving under /p/<id>/ passes
+  // that path. Always ends with a slash.
+  var base = typeof state.base === 'string' && state.base.charAt(0) === '/' ? state.base : '/';
+  var MODES = ['system', 'light', 'dark'];
+
+  // ---- write key: ?key=... once, then remembered per page in this browser --
+  // The plain address is read-only. The address with ?key= (printed by the
+  // server, or the hosted page's write link) stores the key and drops it from
+  // the address bar; from then on the short address writes in this browser.
+  var KEY_STORE = 'roadmap-live-key:' + base;
+  var key = null;
+  try {
+    var params = new URLSearchParams(location.search);
+    if (params.has('key')) {
+      key = params.get('key') || null;
+      params.delete('key');
+      var rest = params.toString();
+      history.replaceState(null, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+      if (key) localStorage.setItem(KEY_STORE, key); else localStorage.removeItem(KEY_STORE);
+    } else {
+      key = localStorage.getItem(KEY_STORE) || null;
+    }
+  } catch (e) { /* no storage: the key lives for this page load only */ }
+  function forgetKey() {
+    key = null;
+    try { localStorage.removeItem(KEY_STORE); } catch (e) { /* ignore */ }
+  }
+
+  // ---- language: ?lang, then roadmap.json / ROADMAP_LANG, then the browser
+  function pickLang() {
+    var available = Object.keys(locales);
+    var norm = function (v) {
+      if (!v) return null;
+      var base = String(v).toLowerCase().split(/[-_.]/)[0];
+      return available.indexOf(base) >= 0 ? base : null;
+    };
+    var q = null;
+    try { q = new URLSearchParams(location.search).get('lang'); } catch (e) { q = null; }
+    return norm(q) || norm(state.fixedLang) || norm(navigator.language) || (navigator.languages || []).map(norm).filter(Boolean)[0] || 'en';
+  }
+  var lang = pickLang();
+  var t = V.makeT(locales[lang] || locales.en || {}, locales.en, lang);
+  document.documentElement.setAttribute('lang', lang);
+
+  // ---- color mode ------------------------------------------------------------
+  var colorMode = 'system';
+  try { colorMode = localStorage.getItem(MODE_KEY) || 'system'; } catch (e) { /* ignore */ }
+  if (MODES.indexOf(colorMode) < 0) colorMode = 'system';
+  function applyMode(m) {
+    colorMode = m;
+    if (m === 'system') document.documentElement.removeAttribute('data-mode');
+    else document.documentElement.setAttribute('data-mode', m);
+    try { localStorage.setItem(MODE_KEY, m); } catch (e) { /* ignore */ }
+  }
+  if (colorMode !== 'system') applyMode(colorMode);
+  else if (document.documentElement.getAttribute('data-mode') && !document.documentElement.hasAttribute('data-mode-fixed')) {
+    document.documentElement.removeAttribute('data-mode');
+  }
+
+  // ---- theme: every theme is embedded as its own style element -----------------
+  function applyTheme(name) {
+    theme = name;
+    var styles = document.querySelectorAll('style[data-theme]');
+    for (var i = 0; i < styles.length; i++) styles[i].media = styles[i].getAttribute('data-theme') === name ? 'all' : 'not all';
+    try { localStorage.setItem(THEME_KEY, name); } catch (e) { /* ignore */ }
+  }
+  try {
+    var storedTheme = localStorage.getItem(THEME_KEY);
+    if (storedTheme && themes.indexOf(storedTheme) >= 0 && storedTheme !== theme) applyTheme(storedTheme);
+  } catch (e) { /* ignore */ }
+
+  // ---- render ----------------------------------------------------------------
+  var filter = null;
+  var showAllDone = false;
+  var showAllFeed = false;
+  // The remembered view is per page, like the write key: a host serving many
+  // roadmaps must not carry one roadmap's choice into another.
+  var VIEW_KEY = 'roadmap-live-view:' + base;
+  var open = {};         // details[data-key] that are open, kept across re-renders
+  var sort = null;       // list view: { key, dir }
+  var view = pickView();
+  var share = null;      // { note: 'copied' | 'off' | 'enabling' | 'enabled' | 'error', message }
+  var shareTimer = null;
+  var expanded = Object.create(null);     // item id -> true (no prototype: ids are user text)
+  var pending = [];      // comments sent but not yet in a snapshot
+  var prevStatus = null;
+  var unseen = false;
+
+  // ---- view: ?view, then the browser's memory, then roadmap.json, then the first
+  function pickView() {
+    var avail = V.availableViews(state.data);
+    var q = null;
+    try { q = new URLSearchParams(location.search).get('view'); } catch (e) { q = null; }
+    if (q && avail.indexOf(q) >= 0) return q;
+    var stored = null;
+    try { stored = localStorage.getItem(VIEW_KEY); } catch (e) { stored = null; }
+    if (stored && avail.indexOf(stored) >= 0) return stored;
+    if (state.data && avail.indexOf(state.data.view) >= 0) return state.data.view;
+    return avail[0];
+  }
+  function setView(v) {
+    view = v;
+    try { localStorage.setItem(VIEW_KEY, v); } catch (e) { /* ignore */ }
+    // An address that names a view keeps naming the current one.
+    try {
+      var p = new URLSearchParams(location.search);
+      if (p.has('view')) { p.set('view', v); history.replaceState(null, '', location.pathname + '?' + p.toString() + location.hash); }
+    } catch (e) { /* ignore */ }
+    render();
+  }
+
+  function opts(changed) {
+    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, view: view, showAllFeed: showAllFeed, sort: sort, open: open, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending, share: share, canWrite: state.mode === 'live' && !!key };
+  }
+
+  function render(changed) {
+    // Folded lists: read their state from the DOM right before it is rebuilt,
+    // so a click that has not fired its toggle event yet is not lost.
+    var folds = app.querySelectorAll('details[data-key]');
+    for (var f = 0; f < folds.length; f++) {
+      var fk = folds[f].getAttribute('data-key');
+      if (folds[f].open) open[fk] = true; else delete open[fk];
+    }
+    // FLIP: remember where every item is, rebuild, then animate from old to new.
+    var before = {};
+    var old = app.querySelectorAll('.item[data-id]');
+    for (var i = 0; i < old.length; i++) before[old[i].getAttribute('data-id')] = old[i].getBoundingClientRect();
+    var hadContent = old.length > 0;
+
+    var focused = document.activeElement;
+    var keep = null;
+    if (focused && focused.matches && focused.matches('.comment-form input')) {
+      var focusedForm = focused.closest('form');
+      var focusedId = focusedForm.getAttribute('data-id');
+      var sameIdForms = app.querySelectorAll('form.comment-form[data-id="' + focusedId.replace(/"/g, '\\"') + '"]');
+      keep = { id: focusedId, value: focused.value, pos: focused.selectionStart, index: Array.prototype.indexOf.call(sameIdForms, focusedForm) };
+    }
+
+    app.innerHTML = V.renderApp(state, opts(changed));
+
+    if (hadContent) {
+      var moved = [];
+      var now = app.querySelectorAll('.item[data-id]');
+      for (var j = 0; j < now.length; j++) {
+        var c = now[j];
+        var prev = before[c.getAttribute('data-id')];
+        if (!prev) { c.classList.add('enter'); continue; }
+        var rect = c.getBoundingClientRect();
+        var dx = prev.left - rect.left, dy = prev.top - rect.top;
+        if (dx || dy) {
+          c.style.transition = 'none';
+          c.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+          moved.push(c);
+        }
+      }
+      if (moved.length) {
+        void document.body.offsetHeight;
+        var released = false;
+        var release = function () {
+          if (released) return;
+          released = true;
+          moved.forEach(function (c) { c.style.transition = ''; c.style.transform = ''; });
+        };
+        requestAnimationFrame(release);
+        setTimeout(release, 50);
+      }
+    }
+    if (keep) {
+      var keepForms = app.querySelectorAll('form.comment-form[data-id="' + keep.id.replace(/"/g, '\\"') + '"]');
+      var keepForm = keepForms[keep.index] || keepForms[0];
+      var again = keepForm ? keepForm.querySelector('input') : null;
+      if (again) { again.value = keep.value; again.focus(); try { again.setSelectionRange(keep.pos, keep.pos); } catch (err) { /* ignore */ } }
+    }
+    setTitle();
+    if (window.RoadmapLive && window.RoadmapLive.afterRender) window.RoadmapLive.afterRender();
+  }
+
+  function setTitle() {
+    if (!state.data) return;
+    var pct = V.progressPercent(state.data);
+    document.title = (unseen ? '● ' : '') + pct + ' % · ' + state.data.project;
+    drawFavicon(pct);
+  }
+
+  function drawFavicon(pct) {
+    var link = document.getElementById('favicon');
+    if (!link) return;
+    var c = document.createElement('canvas');
+    c.width = c.height = 64;
+    var ctx = c.getContext('2d');
+    if (!ctx) return;
+    var styles = getComputedStyle(document.documentElement);
+    var ink = styles.getPropertyValue('--text').trim() || '#000';
+    ctx.lineWidth = 10;
+    ctx.lineCap = 'butt';
+    ctx.strokeStyle = 'rgba(128,128,128,0.35)';
+    ctx.beginPath(); ctx.arc(32, 32, 24, 0, Math.PI * 2); ctx.stroke();
+    if (pct > 0) {
+      ctx.strokeStyle = ink;
+      ctx.beginPath(); ctx.arc(32, 32, 24, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * pct / 100); ctx.stroke();
+    }
+    link.href = c.toDataURL('image/png');
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') { unseen = false; setTitle(); }
+  });
+
+  // ---- per-second updates ----------------------------------------------------
+  var lastDay = new Date().toDateString();
+  function tick() {
+    var now = Date.now();
+    // "today" and "yesterday" in the timeline change at midnight.
+    var day = new Date(now).toDateString();
+    if (day !== lastDay) { lastDay = day; render(); return; }
+    var i, nodes;
+    nodes = app.querySelectorAll('[data-rel]');
+    for (i = 0; i < nodes.length; i++) nodes[i].textContent = V.relativeTime(nodes[i].getAttribute('data-rel'), now, lang);
+    nodes = app.querySelectorAll('[data-since]');
+    for (i = 0; i < nodes.length; i++) nodes[i].lastChild.textContent = V.elapsed(nodes[i].getAttribute('data-since'), now);
+  }
+  setInterval(tick, 1000);
+
+  // ---- comments ---------------------------------------------------------------
+  // The static page never writes: bail out before touching pending/network.
+  function sendComment(id, text) {
+    text = String(text || '').trim();
+    if (!id || !text) return Promise.resolve(false);
+    if (state.mode !== 'live' || !key) return Promise.resolve(false);
+    // A retry with the same text replaces the earlier failed entry instead
+    // of stacking another one below it.
+    pending = pending.filter(function (p) { return !(p.failed && p.id === id && p.text === text); });
+    var entry = { id: id, text: text, at: new Date().toISOString() };
+    pending.push(entry);
+    expanded[id] = true;
+    render();
+    var fail = function () {
+      entry.failed = true;
+      render();
+      return false;
+    };
+    return fetch(base + 'comment', { method: 'POST', headers: { 'content-type': 'application/json', 'x-roadmap-key': key }, body: JSON.stringify({ id: id, text: text }) })
+      .then(function (r) {
+        if (r.ok) return true;
+        // The key is no longer valid (server restarted with a new one): back
+        // to read-only until the write address is opened again.
+        if (r.status === 401) forgetKey();
+        return fail();
+      })
+      .catch(fail);
+  }
+
+  // Drop pending entries once the snapshot contains them.
+  function settlePending() {
+    if (!pending.length || !state.data) return;
+    pending = pending.filter(function (p) {
+      var it = state.data.items.filter(function (x) { return x.id === p.id; })[0];
+      return !(it && (it.comments || []).some(function (c) { return c.from === 'human' && c.text === p.text; }));
+    });
+  }
+
+  // ---- interaction -----------------------------------------------------------
+  function setFilter(id) {
+    filter = id;
+    render();
+  }
+  app.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-action]');
+    if (!el) return;
+    var action = el.getAttribute('data-action');
+    // View names are links (the live server renders the named view); with
+    // JavaScript a plain click switches in place. A modifier click or a middle
+    // click stays a navigation, so "open in a new tab" keeps working.
+    if (action === 'view') {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      setView(el.getAttribute('data-view'));
+      return;
+    }
+    if (e.target.closest('a')) return;
+    if (action === 'theme') applyMode(MODES[(MODES.indexOf(colorMode) + 1) % MODES.length]), render();
+    else if (action === 'share') shareLink();
+    else if (action === 'enable-pages') enablePages();
+    else if (action === 'theme-name') applyTheme(themes[(themes.indexOf(theme) + 1) % themes.length]), render();
+    else if (action === 'filter') setFilter(filter === el.getAttribute('data-id') ? null : el.getAttribute('data-id'));
+    else if (action === 'clear-filter') setFilter(null);
+    else if (action === 'more-done') showAllDone = true, render();
+    else if (action === 'more-feed') showAllFeed = true, render();
+    else if (action === 'sort') {
+      var k = el.getAttribute('data-key');
+      // Same column again flips the direction; a new column starts with the
+      // direction the renderer marked on the header (newest, highest first).
+      if (sort && sort.key === k) sort = { key: k, dir: sort.dir === 'asc' ? 'desc' : 'asc' };
+      else sort = { key: k, dir: el.getAttribute('data-dir') === 'desc' ? 'desc' : 'asc' };
+      render();
+    }
+    else if (action === 'expand') { var id = el.getAttribute('data-id'); if (expanded[id]) delete expanded[id]; else expanded[id] = true; render(); }
+    else if (action === 'answer') sendComment(el.getAttribute('data-id'), el.getAttribute('data-text'));
+  });
+  // Remember which folded lists (done items, resolved points, ...) are open
+  // across re-renders.
+  app.addEventListener('toggle', function (e) {
+    var d = e.target;
+    if (!d.matches || !d.matches('details[data-key]')) return;
+    var k = d.getAttribute('data-key');
+    if (d.open) open[k] = true; else delete open[k];
+  }, true);
+  app.addEventListener('submit', function (e) {
+    var form = e.target.closest('form.comment-form');
+    if (!form) return;
+    e.preventDefault();
+    var input = form.querySelector('input[name="text"]');
+    var value = input.value;
+    input.value = '';
+    var id = form.getAttribute('data-id');
+    var sameIdForms = app.querySelectorAll('form.comment-form[data-id="' + id.replace(/"/g, '\\"') + '"]');
+    var last = { id: id, text: value, index: Array.prototype.indexOf.call(sameIdForms, form) };
+    sendComment(id, value).then(function (ok) {
+      if (ok) return;
+      var forms = app.querySelectorAll('form.comment-form[data-id="' + last.id.replace(/"/g, '\\"') + '"]');
+      var target = forms[last.index] || forms[0];
+      var again = target ? target.querySelector('input[name="text"]') : null;
+      if (again && !again.value) again.value = last.text;
+    });
+  });
+  app.addEventListener('keydown', function (e) {
+    var el = e.target.closest('[role="button"][data-action]');
+    if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); el.click(); }
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && filter) setFilter(null); });
+
+  // ---- share -----------------------------------------------------------------
+  function setShare(next, ms) {
+    clearTimeout(shareTimer);
+    share = next;
+    render();
+    if (ms) shareTimer = setTimeout(function () { share = null; render(); }, ms);
+  }
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+    return new Promise(function (resolve, reject) {
+      try { window.prompt(t('page.share.title'), text); resolve(); } catch (e) { reject(e); }
+    });
+  }
+  function shareLink() {
+    var url = state.shareUrl || (state.mode !== 'live' ? location.href : null);
+    if (url) {
+      copyText(url).then(function () { setShare({ note: 'copied' }, 2500); }, function () { setShare({ note: 'error', message: url }, 6000); });
+    } else if (state.pages && !state.pages.enabled) {
+      setShare({ note: 'off' });
+    }
+  }
+  function enablePages() {
+    if (state.mode !== 'live' || !key) return;
+    setShare({ note: 'enabling' });
+    fetch(base + 'pages/enable', { method: 'POST', headers: { 'content-type': 'application/json', 'x-roadmap-key': key }, body: '{}' })
+      .then(function (r) {
+        if (r.ok) return setShare({ note: 'enabled' }, 8000);
+        if (r.status === 401) forgetKey();
+        return r.json().then(function (b) { setShare({ note: 'error', message: b && b.error ? b.error : String(r.status) }, 8000); }, function () { setShare({ note: 'error', message: String(r.status) }, 8000); });
+      })
+      .catch(function (e) { setShare({ note: 'error', message: e && e.message ? e.message : 'network' }, 8000); });
+  }
+
+  // ---- public API for live.js ------------------------------------------------
+  window.RoadmapPage = {
+    getState: function () { return state; },
+    setState: function (next) {
+      state = next;
+      state.themes = themes;
+      state.theme = theme;
+      state.base = base;
+      settlePending();
+      var changed = null;
+      if (state.data) {
+        var status = Object.create(null);
+        state.data.items.forEach(function (it) { status[it.id] = it.status; });
+        if (prevStatus) {
+          changed = Object.create(null);
+          var any = false;
+          state.data.items.forEach(function (it) { if (prevStatus[it.id] !== undefined && prevStatus[it.id] !== it.status) { changed[it.id] = true; any = true; } });
+          if (any && document.visibilityState === 'hidden') unseen = true;
+        }
+        prevStatus = status;
+      }
+      render(changed);
+    },
+    render: render,
+    lang: lang,
+    t: t,
+    base: base,
+    sendComment: sendComment,
+  };
+
+  render();
+  tick();
+})();
+</script>
+
+</body>
+</html>
