@@ -349,6 +349,16 @@ Synthesized from the CEO review's findings. Each task derives from a specific fi
 
 _No new tasks from Section 5 (code quality) beyond T2 and T3; Section 7 (performance) produced only the dedupe in T3._
 
+## Nachtrag 2026-09-14: Kaltstart und Nachbarn
+
+**Kaltstart.** `init` entwirft die erste `roadmap.json` jetzt aus dem Repository (Commit-Betreffs, README-Überschriften, Pull-Request-Titel) über dieselbe Provider-Kette wie `sync`, ohne API-Key. Vorher zeigte der erste Blick "MVP" mit null Items, und die Seite wurde erst interessant, nachdem der Agent eine Weile gearbeitet hatte. Fallback ist das bisherige Skelett, `--no-bootstrap` erzwingt es. Code in `src/bootstrap.js`, Tests in `test/bootstrap.test.js`.
+
+Berührung mit Abschnitt 8: Wenn der Launch-Milestone gebaut wird, hängt er an beide Wege, an den Entwurf und an `bootstrap.skeleton`. Die Id `launch` kollidiert nicht mit den Ids `m1` bis `m6`, die der Entwurf vergibt. Den Repository-Namen nimmt `init` wie dort beschlossen aus `--repo` oder dem Git-Remote, nicht aus `GITHUB_REPOSITORY`.
+
+**Nachbarn.** [blume.codes](https://blume.codes) (Desktop-App, gratis, Product Hunt Platz 11 am 2026-09-03) liest die Session-Transcripts von Claude Code, Codex und Cursor, macht aus wiederholten Korrekturen Rules und Skills und zeigt das Token-Budget. Trennlinie: blume beobachtet den Agenten und bleibt auf der Maschine; roadmap-live beobachtet die Arbeit und erzeugt eine Seite, die man teilt. Kein Konkurrent und kein Grund, ihr Tempo mitzugehen. Im Auge behalten: ihr "Central Domain Model" auf dem Horizont (Absicht als Quelle der Wahrheit für ein Team) ist die einzige Stelle, die in unsere Richtung zeigt.
+
+**Positionierung.** README und PRODUCT.md nennen den Rückkanal jetzt im ersten Satz ("look at and reply from"). Anschauen kann blume auch, antworten nicht.
+
 ## GSTACK REVIEW REPORT
 
 | Review | Trigger | Why | Runs | Status | Findings |

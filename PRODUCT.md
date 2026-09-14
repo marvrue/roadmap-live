@@ -18,7 +18,7 @@ Secondary reader: the coding agent, which reads and writes `roadmap.json` and ne
 
 ## Product Purpose
 
-roadmap-live turns a `roadmap.json` that coding agents maintain into a page a human can look at: progress per milestone, the item in progress with a timer, what reviewers still want, what happened that nobody planned, and what the agent is asking. It runs live on the local machine while agents work and, synced from GitHub pull requests, as a static page that stays current without anyone editing it.
+roadmap-live turns a `roadmap.json` that coding agents maintain into a page a human can look at and reply from: progress per milestone, the item in progress with a timer, what the agent is asking, what reviewers still want, and what happened that nobody planned. Comments and answers written on the page go into the same file, and the agent picks them up on its next run. It runs live on the local machine while agents work and, synced from GitHub pull requests, as a static page that stays current without anyone editing it.
 
 Success means the human knows where the project stands and what needs their decision within a few seconds, on any of the three situations above, without opening a terminal, a pull request, or a chat window.
 
