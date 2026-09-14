@@ -42,7 +42,9 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **The share button asks GitHub whether Pages is on, and turns it on from the live page.** Enabling Pages is a one-time setting the human would otherwise have to find in the repository settings; the server already holds a GitHub credential, so one click is enough. `page_url` in roadmap.json overrides the address for pages hosted elsewhere.
 - **The Pages address is the site URL plus `roadmap/`.** That is the Action's default output path; a different `output_path` needs `page_url`.
 
-- **Views are a row of names above the content, links with `?view=`, not a cycling button.** Nine views make cycling a guessing game; a link works on the static page without JavaScript and gives every view an address.
+- **Views are a row of names above the content, links with `?view=`, not a cycling button.** Nine views make cycling a guessing game; a link gives every view an address, the live server renders the named view before any script runs, and a modifier click still opens a new tab.
+- **The remembered view is stored per page path, like the write key.** A host serving many roadmaps must not carry one roadmap's choice into another.
+- **The timeline folds rows beyond forty into a native `<details>` instead of a button.** The static page then shows everything without JavaScript, and the fold remembers being open like the other folded lists.
 - **Milestones is the default view.** It answers "where are we" per milestone without clicking; every other view answers one other question and is one click away.
 - **Pull requests and Open points keep their names out of the row until the roadmap has such data.** An empty view with a hint is a dead end for a roadmap that was never synced.
 - **Focus replaces the "In progress" block, Conversations replace "Waiting for you", Signals replace the unplanned block.** Each view is that block at full size; showing both would say the same thing twice on one screen.
