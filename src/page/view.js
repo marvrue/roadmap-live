@@ -11,7 +11,7 @@
  *   repoUrl, roadmapUrl
  * }
  * opts = { t, lang, now, filter, colorMode, theme, view, showAllDone, showAllFeed,
- *          showAllTimeline, sort, open, expanded, pending, share, canWrite, changed }
+ *          sort, open, expanded, pending, share, canWrite, changed }
  */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
@@ -171,11 +171,6 @@
     var url = pointUrl(state, p.source);
     var text = t('page.pr', { number: n });
     return url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text);
-  }
-
-  function dayKey(iso) {
-    var d = new Date(iso);
-    return isNaN(d.getTime()) ? '' : d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
   }
 
   function formatDay(iso, now, lang, t) {
@@ -480,7 +475,7 @@
       rows = rows.slice(0, FEED_SHORT);
     }
     return '<section class="since"><h2 class="section">' + esc(t('page.since.title')) + '</h2>' +
-      (rows.length ? '<ul>' + rows.join('') + '</ul>' + more : '<div class="none">' + esc(t('page.since.empty')) + '</div>') + '</section>';
+      (rows.length ? '<ul class="rows">' + rows.join('') + '</ul>' + more : '<div class="none">' + esc(t('page.since.empty')) + '</div>') + '</section>';
   }
 
   function renderWaiting(state, opts) {
@@ -608,8 +603,8 @@
         var ta = Date.parse(a.updated) || 0, tb = Date.parse(b.updated) || 0;
         if (ta !== tb) return tb - ta;
       }
-      if (mode === 'active' && a.status !== b.status) return a.status === 'blocked' ? -1 : 1;
-      if (mode === 'focus' && a.status !== b.status) return a.status === 'active' ? -1 : 1;
+      if (mode === 'active' && a.status !== b.status) return STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
+      if (mode === 'focus' && a.status !== b.status) return (a.status === 'active' ? 0 : 1) - (b.status === 'active' ? 0 : 1);
       return (order[a.milestone] || 0) - (order[b.milestone] || 0);
     });
   }
@@ -701,6 +696,7 @@
       }
       return out + '</section>';
     });
+    if (!sections.length) return '<main class="milestones"><div class="empty">' + esc(t('page.now.empty')) + '</div></main>';
     return '<main class="milestones">' + sections.join('') + '</main>';
   }
 
@@ -768,29 +764,32 @@
     return rows;
   }
 
+  // Rows grouped by the viewer's local day, newest day first.
+  function daySections(rows, opts) {
+    var t = opts.t, days = [];
+    rows.forEach(function (r) {
+      var k = new Date(r.at).toDateString();
+      if (!days.length || days[days.length - 1].key !== k) days.push({ key: k, at: r.at, rows: [] });
+      days[days.length - 1].rows.push(r);
+    });
+    return days.map(function (d) {
+      return '<section class="day"><h2>' + esc(formatDay(d.at, opts.now, opts.lang, t)) + '</h2><ul>' + d.rows.map(function (r) {
+        return '<li data-kind="' + r.kind + '"' + (r.quiet ? ' class="is-quiet"' : '') + '><time class="at" datetime="' + esc(r.at) + '" title="' + esc(formatDateTime(r.at, opts.lang)) + '">' + esc(formatClock(r.at, opts.lang)) + '</time>' +
+          '<span class="label' + (r.attention ? ' attention' : '') + '">' + r.label + '</span>' +
+          '<span class="text">' + r.text + (r.tag ? '<span class="tag' + (r.attention ? '' : ' quiet') + '">' + esc(r.tag) + '</span>' : '') + '</span></li>';
+      }).join('') + '</ul></section>';
+    }).join('');
+  }
+
+  // The first 40 rows stand open; the rest fold away in a native <details>,
+  // so the static page shows everything without JavaScript.
   function renderTimeline(state, opts) {
     var t = opts.t;
     var rows = computeTimeline(state, opts);
     if (!rows.length) return '<main class="timeline"><div class="empty">' + esc(t('page.timeline.empty')) + '</div></main>';
-    var total = rows.length, more = '';
-    if (!opts.showAllTimeline && rows.length > TIMELINE_SHORT) {
-      rows = rows.slice(0, TIMELINE_SHORT);
-      more = '<div class="more"><button type="button" data-action="more-timeline">' + esc(t('page.since.showAll', { n: total })) + '</button></div>';
-    }
-    var days = [];
-    rows.forEach(function (r) {
-      var k = dayKey(r.at);
-      if (!days.length || days[days.length - 1].key !== k) days.push({ key: k, at: r.at, rows: [] });
-      days[days.length - 1].rows.push(r);
-    });
-    var out = days.map(function (d) {
-      return '<section class="day"><h2>' + esc(formatDay(d.at, opts.now, opts.lang, t)) + '</h2><ul>' + d.rows.map(function (r) {
-        return '<li data-kind="' + r.kind + '"' + (r.quiet ? ' class="is-quiet"' : '') + '><span class="at">' + esc(formatClock(r.at, opts.lang)) + '</span>' +
-          '<span class="label' + (r.attention ? ' attention' : '') + '">' + r.label + '</span>' +
-          '<span class="text">' + r.text + (r.tag ? '<span class="tag' + (r.attention ? '' : ' quiet') + '">' + esc(r.tag) + '</span>' : '') + '</span></li>';
-      }).join('') + '</ul></section>';
-    });
-    return '<main class="timeline">' + out.join('') + more + '</main>';
+    var out = '<main class="timeline">' + daySections(rows.slice(0, TIMELINE_SHORT), opts);
+    if (rows.length > TIMELINE_SHORT) out += fold(opts, 'timeline:more', esc(t('page.since.showAll', { n: rows.length })), daySections(rows.slice(TIMELINE_SHORT), opts));
+    return out + '</main>';
   }
 
   function lastComment(it) {
@@ -974,8 +973,10 @@
     return '<main class="list-view"><table class="list"><thead><tr>' + head + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></main>';
   }
 
-  // The row of view names above the content. Links, so the static page
-  // switches without JavaScript and every view has an address.
+  // The row of view names above the content. Links, so every view has an
+  // address: the live server renders the named view before any script runs,
+  // the browser switches in place, the static page switches once its script
+  // has run.
   function renderViewsNav(state, opts, current) {
     var t = opts.t;
     return '<nav class="views" aria-label="' + esc(t('page.viewTitle')) + '">' + availableViews(state.data).map(function (v) {
@@ -1005,7 +1006,7 @@
       var pr = lastPr(u);
       return '<li><span class="label attention">' + (pr ? prLabel(state, t, pr) : esc(t('page.feed.notOnRoadmap'))) + '</span><span class="text">' + esc(u.title) + '</span><span class="when">' + time(u.first_seen, opts.now, opts.lang) + '</span></li>';
     });
-    return '<section class="unplanned"><h2 class="section">' + esc(t('page.unplannedTitle')) + ' &middot; ' + esc(t('page.feed.notOnRoadmap')) + '</h2><ul>' + rows.join('') + '</ul></section>';
+    return '<section class="unplanned"><h2 class="section">' + esc(t('page.unplannedTitle')) + ' &middot; ' + esc(t('page.feed.notOnRoadmap')) + '</h2><ul class="rows">' + rows.join('') + '</ul></section>';
   }
 
   function renderChangelog(state, opts) {
@@ -1036,7 +1037,8 @@
     out += renderProgress(state, opts);
     out += renderFeed(state, opts);
     // Conversations show the questions in their threads, focus is the now
-    // block at full size, signals list the unplanned work: no duplicates.
+    // block at full size (the live history steps aside with it; the timeline
+    // holds the file's history), signals list the unplanned work: no duplicates.
     if (v !== 'conversations') out += renderWaiting(state, opts);
     if (v !== 'focus') {
       var now = renderNow(state, opts);
