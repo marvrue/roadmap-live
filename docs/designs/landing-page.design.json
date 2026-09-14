@@ -1,0 +1,1023 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-14T18:00:00Z",
+  "title": "Design System: roadmap-live landing page",
+  "scope": {
+    "primaryTarget": "site/index.html",
+    "excludes": [
+      "site/demo.html",
+      "src/page/"
+    ],
+    "designDoc": "docs/designs/landing-page.DESIGN.md",
+    "origin": "User-pinned 2026-09-14: happiness and harmony in the spirit of blume.codes, a literal road map, playful, a car on the road. Same day the user chose system emojis for every illustrated object that has one (over bundled Twemoji or Noto, accepting per-platform differences), varied houses, flowers and trees, and a car the visitor picks at the start. The landscape stays its own layer so painted art can replace it later."
+  },
+  "extensions": {
+    "colorMeta": {
+      "sky-deep": {
+        "role": "tertiary",
+        "displayName": "Midday Sky Deep",
+        "cssVar": "--sky-deep",
+        "canonical": "oklch(47.3% 0.140 256)",
+        "tonalRamp": [
+          "#000827",
+          "#0c2648",
+          "#00428d",
+          "#2765b4",
+          "#4c8adc",
+          "#70b0ff",
+          "#93d4ff",
+          "#d0f1ff"
+        ]
+      },
+      "sky": {
+        "role": "tertiary",
+        "displayName": "Midday Sky",
+        "canonical": "oklch(55.1% 0.142 253)",
+        "tonalRamp": [
+          "#000928",
+          "#082748",
+          "#00438e",
+          "#1b67b4",
+          "#448bdc",
+          "#69b1ff",
+          "#8cd5ff",
+          "#cef2ff"
+        ]
+      },
+      "sky-haze": {
+        "role": "tertiary",
+        "displayName": "Horizon Haze",
+        "canonical": "oklch(95.9% 0.018 228)",
+        "tonalRamp": [
+          "#080c0e",
+          "#22272a",
+          "#3c474d",
+          "#5c686e",
+          "#7f8b92",
+          "#a3b0b7",
+          "#c6d3da",
+          "#e9f0f3"
+        ]
+      },
+      "cream": {
+        "role": "neutral",
+        "displayName": "Cream Ground",
+        "cssVar": "--cream",
+        "canonical": "oklch(96.8% 0.022 87)",
+        "tonalRamp": [
+          "#0d0b06",
+          "#292620",
+          "#4a4437",
+          "#6c6658",
+          "#8f897a",
+          "#b4ad9e",
+          "#d7d0c1",
+          "#f2eee6"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Notice Paper",
+        "cssVar": "--paper",
+        "canonical": "oklch(98.9% 0.013 86)",
+        "tonalRamp": [
+          "#0c0b08",
+          "#282623",
+          "#48453d",
+          "#69665e",
+          "#8c8981",
+          "#b1aea5",
+          "#d4d1c8",
+          "#f0eeea"
+        ]
+      },
+      "stone": {
+        "role": "neutral",
+        "displayName": "Milestone Stone",
+        "cssVar": "--stone",
+        "canonical": "oklch(92.7% 0.028 86)",
+        "tonalRamp": [
+          "#0e0b05",
+          "#29261f",
+          "#4c4434",
+          "#6d6554",
+          "#918876",
+          "#b6ad9a",
+          "#d9d0bd",
+          "#f3eee4"
+        ]
+      },
+      "command-paper": {
+        "role": "neutral",
+        "displayName": "Command Paper",
+        "canonical": "oklch(94.4% 0.023 87)",
+        "tonalRamp": [
+          "#0d0b06",
+          "#292620",
+          "#4a4437",
+          "#6c6658",
+          "#8f897a",
+          "#b4ad9e",
+          "#d7d0c1",
+          "#f2eee6"
+        ]
+      },
+      "tag-gray": {
+        "role": "neutral",
+        "displayName": "Calm Tag",
+        "canonical": "#ece6d8",
+        "tonalRamp": [
+          "#0e0b05",
+          "#29261f",
+          "#4c4434",
+          "#6d6554",
+          "#918876",
+          "#b6ad9a",
+          "#d9d0bd",
+          "#f3eee4"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "cssVar": "--ink",
+        "canonical": "oklch(27.9% 0.023 243)",
+        "tonalRamp": [
+          "#070c10",
+          "#22272c",
+          "#3b4750",
+          "#5b6872",
+          "#7e8b96",
+          "#a2b0bb",
+          "#c5d3df",
+          "#e8f0f6"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink 2",
+        "cssVar": "--ink-2",
+        "canonical": "oklch(42.8% 0.025 243)",
+        "tonalRamp": [
+          "#070c10",
+          "#21272c",
+          "#3a4751",
+          "#5a6873",
+          "#7d8b97",
+          "#a1b0bd",
+          "#c4d3e0",
+          "#e8f0f6"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink 3",
+        "cssVar": "--ink-3",
+        "canonical": "oklch(50.4% 0.023 245)",
+        "tonalRamp": [
+          "#070c10",
+          "#22272c",
+          "#3b4651",
+          "#5c6873",
+          "#7e8b97",
+          "#a3b0bc",
+          "#c5d3df",
+          "#e8eff6"
+        ]
+      },
+      "meadow": {
+        "role": "tertiary",
+        "displayName": "Meadow",
+        "cssVar": "--meadow",
+        "canonical": "oklch(71.8% 0.161 138)",
+        "tonalRamp": [
+          "#001100",
+          "#0e2f02",
+          "#005600",
+          "#2b7a00",
+          "#519f35",
+          "#76c55c",
+          "#99ea7f",
+          "#d4fcc8"
+        ]
+      },
+      "meadow-mid": {
+        "role": "tertiary",
+        "displayName": "Meadow Mid",
+        "cssVar": "--meadow-mid",
+        "canonical": "oklch(82.6% 0.126 131)",
+        "tonalRamp": [
+          "#031000",
+          "#1b2c08",
+          "#2b5100",
+          "#4b741a",
+          "#6d9842",
+          "#91be67",
+          "#b4e28a",
+          "#e0f8cc"
+        ]
+      },
+      "meadow-soft": {
+        "role": "tertiary",
+        "displayName": "Meadow Soft",
+        "cssVar": "--meadow-soft",
+        "canonical": "oklch(90.5% 0.086 124)",
+        "tonalRamp": [
+          "#070e00",
+          "#222a11",
+          "#3b4c10",
+          "#5b6e34",
+          "#7e9257",
+          "#a2b87b",
+          "#c5db9d",
+          "#e8f4d5"
+        ]
+      },
+      "verge": {
+        "role": "tertiary",
+        "displayName": "Road Verge",
+        "canonical": "oklch(94.5% 0.053 121)",
+        "tonalRamp": [
+          "#090d02",
+          "#24291a",
+          "#414929",
+          "#616b49",
+          "#848e6b",
+          "#a8b48f",
+          "#cbd7b1",
+          "#ebf2de"
+        ]
+      },
+      "road-tar": {
+        "role": "tertiary",
+        "displayName": "Slate Tar",
+        "canonical": "oklch(54.8% 0.025 265)",
+        "tonalRamp": [
+          "#090b11",
+          "#23262d",
+          "#3f4553",
+          "#5f6675",
+          "#828999",
+          "#a6aebe",
+          "#c9d1e2",
+          "#eaeef7"
+        ]
+      },
+      "road-edge": {
+        "role": "tertiary",
+        "displayName": "Road Edge",
+        "canonical": "oklch(47.4% 0.022 265)",
+        "tonalRamp": [
+          "#090b10",
+          "#24262c",
+          "#3f4551",
+          "#606673",
+          "#838997",
+          "#a7aebd",
+          "#cad1e0",
+          "#ebeef6"
+        ]
+      },
+      "road-line": {
+        "role": "tertiary",
+        "displayName": "Cream Center Line",
+        "canonical": "oklch(97.4% 0.033 89)",
+        "tonalRamp": [
+          "#0e0b04",
+          "#2a261d",
+          "#4c4431",
+          "#6d6651",
+          "#918973",
+          "#b6ad97",
+          "#d9d1b9",
+          "#f3eee2"
+        ]
+      },
+      "wood-board": {
+        "role": "tertiary",
+        "displayName": "Signpost Wood",
+        "canonical": "oklch(50.9% 0.077 57)",
+        "tonalRamp": [
+          "#170600",
+          "#352113",
+          "#633915",
+          "#875a37",
+          "#ad7d5a",
+          "#d4a27d",
+          "#f9c59f",
+          "#ffe9d6"
+        ]
+      },
+      "wood-edge": {
+        "role": "tertiary",
+        "displayName": "Wood Edge",
+        "canonical": "oklch(42.7% 0.068 57)",
+        "tonalRamp": [
+          "#160700",
+          "#332215",
+          "#603b1d",
+          "#845c3e",
+          "#a97f60",
+          "#d0a483",
+          "#f4c7a5",
+          "#ffe9d9"
+        ]
+      },
+      "wood-post": {
+        "role": "tertiary",
+        "displayName": "Sign Post",
+        "canonical": "oklch(54.9% 0.057 61)",
+        "tonalRamp": [
+          "#140801",
+          "#312318",
+          "#5b3e24",
+          "#7e5f44",
+          "#a38266",
+          "#c9a68a",
+          "#edc9ac",
+          "#fdebdc"
+        ]
+      },
+      "wood-text": {
+        "role": "neutral",
+        "displayName": "Board Lettering",
+        "canonical": "#fff7e6",
+        "tonalRamp": [
+          "#0e0b04",
+          "#2a261d",
+          "#4c4431",
+          "#6d6651",
+          "#918973",
+          "#b6ad97",
+          "#d9d1b9",
+          "#f3eee2"
+        ]
+      },
+      "car-deep": {
+        "role": "primary",
+        "displayName": "Cherry Red",
+        "cssVar": "--car-deep",
+        "canonical": "oklch(54.7% 0.176 31)",
+        "tonalRamp": [
+          "#260000",
+          "#480f07",
+          "#8b0000",
+          "#b52d19",
+          "#df5640",
+          "#ff7d65",
+          "#ffa187",
+          "#ffd9ca"
+        ]
+      },
+      "car-press": {
+        "role": "primary",
+        "displayName": "Cherry Press",
+        "canonical": "#b33421",
+        "tonalRamp": [
+          "#260000",
+          "#480f07",
+          "#8b0000",
+          "#b52d19",
+          "#df5640",
+          "#ff7d65",
+          "#ffa187",
+          "#ffd9ca"
+        ]
+      },
+      "sun": {
+        "role": "secondary",
+        "displayName": "Sunflower",
+        "cssVar": "--sun",
+        "canonical": "oklch(85.4% 0.157 84)",
+        "tonalRamp": [
+          "#1a0500",
+          "#382100",
+          "#6b3700",
+          "#8f5a00",
+          "#b57e00",
+          "#dca400",
+          "#ffc740",
+          "#ffebb2"
+        ]
+      },
+      "sun-soft": {
+        "role": "secondary",
+        "displayName": "Sunflower Wash",
+        "cssVar": "--sun-soft",
+        "canonical": "oklch(95.6% 0.061 92)",
+        "tonalRamp": [
+          "#100b00",
+          "#2c2614",
+          "#51441a",
+          "#73653c",
+          "#96885e",
+          "#bcad81",
+          "#dfd0a3",
+          "#f6eed8"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headline only, centered, max 17ch, soft blue text shadow over the sky."
+      },
+      "display-finish": {
+        "displayName": "Display Finish",
+        "purpose": "Finish headline, the largest type on the page."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings."
+      },
+      "title": {
+        "displayName": "Board Title",
+        "purpose": "Signpost board heading; 22px at 760px and below. Stone numerals use the display face at 19px (17px narrow)."
+      },
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "roadmap-live lowercase in the top bar; 22px narrow."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Hero sentence, max 36em; 18px narrow. Section intros use 19px, max 34em."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Page base; 17px narrow. Captions, bubbles, nav and links use 16px."
+      },
+      "body-sign": {
+        "displayName": "Notice Text",
+        "purpose": "Sentences inside paper notices, ink-2."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Notes under commands (ink-3) and attention list rows. The picker label uses 15px 600."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Tags, speaker names, copy chips. Sentence case, never uppercase."
+      },
+      "command": {
+        "displayName": "Command",
+        "purpose": "Copyable commands and file names only; 13px narrow, 17px inside the primary pill."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "Primary command pill label (15px copy chip, 14px narrow); answer pills and links use 600 at 16px."
+      },
+      "emoji": {
+        "displayName": "Emoji",
+        "purpose": "Every illustrated object with an emoji: picker 26px (20px narrow), road car and flag 64px (46px narrow), scenery 34 to 120px, hero car 126 frame units. Upright, line-height 1, no bundled font."
+      }
+    },
+    "fonts": [
+      {
+        "family": "Young Serif",
+        "weights": [
+          400
+        ],
+        "src": "site/fonts/young-serif.woff2",
+        "license": "SIL OFL",
+        "preload": true
+      },
+      {
+        "family": "Onest",
+        "weights": [
+          400,
+          600
+        ],
+        "src": [
+          "site/fonts/onest-400.woff2",
+          "site/fonts/onest-600.woff2"
+        ],
+        "license": "SIL OFL",
+        "preload": "400 only"
+      },
+      {
+        "family": "system mono",
+        "weights": [
+          400
+        ],
+        "src": "system stack, no web font"
+      },
+      {
+        "family": "system emoji",
+        "stack": "Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif",
+        "src": "platform fonts, no bundled emoji font; rendering differs per platform by user decision"
+      }
+    ],
+    "shadows": [
+      {
+        "name": "pill-lift",
+        "value": "0 10px 24px rgb(110 30 12 / 0.28), inset 0 -3px 0 rgb(0 0 0 / 0.14)",
+        "purpose": "Primary command pill at rest."
+      },
+      {
+        "name": "pill-lift-hover",
+        "value": "0 14px 30px rgb(110 30 12 / 0.32), inset 0 -3px 0 rgb(0 0 0 / 0.14)",
+        "purpose": "Pill hover, with translateY(-2px)."
+      },
+      {
+        "name": "pill-press",
+        "value": "0 4px 10px rgb(110 30 12 / 0.24)",
+        "purpose": "Pill active, with translateY(1px)."
+      },
+      {
+        "name": "picked-car",
+        "value": "0 6px 14px rgb(10 40 90 / 0.28)",
+        "purpose": "Pressed car picker button, sky-tinted."
+      },
+      {
+        "name": "window-float",
+        "value": "0 32px 64px rgb(28 64 30 / 0.22), 0 4px 12px rgb(28 64 30 / 0.12)",
+        "purpose": "Demo window over the meadow."
+      },
+      {
+        "name": "notice-hang",
+        "value": "0 14px 26px rgb(40 72 28 / 0.16), 0 2px 3px rgb(40 72 28 / 0.1)",
+        "purpose": "Paper notices under boards."
+      },
+      {
+        "name": "board",
+        "value": "0 8px 16px rgb(60 40 20 / 0.18)",
+        "purpose": "Wooden sign boards."
+      },
+      {
+        "name": "bubble",
+        "value": "0 8px 18px rgb(40 72 28 / 0.14)",
+        "purpose": "Speech bubbles."
+      },
+      {
+        "name": "answer-pill",
+        "value": "inset 0 0 0 2px #1f2a33, 0 6px 12px rgb(40 72 28 / 0.12)",
+        "purpose": "Answer pills: ink ring plus soft lift."
+      },
+      {
+        "name": "emoji-prop",
+        "value": "drop-shadow(0 8px 5px rgb(40 64 20 / 0.22))",
+        "purpose": "Every emoji prop in the road scenery and finish scene (filter). The flora beside the window uses 6px blur."
+      },
+      {
+        "name": "road-car",
+        "value": "drop-shadow(0 7px 5px rgb(30 50 20 / 0.3))",
+        "purpose": "The scroll car (filter)."
+      },
+      {
+        "name": "flag",
+        "value": "drop-shadow(0 6px 4px rgb(40 64 20 / 0.25))",
+        "purpose": "The finish flag emoji (filter)."
+      },
+      {
+        "name": "hedgerow",
+        "value": "drop-shadow(0 3px 2px rgb(40 64 20 / 0.28))",
+        "purpose": "The whole generated hedge group (filter)."
+      },
+      {
+        "name": "road-shade",
+        "value": "stroke rgb(46 72 28 / 0.2), width 52, translate(4 6)",
+        "purpose": "Road shadow on the meadow."
+      },
+      {
+        "name": "contact-ellipse",
+        "value": "fence #2f5a1f at 0.12; sign post rgb(40 64 20 / 0.2), 50 by 12; hero car #1f3a14 at 0.22, rx 72 ry 10",
+        "purpose": "Flat ground shadow under drawn objects and the hero car."
+      },
+      {
+        "name": "hero-text",
+        "value": "0 2px 24px rgb(10 40 90 / 0.25)",
+        "purpose": "Headline over the sky; lead uses 0 1px 12px at 0.3, picker label 0 1px 8px at 0.35."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-ui",
+        "value": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "purpose": "Pill lift 220ms, picker lift 180ms, car hop 440ms, bubble pop 380ms, sign rise 520ms."
+      },
+      {
+        "name": "color-fade",
+        "value": "160ms",
+        "purpose": "Background and color changes on tabs, command rows, answer pills and picker buttons; stone turns red over 400ms."
+      },
+      {
+        "name": "cloud-drift",
+        "value": "translateX(-36px to 36px), 46s / 54s / 62s / 70s, ease-in-out, infinite alternate, staggered delays",
+        "purpose": "The only ambient motion."
+      },
+      {
+        "name": "hero-roll-in",
+        "value": "300ms delay; translate(650 1010) scale(1.3) to translate(650 812) scale(1) over 1900ms, cubic ease-out, bob sin(k*26)*(1-k)*1.5",
+        "purpose": "The hero car arrives at the start line once."
+      },
+      {
+        "name": "car-hop",
+        "value": "hero car emoji scale(-1, 1) translateY(0 to -28px to 0), 440ms ease-ui, via Web Animations; skipped under reduced motion and on restore",
+        "purpose": "Acknowledges a picked car."
+      },
+      {
+        "name": "scroll-car",
+        "value": "probe at 55% viewport height; hold zone ±130px (±70px at 760px and below) around each stop; ease 16% of remaining distance per frame, snap below 0.6px; reached within 30px",
+        "purpose": "The signature drive."
+      },
+      {
+        "name": "car-pose",
+        "value": "facing flips when the path's normalized dx passes ±0.25 (hysteresis); tilt = min(38deg, atan2(|dy|, |dx|)) signed by dy, times facing; bob sin(rolled/9)*1.2px with rolled += |step|*0.5; transform translate rotate(facing*tilt) scaleX(-facing)",
+        "purpose": "The emoji car looks left by default; it faces its direction of travel, noses along the slope and bobs gently."
+      },
+      {
+        "name": "sign-arrival",
+        "value": "unreached signs translateY(10px); rise over 520ms ease-ui on reach",
+        "purpose": "Signs settle as the car arrives."
+      },
+      {
+        "name": "copy-feedback",
+        "value": "label 'Copied' (or 'Press Cmd+C' with selection) for 1800ms",
+        "purpose": "Copy buttons."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "clouds, pops and car hop off; pill, sign, stone and answer transitions off; signs do not sink; hero car stays at the start line; road car parks at the last stop within 60px of the probe, or at the flag",
+        "purpose": "prefers-reduced-motion: reduce."
+      },
+      {
+        "name": "no-js",
+        "value": "straight 42px tar strip centered (26px at the right edge narrow); car and flag hidden; stones red; picker shows the default car pressed",
+        "purpose": "Page reads without JavaScript."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide",
+        "value": "1080px",
+        "purpose": "Demo window takes gutter margins; flora moves inward and shrinks (72px and 40px)."
+      },
+      {
+        "name": "medium",
+        "value": "960px",
+        "purpose": "Lane 96px; signs stretch to their full column."
+      },
+      {
+        "name": "narrow",
+        "value": "760px",
+        "purpose": "Gutter 16px; hero min-height 960px; road in a 44px edge lane opposite each sign; scenery below signs in 168px bands with two props (52px, 48px); posts, dots, flora, finish scene hidden; picker 36px buttons with the label on its own line; thinner road strokes; road car and flag 46px; desktop sun swapped for a low rising sun, plus a mobile-only tree and tulip."
+      }
+    ],
+    "illustration": {
+      "artFrame": {
+        "viewBox": "0 0 1440 900",
+        "preserveAspectRatio": "xMidYMax slice",
+        "startLine": {
+          "x": 650,
+          "y": 812
+        },
+        "layers": [
+          "art (z -3, drawn ground plus emoji text, swappable for a painted raster)",
+          "grain (z -2, opacity 0.5)",
+          "hero car (z -1, same frame)",
+          "copy"
+        ]
+      },
+      "emoji": {
+        "fontStack": "Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif",
+        "appliesTo": [
+          ".emoji spans and buttons",
+          ".art text",
+          ".hero-car-layer text",
+          ".road text"
+        ],
+        "heroPlacement": "SVG <text> with text-anchor middle, font-size in frame units, no shadow (flat art layer)",
+        "propPlacement": "span.deco.emoji absolutely positioned by left/top percent, font-size in px, emoji-prop drop shadow",
+        "vocabulary": {
+          "trees": [
+            "🌳",
+            "🌲",
+            "🌴"
+          ],
+          "houses": [
+            "🏡",
+            "🏘️",
+            "🏠",
+            "⛺",
+            "🏪"
+          ],
+          "animals": [
+            "🐑",
+            "🐄",
+            "🦆",
+            "🦋"
+          ],
+          "flowers": [
+            "🌸",
+            "🌼",
+            "🌷",
+            "🌹",
+            "🌺",
+            "🌻"
+          ],
+          "ground": [
+            "🌿",
+            "🌾",
+            "🍄",
+            "🌱"
+          ],
+          "sky": [
+            "☀️",
+            "☁️"
+          ],
+          "finish": [
+            "🏁"
+          ],
+          "cars": [
+            "🚗",
+            "🚕",
+            "🚙",
+            "🏎️",
+            "🚚",
+            "🚐",
+            "🚜",
+            "🚲"
+          ]
+        },
+        "variety": "each scene: one anchor of 88px or more, mixed tree kinds, varied house and flower kinds, a small animal or ground detail at 34 to 60px; repeats only as a deliberate cluster",
+        "mobileOnly": [
+          "rising sun ☀️ at 640,622 size 76 over a 110 glow",
+          "🌳 at 588,714 size 60",
+          "🌷 at 870,770 size 40"
+        ],
+        "desktopOnly": [
+          "sun ☀️ at 1190,296 size 124 over a 190 glow"
+        ]
+      },
+      "drawn": {
+        "items": [
+          "sky gradient",
+          "sun glow",
+          "hills",
+          "far-hill pine silhouettes",
+          "fields",
+          "road",
+          "verge",
+          "checkered start line",
+          "fence",
+          "pond"
+        ],
+        "symbols": [
+          "fence",
+          "pond"
+        ],
+        "inkOutline": {
+          "stroke": "rgb(36 58 28 / 0.42)",
+          "strokeWidth": 1.6,
+          "strokeLinejoin": "round",
+          "appliesTo": "fence and pond placements",
+          "optOut": "stroke=\"none\" on highlights and the contact shadow"
+        }
+      },
+      "skyGradient": [
+        "#1b5aa8 0",
+        "#2a73c2 .6",
+        "#4c9ade .7",
+        "#b9e0f7 .78",
+        "#e6f4fb 1"
+      ],
+      "heroHills": [
+        "#a6d3bd far hill",
+        "#6fae8c far pines",
+        "#8fcb66 near hill",
+        "#7cc05a foreground banks",
+        "#c9e7a0 road verge"
+      ],
+      "road": {
+        "strokes": {
+          "verge": "92 #e7f3cc",
+          "shade": "52 rgb(46 72 28 / .2) translate(4 6)",
+          "edge": "52 #565c69",
+          "tar": "42 #6a7180",
+          "mid": "3 #fff6de dash 16 18 opacity .9"
+        },
+        "narrowStrokes": {
+          "verge": 60,
+          "shade": 40,
+          "edge": 40,
+          "tar": 32,
+          "mid": "2 dash 10 12"
+        },
+        "path": "cubic segments with vertical handles (half the vertical distance) through each lane point; desktop points swing min(lane*0.3, 44)px toward the sign side; narrow points run straight from sign top-14 to bottom+14",
+        "fields": {
+          "greens": [
+            "#cfe7a2",
+            "#b9dd88",
+            "#dcefb6",
+            "#aed47a",
+            "#c6e396",
+            "#d6ecae"
+          ],
+          "step": "460px (340px narrow)"
+        },
+        "hedges": {
+          "emoji": [
+            "🌳",
+            "🌲",
+            "🌳",
+            "🌿",
+            "🌳",
+            "🌲",
+            "🌴"
+          ],
+          "placement": "along two of every three field edges; clumps of 3 to 8; font-size 2.4 x r, r 8-16 (5-10 narrow); spacing 1.9 x r; gaps 70-290px (40-130px narrow); vertical jitter ±4px; seeded deterministically",
+          "shadow": "hedgerow drop shadow on the group",
+          "keepOut": "24px around signs"
+        }
+      },
+      "car": {
+        "hero": "🚗 by default, 126 frame units, mirrored with scale(-1 1) to face right, on a contact ellipse at the start line",
+        "road": "same emoji as the hero, 64px in a 72px box (46px in 54px narrow), pose per motion.car-pose",
+        "picker": "choice stored in localStorage key rl-car and restored only if it matches a picker button"
+      },
+      "grain": {
+        "tile": "180px feTurbulence fractalNoise baseFrequency .85 numOctaves 2, tinted",
+        "blend": "multiply",
+        "opacity": "0.7 (0.5 over hero)",
+        "appliesTo": [
+          "hero",
+          "road section",
+          "sign boards"
+        ]
+      },
+      "finish": {
+        "checker": "28px conic-gradient strip, ink on paper",
+        "flag": "🏁 emoji at the road end, offset 40px right (58px left narrow)",
+        "scene": "🌻 92px, 🌷 50px, 🏪 108px, 🌳 70px and a fence; hidden narrow"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Command Pill",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The red command with a copy chip; hero and finish only.",
+      "html": "<button class=\"ds-pill\" type=\"button\"><code><span class=\"ds-dollar\">$</span> npx roadmap-live</code><span class=\"ds-copy\">Copy</span></button>",
+      "css": ".ds-pill { display: inline-flex; align-items: center; gap: 16px; padding: 8px 8px 8px 24px; border: 0; border-radius: 999px; background: var(--car-deep, #c23a26); color: #fff; font: 600 17px/1.2 Onest, system-ui, sans-serif; cursor: pointer; box-shadow: 0 10px 24px rgb(110 30 12 / 0.28), inset 0 -3px 0 rgb(0 0 0 / 0.14); transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms; } .ds-pill code { font: 17px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: -0.01em; white-space: nowrap; } .ds-dollar { opacity: 0.7; } .ds-copy { padding: 10px 16px; border-radius: 999px; background: rgb(255 255 255 / 0.18); font-size: 15px; } .ds-pill:hover { transform: translateY(-2px); background: #b33421; box-shadow: 0 14px 30px rgb(110 30 12 / 0.32), inset 0 -3px 0 rgb(0 0 0 / 0.14); } .ds-pill:active { transform: translateY(1px); box-shadow: 0 4px 10px rgb(110 30 12 / 0.24); } .ds-pill:focus-visible { outline: 3px solid #1f2a33; outline-offset: 3px; }"
+    },
+    {
+      "name": "Car Picker",
+      "kind": "chip",
+      "refersTo": "car-picker-button",
+      "description": "Round emoji toggles on the sky under the hero command; the pressed car drives the page.",
+      "html": "<div class=\"ds-sky\"><div class=\"ds-garage\" role=\"group\" aria-label=\"Pick your car\"><span class=\"ds-garage-label\">Pick your car</span><button type=\"button\" aria-label=\"Car\" aria-pressed=\"true\">🚗</button><button type=\"button\" aria-label=\"Taxi\" aria-pressed=\"false\">🚕</button><button type=\"button\" aria-label=\"SUV\" aria-pressed=\"false\">🚙</button><button type=\"button\" aria-label=\"Race car\" aria-pressed=\"false\">🏎️</button><button type=\"button\" aria-label=\"Truck\" aria-pressed=\"false\">🚚</button><button type=\"button\" aria-label=\"Van\" aria-pressed=\"false\">🚐</button><button type=\"button\" aria-label=\"Tractor\" aria-pressed=\"false\">🚜</button><button type=\"button\" aria-label=\"Bicycle\" aria-pressed=\"false\">🚲</button></div></div>",
+      "css": ".ds-sky { padding: 24px; border-radius: 12px; background: #2a73c2; color: #fff; font-family: Onest, system-ui, sans-serif; } .ds-garage { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; } .ds-garage-label { margin-right: 6px; font-size: 15px; font-weight: 600; text-shadow: 0 1px 8px rgb(10 40 90 / 0.35); } .ds-garage button { width: 46px; height: 46px; padding: 0; border: 0; border-radius: 50%; background: rgb(255 255 255 / 0.14); font: 26px/46px 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; text-align: center; cursor: pointer; transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms; } .ds-garage button:hover { transform: translateY(-2px); background: rgb(255 255 255 / 0.28); } .ds-garage button[aria-pressed='true'] { background: #fff; box-shadow: 0 6px 14px rgb(10 40 90 / 0.28); } .ds-garage button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }"
+    },
+    {
+      "name": "Copy Command Row",
+      "kind": "button",
+      "refersTo": "copy-command",
+      "description": "Full-width copyable command inside a notice.",
+      "html": "<button class=\"ds-cmd\" type=\"button\"><code>npx roadmap-live init</code><span class=\"ds-cmd-copy\">Copy</span></button>",
+      "css": ".ds-cmd { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 320px; padding: 10px 10px 10px 16px; border: 0; border-radius: 12px; background: #f3ecdc; color: #1f2a33; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.45; text-align: left; cursor: pointer; transition: background-color 160ms; } .ds-cmd code { font-size: 15px; white-space: nowrap; } .ds-cmd-copy { padding: 6px 12px; border-radius: 999px; background: #fffbf2; font: 600 13px/1.2 Onest, system-ui, sans-serif; color: #44515c; } .ds-cmd:hover { background: #ece2cc; } .ds-cmd:focus-visible { outline: 3px solid #1f2a33; outline-offset: 3px; border-radius: 8px; } .ds-cmd:active .ds-cmd-copy { background: #1f2a33; color: #fffbf2; }"
+    },
+    {
+      "name": "Signpost",
+      "kind": "card",
+      "refersTo": "sign-board",
+      "description": "Wooden board with milestone stone, paper notice with pin dots, post into the grass.",
+      "html": "<div class=\"ds-sign\"><div class=\"ds-board\"><span class=\"ds-stone\">1</span><h3>Set up once</h3></div><div class=\"ds-notice\"><p>In your project folder. It writes roadmap.json, AGENTS.md and a GitHub workflow.</p></div><span class=\"ds-post\"></span></div>",
+      "css": ".ds-sign { position: relative; isolation: isolate; width: 420px; padding-bottom: 80px; } .ds-board { position: relative; z-index: 1; display: flex; align-items: center; gap: 14px; padding: 14px 20px 14px 14px; border-radius: 12px; background: linear-gradient(180deg, #9a6a43, #845735 calc(100% - 5px), #6b4527 calc(100% - 5px)); color: #fff7e6; box-shadow: 0 8px 16px rgb(60 40 20 / 0.18); } .ds-board h3 { margin: 0; font: 400 27px/1.15 'Young Serif', Georgia, serif; letter-spacing: -0.005em; } .ds-stone { flex: none; display: grid; place-items: center; width: 40px; height: 44px; border-radius: 20px 20px 8px 8px; background: #efe6d2; color: #44515c; font: 400 19px/1 'Young Serif', Georgia, serif; transition: background-color 400ms, color 400ms; } .ds-sign:hover .ds-stone { background: #c23a26; color: #fff; } .ds-notice { position: relative; margin: -3px 14px 0; padding: 24px 22px; border-radius: 0 0 14px 14px; background-color: #fffbf2; background-image: radial-gradient(circle at 16px 12px, #c7b598 0 3.5px, transparent 4px), radial-gradient(circle at calc(100% - 16px) 12px, #c7b598 0 3.5px, transparent 4px); background-repeat: no-repeat; box-shadow: 0 14px 26px rgb(40 72 28 / 0.16), 0 2px 3px rgb(40 72 28 / 0.1); } .ds-notice p { margin: 0; color: #44515c; font: 400 17px/1.6 Onest, system-ui, sans-serif; } .ds-post { position: absolute; z-index: -1; top: 24px; bottom: 8px; right: 44px; width: 14px; border-radius: 3px; background: linear-gradient(90deg, #8a6a4f, #735539); }"
+    },
+    {
+      "name": "Attention Tags",
+      "kind": "chip",
+      "refersTo": "tag-attention",
+      "description": "Sunflower tags for what needs a human; gray for everything else.",
+      "html": "<ul class=\"ds-lights\"><li class=\"ds-on\"><span class=\"ds-tag\">Blocked</span><span>Card payment with Stripe</span></li><li><span class=\"ds-tag\">Done</span><span>Listing editor</span></li></ul>",
+      "css": ".ds-lights { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; font-family: Onest, system-ui, sans-serif; } .ds-lights li { display: grid; grid-template-columns: 118px minmax(0, 1fr); align-items: baseline; gap: 12px; font-size: 15px; line-height: 1.45; color: #44515c; } .ds-tag { padding: 3px 10px; border-radius: 999px; background: #ece6d8; font-size: 13px; font-weight: 600; color: #44515c; text-align: center; white-space: nowrap; } .ds-on { color: #1f2a33 !important; } .ds-on .ds-tag { background: #ffc53d; color: #1f2a33; }"
+    },
+    {
+      "name": "Speech Bubbles and Answer Pills",
+      "kind": "custom",
+      "refersTo": "bubble-agent-question",
+      "description": "The agent's open question in sunflower wash, answers as ink-ringed pills, your reply in ink.",
+      "html": "<div class=\"ds-chat\"><p class=\"ds-bubble ds-ask\"><span class=\"ds-who\">Agent, on Checkout with reserved copies</span>Hold copies for 15 or 30 minutes?</p><div class=\"ds-answers\"><button type=\"button\">15</button><button type=\"button\">30</button></div><p class=\"ds-bubble ds-you\"><span class=\"ds-who\">You</span>15 minute steps</p></div>",
+      "css": ".ds-chat { display: grid; gap: 16px; width: 380px; font-family: Onest, system-ui, sans-serif; } .ds-bubble { position: relative; justify-self: start; max-width: 88%; margin: 0; padding: 12px 16px; border-radius: 18px; background: #fffbf2; font-size: 16px; line-height: 1.5; color: #1f2a33; box-shadow: 0 8px 18px rgb(40 72 28 / 0.14); } .ds-bubble::before { content: ''; position: absolute; top: -6px; left: 24px; width: 14px; height: 14px; border-radius: 3px; background: inherit; transform: rotate(45deg); } .ds-who { position: relative; display: block; font-size: 13px; font-weight: 600; color: #5a6671; } .ds-ask { background: #fff0c2; } .ds-you { justify-self: end; background: #1f2a33; color: #fffbf2; } .ds-you::before { left: auto; right: 24px; } .ds-you .ds-who { color: #b9c2ca; } .ds-answers { display: flex; gap: 10px; padding-left: 8px; } .ds-answers button { padding: 8px 22px; border: 0; border-radius: 999px; background: #fffbf2; color: #1f2a33; box-shadow: inset 0 0 0 2px #1f2a33, 0 6px 12px rgb(40 72 28 / 0.12); font: 600 16px Onest, system-ui, sans-serif; cursor: pointer; transition: background-color 160ms, color 160ms, transform 160ms; } .ds-answers button:hover { background: #1f2a33; color: #fffbf2; transform: translateY(-1px); } .ds-answers button:focus-visible { outline: 3px solid #1f2a33; outline-offset: 3px; }"
+    },
+    {
+      "name": "Demo Window Bar",
+      "kind": "nav",
+      "refersTo": "tab-selected",
+      "description": "Paper window chrome with dots and view tabs; selected tab in ink.",
+      "html": "<div class=\"ds-window\"><div class=\"ds-bar\"><span class=\"ds-dots\"><i></i><i></i><i></i></span><nav class=\"ds-tabs\"><a href=\"#\" aria-current=\"true\">Focus</a><a href=\"#\">Milestones</a><a href=\"#\">Board</a></nav></div><div class=\"ds-viewport\"></div></div>",
+      "css": ".ds-window { width: 520px; background: #fffbf2; border-radius: 20px; overflow: hidden; box-shadow: 0 32px 64px rgb(28 64 30 / 0.22), 0 4px 12px rgb(28 64 30 / 0.12); font-family: Onest, system-ui, sans-serif; } .ds-bar { display: flex; align-items: center; gap: 16px; padding: 12px 16px; border-bottom: 1px solid #ece3cf; background: #fbf5e8; } .ds-dots { display: flex; gap: 6px; } .ds-dots i { width: 11px; height: 11px; border-radius: 50%; background: #e4d7bd; } .ds-tabs { display: flex; gap: 4px; } .ds-tabs a { padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; color: #44515c; text-decoration: none; transition: background-color 160ms, color 160ms; } .ds-tabs a:hover { background: #efe6d2; color: #1f2a33; } .ds-tabs a[aria-current='true'] { background: #1f2a33; color: #fffbf2; } .ds-tabs a:focus-visible { outline: 3px solid #1f2a33; outline-offset: 3px; } .ds-viewport { height: 160px; background: #fffbf2; }"
+    },
+    {
+      "name": "Emoji Prop Scene",
+      "kind": "custom",
+      "refersTo": "illustration",
+      "description": "A roadside scene of varied system emojis on meadow: one anchor, mixed trees, small ground details, each casting the green prop shadow.",
+      "html": "<div class=\"ds-scene\" aria-hidden=\"true\"><span class=\"ds-prop\" style=\"left:8%;top:6%;font-size:104px\">🏡</span><span class=\"ds-prop\" style=\"left:52%;top:0;font-size:72px\">🌲</span><span class=\"ds-prop\" style=\"left:70%;top:20%;font-size:60px\">🌳</span><span class=\"ds-prop\" style=\"left:40%;top:58%;font-size:44px\">🐑</span><span class=\"ds-prop\" style=\"left:14%;top:72%;font-size:40px\">🌷</span><span class=\"ds-prop\" style=\"left:78%;top:66%;font-size:38px\">🍄</span></div>",
+      "css": ".ds-scene { position: relative; width: 420px; height: 260px; border-radius: 12px; background: #d3eaab; overflow: hidden; } .ds-prop { position: absolute; white-space: nowrap; line-height: 1; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; font-style: normal; filter: drop-shadow(0 8px 5px rgb(40 64 20 / 0.22)); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Sunday Drive",
+    "overview": "The roadmap is a real road through a sunny landscape. A small car, the one the visitor picked, waits at the start line under a deep blue sky, and as the visitor scrolls it drives down a winding slate road through meadow fields, pausing beside wooden signposts that each explain one step of the product. The origin is pinned by the user: happiness and harmony in the spirit of blume.codes, a literal road map, playful. On 2026-09-14 the user chose system emojis for every illustrated object that has one, accepting that they look different on each platform; the landscape stays its own layer so painted art can replace it later.\n\nThe world is daylight only. Sky blue melts to a warm cream ground; everything below the horizon is layered greens, each field a distinct soft tint. The ground (sky, hills, fields, road, verge, start line) is drawn in SVG; what stands on it (trees, houses, animals, flowers, clouds, sun, the car, the flag) is a color emoji, varied in kind and size, casting a soft green shadow. Content never sits in boxes: it hangs as paper notices pinned under wooden boards on posts. Shapes are rounded, shadows are diffuse and tinted by what they fall on. Density is low and paced by the road: one stop, one idea, a lot of meadow in between.\n\nThe page refuses the dark developer-tool look and the kanban screenshot hero. The product's real page appears once, in a paper window rising out of the meadow, quiet and gray, so the landscape carries the feeling and the window carries the proof.",
+    "keyCharacteristics": [
+      "Full-bleed illustrated hero: drawn sky gradient, hills and a road winding to the horizon, dressed with emoji sun, clouds, trees, houses, animals and flowers; the picked car at a checkered start line.",
+      "A \"Pick your car\" row of round emoji toggles under the hero command; the choice drives the whole page and is remembered.",
+      "One road down the page, generated from the layout, with the car mapped to scroll, facing its direction of travel and held beside each sign.",
+      "Wooden signpost boards with numbered milestone stones, paper notices with two pin dots, a post into the grass.",
+      "Young Serif for display and boards, Onest for sentences, system mono only for commands, the system emoji stack for everything illustrated.",
+      "Sunflower yellow only where a human is needed; cherry red for the way forward.",
+      "Grain texture multiplied over sky, meadow and wood."
+    ],
+    "rules": [
+      {
+        "name": "The Sunflower Rule",
+        "body": "In the interface layer, sunflower yellow fills only what needs a human: attention tags and the agent's open question. When the visitor answers, the bubble returns to paper and the question tag turns gray. The illustration may grow sunflower emojis; no button, board, link or heading may be yellow.",
+        "section": "colors"
+      },
+      {
+        "name": "The Way Forward Red Rule",
+        "body": "Cherry red belongs to what moves you forward: the primary command pill and a reached stone. It is never a warning and never a text color. The car's own color comes from the emoji the visitor picked, not from a token.",
+        "section": "colors"
+      },
+      {
+        "name": "The Daylight Rule",
+        "body": "No dark mode and no dark section. Light text appears only on the sky, on cherry red (pill, reached stone) and on wood boards; everywhere else text is ink on paper, cream or meadow.",
+        "section": "colors"
+      },
+      {
+        "name": "The Signpost Voice Rule",
+        "body": "Young Serif speaks only at display sizes, on boards, on stones and in the wordmark. Every sentence is Onest; emphasis is 600, never italic, never a third weight.",
+        "section": "typography"
+      },
+      {
+        "name": "The Copyable Mono Rule",
+        "body": "Mono appears only for a command or a file name. If it is not something the visitor would type or open, it is not mono.",
+        "section": "typography"
+      },
+      {
+        "name": "The Road Owns the Middle Rule",
+        "body": "On wide screens the road runs down the center lane and signs never cross it; on narrow screens the road takes the edge and signs take the rest. Generated fields and hedgerows keep 24px clear of every sign.",
+        "section": "layout"
+      },
+      {
+        "name": "The Tinted Shadow Rule",
+        "body": "Shadows take the color of what lies beneath: green over meadow, brown under wood, deep red under the red pill, blue on the sky. No neutral gray outer shadows and no hard offset drop shadows; the only zero-blur edges are inset: the pill bevel (inset 0 -3px 0) and the answer pill ring.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Grounded Prop Rule",
+        "body": "Below the hero, nothing floats in the meadow: an emoji prop casts its green drop shadow downward, a drawn object stands on a flat ellipse.",
+        "section": "elevation"
+      },
+      {
+        "name": "The No Hard Corner Rule",
+        "body": "The smallest interface corner is 3px. The only square interface edge is where paper meets wood.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Nothing Faster Than the Car Rule",
+        "body": "Motion is gentle ease-out (cubic-bezier(0.2, 0.8, 0.2, 1) for interface, 160 to 520ms). Clouds drift for tens of seconds; the car is the fastest thing on the page, and only moves when the visitor scrolls, picks a car, or first arrives.",
+        "section": "components"
+      },
+      {
+        "name": "The Swappable Landscape Rule",
+        "body": "Art, grain, car and copy are separate layers sharing one frame. Replacing the landscape means replacing one layer and keeping the start line at x 650, y 812 of 1440 by 900.",
+        "section": "components"
+      },
+      {
+        "name": "The System Emoji Rule",
+        "body": "If an object has an emoji, it is that emoji in the system emoji stack. Variety comes from choosing a different emoji, never from tinting, outlining or redrawing one. Draw in SVG only the ground and what no emoji fits.",
+        "section": "components"
+      },
+      {
+        "name": "The Mixed Meadow Rule",
+        "body": "Every scene mixes kinds and sizes: one anchor of 88px or more (a house or a big tree), smaller trees, and ground-level flowers, animals or mushrooms of 34 to 60px. Houses and flowers vary in kind across the page; a repeated emoji in one scene is a deliberate cluster (the three sunflowers at the attention stop), not filler.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do hang content as a paper notice under a wooden board on a post, numbered with a milestone stone.",
+      "Do use a system emoji for every tree, house, animal, flower, cloud, sun, car and flag, in the Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji stack.",
+      "Do vary props within a scene: one 88px-plus anchor, mixed tree kinds, different house kinds, several flower kinds, a small animal or ground detail.",
+      "Do give every emoji prop below the hero the drop shadow 0 8px 5px rgb(40 64 20 / 0.22), and stand drawn objects on a contact ellipse.",
+      "Do tint shadows by what they fall on: green rgb(40 72 28) over meadow, rgb(60 40 20) under wood, rgb(110 30 12) under the red pill, rgb(10 40 90) on the sky.",
+      "Do keep the hero art and car layers on the 1440 by 900 frame with xMidYMax slice and the start line at x 650, y 812.",
+      "Do let the picked car follow the visitor everywhere a car appears, and mirror it with scaleX so it faces its direction of travel.",
+      "Do keep sunflower yellow for attention tags and the agent's open question, and return them to calm once answered.",
+      "Do park the car at each stop under reduced motion and draw a plain road without JavaScript."
+    ],
+    "donts": [
+      "Don't use sunflower yellow on buttons, boards, links, headings or any interface element that does not need a human.",
+      "Don't use red for errors, warnings or text; red is the way forward.",
+      "Don't add a dark section or a dark mode, or put light text on anything but sky, cherry red or wood.",
+      "Don't put content in bordered boxes or cards; use signs, notices, bubbles or the window.",
+      "Don't set sentences in Young Serif or anything except commands and file names in mono.",
+      "Don't draw an SVG symbol, bundle an emoji font, or recolor an emoji for an object that has one.",
+      "Don't rotate the car to the road tangent or tilt it past 38 degrees; it drives side-on.",
+      "Don't use corners below 3px, neutral gray shadows, or hard offset drop shadows.",
+      "Don't let anything move faster than the car or move without the visitor's input, except the drifting clouds, the one-time hero roll-in and the picker hop."
+    ]
+  }
+}
