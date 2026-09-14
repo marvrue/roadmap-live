@@ -283,7 +283,7 @@ test('focus: active items at full size, blocked after them, now block folded in'
   assert.ok(none.includes('Nothing in progress right now.') && none.includes('<b>Checkout with reserved copies</b>'));
 });
 
-test('timeline: newest first, grouped by day, every kind of event, capped at 40', () => {
+test('timeline: newest first, grouped by day, every kind of event, folded beyond 40', () => {
   const rows = view.computeTimeline(demoState(), BASE_OPTS());
   for (let i = 1; i < rows.length; i++) assert.ok(Date.parse(rows[i - 1].at) >= Date.parse(rows[i].at));
   const kinds = new Set(rows.map((r) => r.kind));
@@ -297,9 +297,11 @@ test('timeline: newest first, grouped by day, every kind of event, capped at 40'
   const big = demoState();
   for (let i = 0; i < 50; i++) big.data.items.push({ id: `x${i}`, title: `Item ${i}`, milestone: 'm1', status: 'done', updated: `2026-08-${String(1 + (i % 28)).padStart(2, '0')}T10:00:00Z` });
   const capped = view.renderApp(big, { ...BASE_OPTS(), view: 'timeline' });
-  assert.strictEqual((capped.match(/<li data-kind=/g) || []).length, 40 + 4, '40 timeline rows plus the 4 feed rows');
-  assert.ok(capped.includes('data-action="more-timeline"'));
-  assert.ok((view.renderApp(big, { ...BASE_OPTS(), view: 'timeline', showAllTimeline: true }).match(/<li data-kind=/g) || []).length > 44);
+  const beforeFold = capped.slice(0, capped.indexOf('timeline:more'));
+  assert.ok(capped.includes('timeline:more'), 'rows beyond forty fold into a details element');
+  assert.strictEqual((beforeFold.match(/<li data-kind=/g) || []).length, 40 + 4, '40 timeline rows plus the 4 feed rows before the fold');
+  assert.ok((capped.match(/<li data-kind=/g) || []).length > 44, 'the folded rows are in the page, so it reads without JavaScript');
+  assert.ok(!capped.includes('data-action="more-timeline"'));
 });
 
 test('conversations: questions first, unanswered threads marked, waiting block folded in, others foldable with the key', () => {
@@ -763,7 +765,7 @@ test('timeline day headings: today, and the year for a date outside this one; a 
   delete state.data.items.find((it) => it.id === 'checkout').question.asked;
   const html = mainOf(view.renderApp(state, { ...BASE_OPTS(), view: 'timeline' }), 'timeline');
   assert.ok(html.startsWith('<main class="timeline"><section class="day"><h2>today</h2>'));
-  assert.ok(/<span class="at">09:15 AM<\/span>/.test(html));
+  assert.ok(/<time class="at" datetime="2026-09-10T09:15:00Z"[^>]*>09:15 AM<\/time>/.test(html));
   assert.ok(/<h2>[^<]*2025<\/h2>/.test(html), 'a different year is spelled out');
   assert.ok(!html.includes('data-kind="question"'));
   assert.ok(!view.computeTimeline(state, BASE_OPTS()).some((r) => r.kind === 'question'));

@@ -86,11 +86,6 @@ h2.section.attention { color: var(--attention); }
 /* since you last looked */
 .since { margin-bottom: 32px; }
 .since h2 { margin-bottom: 4px; }
-.since ul li { display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr) auto; column-gap: 16px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); }
-.since ul li:last-child { border-bottom: 1px solid var(--line); }
-.since .text { overflow-wrap: anywhere; }
-.since .text .tag { font-family: var(--font-mono); font-size: 12px; color: var(--attention); margin-left: 8px; white-space: nowrap; }
-.since .when { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
 .since .none { padding: 8px 0; color: var(--text-3); font-size: 13px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 
 /* now + history */
@@ -116,7 +111,6 @@ h2.section.attention { color: var(--attention); }
 .history li:first-child { border-top: 0; }
 .history .what { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .history .what em { font-style: normal; color: var(--text-2); font-family: var(--font-mono); font-size: 12px; margin-left: 6px; }
-.history .when { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
 .history .none { color: var(--text-3); font-size: 13px; padding: 4px 0 8px; }
 
 /* board */
@@ -182,15 +176,16 @@ h2.section.attention { color: var(--attention); }
 .views a:hover { color: var(--text); }
 .views a[aria-current="page"] { color: var(--text); border-bottom-color: var(--text); }
 
-/* shared row grammar of the views: mono label, text, mono column on the right */
+/* shared row grammar of the page: mono label, text, mono column on the right */
 .rows li { display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr) auto; column-gap: 16px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; }
 .rows li:last-child { border-bottom: 1px solid var(--line); }
 .rows .label, .timeline .label { white-space: normal; overflow-wrap: anywhere; }
 .rows .text { overflow-wrap: anywhere; }
 .rows .text .note { display: block; color: var(--text-2); }
-.rows .text .tag { font-family: var(--font-mono); font-size: 12px; color: var(--attention); margin-left: 8px; white-space: nowrap; }
-.rows .when { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); white-space: nowrap; }
 .rows.resolved .text { color: var(--text-3); }
+.when, .timeline .at { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); white-space: nowrap; }
+.tag { font-family: var(--font-mono); font-size: 12px; color: var(--attention); margin-left: 8px; white-space: nowrap; }
+.tag.quiet { color: var(--text-3); }
 .group { margin-bottom: 30px; }
 .group > header { display: flex; align-items: baseline; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line-strong); }
 .group h2 { font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
@@ -223,11 +218,9 @@ h2.section.attention { color: var(--attention); }
 .timeline .day { margin-bottom: 26px; }
 .timeline .day h2 { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-3); padding-bottom: 6px; border-bottom: 1px solid var(--line-strong); }
 .timeline li { display: grid; grid-template-columns: 52px var(--label-col) minmax(0, 1fr); column-gap: 16px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
-.timeline .at { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); white-space: nowrap; }
 .timeline .text { overflow-wrap: anywhere; }
 .timeline li.is-quiet .text { color: var(--text-2); }
-.timeline .tag { font-family: var(--font-mono); font-size: 12px; color: var(--attention); margin-left: 8px; white-space: nowrap; }
-.timeline .tag.quiet { color: var(--text-3); }
+.timeline .fold { margin-top: 0; }
 
 /* conversations view */
 .conversations .item { padding: 14px 0 16px; }
@@ -262,12 +255,9 @@ h2.section.attention { color: var(--attention); }
 .list tr.is-done td { color: var(--text-2); }
 .list th:last-child, .list td:last-child { padding-right: 0; text-align: right; }
 
-/* unplanned in the board (static and live) */
+/* unplanned below the view (static and live) */
 .unplanned { margin-top: 40px; }
 .unplanned h2 { margin-bottom: 4px; }
-.unplanned li { display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr) auto; column-gap: 16px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); }
-.unplanned li:last-child { border-bottom: 1px solid var(--line); }
-.unplanned .when { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
 
 /* changelog (static) */
 .changelog { margin-top: 44px; }
@@ -294,7 +284,6 @@ h2.section.attention { color: var(--attention); }
 .conv li { display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr) auto; column-gap: 16px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
 .conv li.agent .text { color: var(--text-2); }
 .conv .text { overflow-wrap: anywhere; }
-.conv .when { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
 .conv .when.attention { color: var(--attention); }
 .comment-form { display: flex; gap: 10px; align-items: baseline; margin-top: 8px; }
 .comment-form input { flex: 1 1 auto; min-width: 0; font: inherit; color: var(--text); background: var(--surface); border: 0; border-bottom: 1px solid var(--line-strong); padding: 6px 0; border-radius: 0; }
@@ -322,8 +311,8 @@ h2.section.attention { color: var(--attention); }
   .segments { flex-wrap: wrap; }
   .seg { min-width: 40%; }
   body { --label-col: 77px; }
-  .since ul li, .unplanned li, .rows li, .conv li { grid-template-columns: var(--label-col) minmax(0, 1fr); }
-  .since .when, .unplanned .when, .rows .when, .conv .when { grid-column: 2; }
+  .rows li, .conv li { grid-template-columns: var(--label-col) minmax(0, 1fr); }
+  .rows .when, .conv .when { grid-column: 2; }
   .waiting li, .item .q { grid-template-columns: 1fr; row-gap: 4px; }
   .item .q .answers, .item .q .hint { grid-column: 1; }
   .views { gap: 6px 16px; }
