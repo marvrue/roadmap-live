@@ -343,7 +343,7 @@ Chunky, glossy and pressable, like a toy.
 
 ### Car Picker
 A garage row of toy cars on the sky. The choice is the visitor's car for the whole page.
-- **Structure:** a labelled group "Pick your car" (15px 600 white, sky-tinted text shadow 0 1px 8px rgb(10 40 90 / 0.35)) followed by eight emoji toggles in this order: 🚗 🚕 🚙 🏎️ 🛻 🚐 🚜 🚲. Each has an English aria-label (Car, Taxi, SUV, Race car, Pickup truck, Van, Tractor, Bicycle) and aria-pressed. Gap 8px, centered, wraps.
+- **Structure:** a labelled group "Pick your car" (15px 600 white, sky-tinted text shadow 0 1px 8px rgb(10 40 90 / 0.35)) followed by eight emoji toggles in this order: 🚗 🚕 🚙 🏎️ 🚚 🚐 🚜 🚲. Each has an English aria-label (Car, Taxi, SUV, Race car, Pickup truck, Van, Tractor, Bicycle) and aria-pressed. Gap 8px, centered, wraps.
 - **Toggle:** 46px circle, emoji 26px, white at 14 percent on the sky. Hover lifts 2px and brightens to white at 28 percent (180ms ease-ui, 160ms color). Pressed is a solid white circle with the picked-car shadow. Focus is the white sky outline.
 - **Behavior:** a click swaps the emoji in the hero car and the road car, updates aria-pressed on all eight, and stores the emoji in localStorage under `rl-car`; a stored choice is restored silently on load if it matches a button. The hero car hops 28px up and back over 440ms ease-ui on a click, skipped under reduced motion.
 - **Narrow:** label on its own line, 36px circles, 20px emoji, 4px gap.
@@ -377,7 +377,7 @@ A wooden board, a paper notice hanging under it, a post into the grass.
 
 ### Illustration Layer
 - **Emoji props:** every illustrated object that has an emoji is a system emoji, never a drawn symbol. In the hero they are SVG `<text>` on the art frame, centered with text-anchor middle and sized in frame units. Below the hero they are absolutely positioned spans (left/top in percent, font-size in px) with the emoji prop shadow. Emojis are used as the platform renders them: not outlined, not recolored, not filtered except for the drop shadow, and mirrored only for the car.
-- **Vocabulary in use:** trees 🌳 🌲 🌴; houses 🏡 🏘️ 🏠 🛖 🏪; animals 🐑 🐄 🦆 🦋; flowers 🌸 🌼 🌷 🌹 🌺 🌻; ground 🌿 🌾 🍄 🪨 🌱; sky ☀️ ☁️; finish 🏁.
+- **Vocabulary in use:** trees 🌳 🌲 🌴; houses 🏡 🏘️ 🏠 ⛺ 🏪; animals 🐑 🐄 🦆 🦋; flowers 🌸 🌼 🌷 🌹 🌺 🌻; ground 🌿 🌾 🍄 🌱; sky ☀️ ☁️; finish 🏁.
 - **Drawn SVG:** only what has no fitting emoji: the sky gradient and sun glow, hills, fields, road, verge, the checkered start line, the fence and the pond. Fence and pond are shared symbols placed with `<use>` and a soft ink outline (stroke rgb(36 58 28 / 0.42), 1.6px, round joins; highlights and the fence's contact shadow opt out with `stroke="none"`).
 - **Landscape art layer:** the hero landscape is a separate layer in a 1440 by 900 frame, `preserveAspectRatio="xMidYMax slice"`, so it anchors to the bottom edge. The road's checkered start line sits at x 650, y 812. The hero car lives in its own layer with the same frame and aspect rule, so a painted raster can replace the art without moving the car.
 - **Clouds:** four ☁️ emojis (110 to 190 frame units) drift ±36px horizontally over 46 to 70s, alternating, with staggered delays. The sun is a ☀️ emoji over a radial #fff7dc glow.
