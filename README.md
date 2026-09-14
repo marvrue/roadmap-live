@@ -1,6 +1,6 @@
 # roadmap-live
 
-Your coding agent keeps a `roadmap.json`. roadmap-live turns it into a page you can look at: a progress bar per milestone, what is being worked on right now, what reviewers still want, and what happened that nobody planned. It works live on your machine while agents work, and it works from GitHub pull requests for a page that stays current without anyone editing it.
+Your coding agent keeps a `roadmap.json`. roadmap-live turns it into a page you can look at and reply from: a progress bar per milestone, what is being worked on right now, what the agent is asking you, what reviewers still want, and what happened that nobody planned. Comments you leave on the live page reach the agent on its next run. It works live on your machine while agents work, and it works from GitHub pull requests for a page that stays current without anyone editing it.
 
 ![Rendered roadmap page in the paper theme](docs/screenshot.png)
 
@@ -37,6 +37,8 @@ GitHub login works the same way. If you use the GitHub CLI, you are already logg
    ```
 
    This writes `roadmap.json`, `AGENTS.md` and `.github/workflows/roadmap.yml`. Existing files are kept.
+
+   A new `roadmap.json` is drafted from what the repository already holds: commit subjects, README headings and pull request titles, sent through the same model chain as `sync`. The first page shows your project, not an empty milestone. Without a model or without any history it starts empty, and `--no-bootstrap` always starts empty. From then on the file belongs to your agent.
 
 2. Tell your agent to read the rules. Codex reads `AGENTS.md` by itself. For Claude Code, add this line to `CLAUDE.md` (create the file if needed); for Cursor, Gemini CLI or Copilot put it in their rules file:
 
