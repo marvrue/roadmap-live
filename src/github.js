@@ -145,6 +145,27 @@ async function fetchPullRequests(client, repo, since) {
   return out;
 }
 
+// Titles and states of the most recently updated pull requests, without the
+// three follow-up calls per pull request that fetchPullRequests makes. `init`
+// reconstructs a first roadmap from this; it needs what was worked on, not who
+// said what about it. `max` caps how far back the pagination reads.
+async function fetchPullRequestList(client, repo, { max = 100 } = {}) {
+  let seen = 0;
+  const prs = await client.list(`/repos/${repo}/pulls?state=all&sort=updated&direction=desc`, {
+    stop: () => ++seen > max,
+  });
+  return prs.map((pr) => ({
+    number: pr.number,
+    title: pr.title || '',
+    state: pr.state,
+    merged: !!pr.merged_at,
+    draft: !!pr.draft,
+    created_at: pr.created_at,
+    merged_at: pr.merged_at || null,
+    branch: pr.head && pr.head.ref,
+  }));
+}
+
 function firstRunSince(now = Date.now()) {
   return new Date(now - FIRST_RUN_DAYS * 86400000).toISOString();
 }
@@ -174,4 +195,4 @@ function resolveRepo({ flag, roadmap, env = process.env, cwd = process.cwd(), ex
   return null;
 }
 
-module.exports = { createClient, fetchPullRequests, normalizePr, reviewDecision, parseLink, resolveRepo, repoFromRemote, firstRunSince, FIRST_RUN_DAYS };
+module.exports = { createClient, fetchPullRequests, fetchPullRequestList, normalizePr, reviewDecision, parseLink, resolveRepo, repoFromRemote, gitRemote, firstRunSince, FIRST_RUN_DAYS };

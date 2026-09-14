@@ -38,6 +38,9 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **A new key on every start, unless `--key` or `ROADMAP_KEY` fixes it.** Nothing to store and nothing to rotate; the terminal line is the one place the key appears, and a fixed key is an explicit choice.
 - **The server renders without the write fields; the browser adds them once it holds the key.** One HTML for everyone keeps the key out of the page, and a 401 on a write drops the stored key so the page falls back to read-only instead of failing silently.
 - **The git header uses `main` as the base and hides "ahead" when there is no `main`.** Guessing the default branch would need a remote query; `main` covers the common case silently.
+- **`init` drafts the first `roadmap.json` from the repository and never writes the file again.** `AGENTS.md` gives the file to the agent and to sync; a one-time seed from commit subjects, README headings and pull request titles fills the empty first page without adding a fourth writer.
+- **A draft keeps only `todo`, `active` and `done`, and at most one item `active`.** `blocked` belongs to sync, and a first page with several running timers would contradict the calm the page is built for.
+- **A draft that fails the validator is not written; `init` writes the empty skeleton and says why.** The seed is a convenience, and a plausible but invalid file would hand the agent a broken start.
 
 - **The share button asks GitHub whether Pages is on, and turns it on from the live page.** Enabling Pages is a one-time setting the human would otherwise have to find in the repository settings; the server already holds a GitHub credential, so one click is enough. `page_url` in roadmap.json overrides the address for pages hosted elsewhere.
 - **The Pages address is the site URL plus `roadmap/`.** That is the Action's default output path; a different `output_path` needs `page_url`.
@@ -74,6 +77,11 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **The OAuth client id is empty in this build and can be set with `ROADMAP_GITHUB_CLIENT_ID`.** Registering a GitHub OAuth app needs a human account; the code path is complete and tested with a mocked GitHub, and the README states the limit.
 - **Without a client id the credential chain ends with the one-sentence explanation from the spec instead of a broken device flow.** A clear message beats a request that cannot succeed.
 - **Detection of CLIs uses `spawnSync` with a two-second timeout on `--version`.** It is the spec's definition of "installed" and needs no PATH parsing.
+- **`init` reuses the providers' `classify()` call for the draft instead of adding a method to every provider.** The call is a prompt and a system line in and text out, so a second method would change five adapters for the same thing.
+- **`init` reads pull request titles and states only, not reviews and comments.** The draft needs what was worked on, not who said what, and one request per hundred pull requests keeps an anonymous read far below the rate limit.
+- **`init` reads pull requests without a token when it finds none, and a rate limit ends the read instead of waiting.** Public repositories answer anonymously, and a best-effort draft is not worth minutes of waiting in a setup command.
+- **`init` takes the repository from `--repo` or the git remote, never from `GITHUB_REPOSITORY`.** `init` does not run in the Action, and a variable left in a shell would name another project; the GTM design settled the same for the launch milestone.
+- **The agent provider gets no draft hand-off in `init`.** `init` writes `AGENTS.md` in the same run, which already tells the agent to plan items, so a second inbox protocol would repeat it.
 
 ## Render and design
 
@@ -104,3 +112,4 @@ Judgment calls made while adding pull request sync, render, themes and languages
 
 - **`init` does not touch `CLAUDE.md` or other rules files.** The spec lists three files; the README explains the one line for each agent.
 - **No hosted version, no issue or commit tracking.** Both are named in the README as limits and plans.
+- **No watching of agent sessions, token budgets or rules files.** Tools such as blume.codes read agent transcripts for that; roadmap-live stays with a file the user owns and a page that leaves the machine.
