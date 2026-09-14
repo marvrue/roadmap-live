@@ -399,15 +399,12 @@
       "title": "Page shows current/target, tagline in the header",
       "milestone": "m5",
       "status": "done",
-      "updated": "2026-09-11T18:08:51Z",
+      "updated": "2026-09-13T13:46:35Z",
       "branch": "feat/page-goals",
-      "note": "34/100 in the label column, goal in the subline, one feed row, tagline in the header."
-      "status": "active",
+      "note": "34/100 in the label column, goal in the subline, one feed row, tagline in the header.",
       "prs": [
         14
-      ],
-      "updated": "2026-09-11T18:23:03Z",
-      "branch": "feat/page-goals"
+      ]
     },
     {
       "id": "pulse-command",
@@ -425,7 +422,12 @@
       "id": "docs-positioning",
       "title": "README and PRODUCT.md: from first commit to first customer",
       "milestone": "m5",
-      "status": "todo"
+      "status": "todo",
+      "prs": [
+        13
+      ],
+      "updated": "2026-09-11T15:11:18Z",
+      "branch": "feat/goals"
     },
     {
       "id": "drift-off-track",
@@ -444,12 +446,6 @@
       "title": "Planned vs unplanned pull requests in 30 days",
       "milestone": "m5",
       "status": "todo"
-      "status": "todo",
-      "prs": [
-        13
-      ],
-      "updated": "2026-09-11T15:11:18Z",
-      "branch": "feat/goals"
     }
   ],
   "unplanned": [
