@@ -343,7 +343,7 @@ Chunky, glossy and pressable, like a toy.
 
 ### Car Picker
 A garage row of toy cars on the sky. The choice is the visitor's car for the whole page.
-- **Structure:** a labelled group "Pick your car" (15px 600 white, sky-tinted text shadow 0 1px 8px rgb(10 40 90 / 0.35)) followed by eight emoji toggles in this order: 🚗 🚕 🚙 🏎️ 🚚 🚐 🚜 🚲. Each has an English aria-label (Car, Taxi, SUV, Race car, Pickup truck, Van, Tractor, Bicycle) and aria-pressed. Gap 8px, centered, wraps.
+- **Structure:** a labelled group "Pick your car" (15px 600 white, sky-tinted text shadow 0 1px 8px rgb(10 40 90 / 0.35)) followed by eight emoji toggles in this order: 🚗 🚕 🚙 🏎️ 🚚 🚐 🚜 🚲. Each has an English aria-label (Car, Taxi, SUV, Race car, Truck, Van, Tractor, Bicycle) and aria-pressed. Gap 8px, centered, wraps.
 - **Toggle:** 46px circle, emoji 26px, white at 14 percent on the sky. Hover lifts 2px and brightens to white at 28 percent (180ms ease-ui, 160ms color). Pressed is a solid white circle with the picked-car shadow. Focus is the white sky outline.
 - **Behavior:** a click swaps the emoji in the hero car and the road car, updates aria-pressed on all eight, and stores the emoji in localStorage under `rl-car`; a stored choice is restored silently on load if it matches a button. The hero car hops 28px up and back over 440ms ease-ui on a click, skipped under reduced motion.
 - **Narrow:** label on its own line, 36px circles, 20px emoji, 4px gap.
