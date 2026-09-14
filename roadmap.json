@@ -127,9 +127,10 @@
       "milestone": "m2",
       "status": "done",
       "note": "Survives page reloads while the server runs.",
-      "updated": "2026-09-14T15:57:00Z",
+      "updated": "2026-09-14T16:52:02Z",
       "prs": [
-        17
+        17,
+        18
       ],
       "branch": "feat/nine-views"
     },
@@ -207,9 +208,10 @@
       "milestone": "m3",
       "status": "done",
       "note": "Idempotent, writes CHANGELOG.md.",
-      "updated": "2026-09-10T15:07:09Z",
+      "updated": "2026-09-14T16:04:11Z",
       "prs": [
-        1
+        1,
+        17
       ],
       "branch": "feat/pr-sync"
     },
@@ -218,10 +220,11 @@
       "title": "render: static page with three themes for GitHub Pages",
       "milestone": "m3",
       "status": "done",
-      "updated": "2026-09-10T15:07:09Z",
+      "updated": "2026-09-14T16:04:11Z",
       "prs": [
         1,
-        2
+        2,
+        17
       ],
       "branch": "feat/theme-switch"
     },
@@ -260,11 +263,12 @@
       "milestone": "m3",
       "status": "done",
       "note": "Live page writes to roadmap.json, static page shows read-only.",
-      "updated": "2026-09-14T15:57:00Z",
+      "updated": "2026-09-14T16:52:02Z",
       "prs": [
         1,
         3,
-        17
+        17,
+        18
       ],
       "branch": "feat/feedback-channel"
     },
@@ -462,7 +466,12 @@
       "id": "drift-unplanned-ratio",
       "title": "Planned vs unplanned pull requests in 30 days",
       "milestone": "m5",
-      "status": "todo"
+      "status": "active",
+      "prs": [
+        18
+      ],
+      "updated": "2026-09-14T16:52:02Z",
+      "branch": "feat/views-followup"
     }
   ],
   "unplanned": [
@@ -489,7 +498,7 @@
     }
   ],
   "sync": {
-    "last_run": "2026-09-14T16:04:05.189Z",
+    "last_run": "2026-09-14T16:52:06.119Z",
     "repo": "marvrue/roadmap-live"
   }
 }
