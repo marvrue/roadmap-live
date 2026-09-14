@@ -145,9 +145,69 @@
     },
     "views": {
       "milestones": "Meilensteine",
-      "board": "Board"
+      "board": "Board",
+      "focus": "Fokus",
+      "timeline": "Chronik",
+      "conversations": "Gespräche",
+      "points": "Offene Punkte",
+      "prs": "Pull Requests",
+      "signals": "Signale",
+      "list": "Liste"
     },
     "viewTitle": "Ansicht wechseln",
+    "timeline": {
+      "today": "heute",
+      "yesterday": "gestern",
+      "resolved": "erledigt",
+      "sync": "Sync",
+      "syncText": "Pull Requests aus {repo} gelesen",
+      "empty": "Noch nichts passiert."
+    },
+    "conversations": {
+      "unanswered": "unbeantwortet",
+      "empty": "Noch keine Gespräche. Kommentare und Fragen erscheinen hier.",
+      "others": {
+        "one": "1 Item ohne Gespräch",
+        "other": "{n} Items ohne Gespräch"
+      }
+    },
+    "points": {
+      "open": {
+        "one": "1 offen",
+        "other": "{n} offen"
+      },
+      "resolved": {
+        "one": "1 erledigt",
+        "other": "{n} erledigt"
+      },
+      "empty": "Keine offenen Punkte. Die Reviewer wollen nichts mehr."
+    },
+    "pullRequests": {
+      "items": {
+        "one": "1 Item",
+        "other": "{n} Items"
+      },
+      "review": "Review",
+      "empty": "Noch keine Pull Requests verknüpft."
+    },
+    "signals": {
+      "questions": "Offene Fragen",
+      "blocked": "Blockiert",
+      "stale": "Eingeschlafen",
+      "unplanned": "Nicht auf der Roadmap",
+      "question": "Frage",
+      "calm": "Nichts braucht dich.",
+      "counts": "{active} in Arbeit, {open} offen, {done} erledigt."
+    },
+    "list": {
+      "status": "Status",
+      "title": "Item",
+      "milestone": "Meilenstein",
+      "pr": "PR",
+      "updated": "Geändert",
+      "points": "Punkte",
+      "sortTitle": "Sortieren nach {col}"
+    },
     "milestoneCurrent": "aktueller Meilenstein",
     "doneCount": {
       "one": "1 erledigt",

@@ -10,7 +10,9 @@ const path = require('path');
 
 const AGENT_STATUSES = ['todo', 'active', 'done'];
 const STATUSES = ['todo', 'active', 'blocked', 'done'];
-const VIEWS = ['milestones', 'board'];
+// The renderer owns the view list because it must also run in the browser
+// without a build step; the validator reads it from there.
+const { VIEWS } = require('./page/view');
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?)?$/;
 const ID_RE = /^[a-z0-9][a-z0-9-]*$/;
 const REPO_RE = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
