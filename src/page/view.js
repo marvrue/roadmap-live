@@ -10,7 +10,8 @@
  *   changelog: [lines], generatedAt,  static view
  *   repoUrl, roadmapUrl
  * }
- * opts = { t, lang, now, filter, colorMode, theme, showAllDone, changed }
+ * opts = { t, lang, now, filter, colorMode, theme, view, showAllDone, showAllFeed,
+ *          showAllTimeline, sort, open, expanded, pending, share, canWrite, changed }
  */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
@@ -21,10 +22,17 @@
   var DEFAULT_STALE_DAYS = 7;
   var FEED_MAX = 8;
   var FEED_SHORT = 4;
-  // Views the button in the header cycles through. Adding one: a render
-  // function, an entry here, a label under page.views.<name> in the locales.
-  var VIEWS = ['milestones', 'board'];
+  // Views, in the order of the row above the content. Adding one: a render
+  // function, a case in renderView, an entry here, a label under
+  // page.views.<name> in the locales. Views that need synced data (prs,
+  // points) are listed only when the roadmap has such data; see availableViews.
+  var VIEWS = ['milestones', 'board', 'focus', 'timeline', 'conversations', 'points', 'prs', 'signals', 'list'];
   var DONE_VISIBLE = 3;
+  var TIMELINE_SHORT = 40;
+  var LIST_COLS = ['status', 'title', 'milestone', 'pr', 'updated', 'points'];
+  // Columns whose first click sorts descending (newest, highest first).
+  var LIST_DESC_FIRST = { updated: true, pr: true, points: true };
+  var STATUS_ORDER = { blocked: 0, active: 1, todo: 2, done: 3 };
 
   // ---- small helpers ------------------------------------------------------
 
@@ -62,13 +70,24 @@
     return t;
   }
 
+  // Intl formatters are the expensive part of a render; one per language
+  // and option set serves every row.
+  var formatters = {};
+  function formatter(kind, lang, options) {
+    var key = kind + ':' + (lang || 'en') + ':' + JSON.stringify(options);
+    if (!formatters[key]) {
+      var Ctor = Intl[kind];
+      try { formatters[key] = new Ctor(lang || 'en', options); } catch (e) { formatters[key] = new Ctor('en', options); }
+    }
+    return formatters[key];
+  }
+
   function relativeTime(iso, now, lang) {
     var t = Date.parse(iso);
     if (isNaN(t)) return '';
     var diff = (t - now) / 1000;
     var abs = Math.abs(diff);
-    var rtf;
-    try { rtf = new Intl.RelativeTimeFormat(lang || 'en', { numeric: 'auto' }); } catch (e) { rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' }); }
+    var rtf = formatter('RelativeTimeFormat', lang, { numeric: 'auto' });
     if (abs < 45) return rtf.format(0, 'second');
     if (abs < 3600) return rtf.format(Math.round(diff / 60), 'minute');
     if (abs < 86400) return rtf.format(Math.round(diff / 3600), 'hour');
@@ -80,7 +99,7 @@
   function formatDateTime(iso, lang) {
     var d = new Date(iso);
     if (isNaN(d.getTime())) return '';
-    try { return new Intl.DateTimeFormat(lang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(d); } catch (e) { return d.toISOString(); }
+    try { return formatter('DateTimeFormat', lang, { dateStyle: 'medium', timeStyle: 'short' }).format(d); } catch (e) { return d.toISOString(); }
   }
 
   function elapsed(iso, now) {
@@ -120,6 +139,109 @@
     var text = t('page.pr', { number: number });
     var url = prUrl(state, number);
     return url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text);
+  }
+
+  // "#44, #45", each a link when the repository is known.
+  function prLinks(state, prs) {
+    return prs.map(function (n) { var u = prUrl(state, n); return u ? '<a href="' + esc(u) + '">#' + n + '</a>' : '#' + n; }).join(', ');
+  }
+
+  // "PR #44", or "PRs #44, #45" for items with several pull requests.
+  function prList(state, t, it) {
+    if (it.prs.length === 1) return prLabel(state, t, it.prs[0]);
+    return esc(t('page.prs', { list: '' })).trim() + ' ' + prLinks(state, it.prs);
+  }
+
+  // The GitHub address of the comment an open point came from. Sources look
+  // like pr:44#review_comment:2001, pr:42#comment:1893 or pr:42#review:7.
+  function pointUrl(state, source) {
+    var m = /^pr:(\d+)(?:#(review_comment|comment|review):(\d+))?/.exec(source || '');
+    if (!m) return null;
+    var base = prUrl(state, m[1]);
+    if (!base) return null;
+    if (m[2] === 'review_comment') return base + '#discussion_r' + m[3];
+    if (m[2] === 'comment') return base + '#issuecomment-' + m[3];
+    if (m[2] === 'review') return base + '#pullrequestreview-' + m[3];
+    return base;
+  }
+
+  function pointLabel(state, t, p) {
+    var n = prFromSource(p.source);
+    if (!n) return '';
+    var url = pointUrl(state, p.source);
+    var text = t('page.pr', { number: n });
+    return url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text);
+  }
+
+  function dayKey(iso) {
+    var d = new Date(iso);
+    return isNaN(d.getTime()) ? '' : d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+  }
+
+  function formatDay(iso, now, lang, t) {
+    var d = new Date(iso), n = new Date(now);
+    if (isNaN(d.getTime())) return '';
+    if (isSameDay(iso, now)) return t('page.timeline.today');
+    var y = new Date(now);
+    y.setDate(y.getDate() - 1);
+    if (isSameDay(iso, y.getTime())) return t('page.timeline.yesterday');
+    var o = { weekday: 'short', day: 'numeric', month: 'short' };
+    if (d.getFullYear() !== n.getFullYear()) o.year = 'numeric';
+    try { return formatter('DateTimeFormat', lang, o).format(d); } catch (e) { return d.toDateString(); }
+  }
+
+  function formatClock(iso, lang) {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    try { return formatter('DateTimeFormat', lang, { hour: '2-digit', minute: '2-digit' }).format(d); } catch (e) { return ''; }
+  }
+
+  // The views this roadmap can show. Pull requests and open points only
+  // exist after a sync; until then their views would be empty, so their
+  // names stay out of the row.
+  function availableViews(data) {
+    if (!data) return VIEWS.slice();
+    var hasPrs = data.items.some(function (it) { return it.prs && it.prs.length; }) || (data.unplanned || []).some(function (u) { return u.prs && u.prs.length; });
+    var hasPoints = data.items.some(function (it) { return it.open_points && it.open_points.length; });
+    return VIEWS.filter(function (v) { return v === 'prs' ? hasPrs : v === 'points' ? hasPoints : true; });
+  }
+
+  function resolveView(data, v) {
+    var avail = availableViews(data);
+    return avail.indexOf(v) >= 0 ? v : avail[0];
+  }
+
+  function visibleItems(data, opts) {
+    return opts.filter ? data.items.filter(function (it) { return it.milestone === opts.filter; }) : data.items;
+  }
+
+  function isOpen(opts, key) {
+    return !!(opts.open && opts.open[key]);
+  }
+
+  // A folded list that remembers being open across re-renders by its key.
+  function fold(opts, key, summary, body, cls, attrs) {
+    return '<details class="' + (cls ? cls + ' ' : '') + 'fold" data-key="' + esc(key) + '"' + (attrs || '') + (isOpen(opts, key) ? ' open' : '') + '><summary>' + summary + '</summary>' + body + '</details>';
+  }
+
+  function hasQuestion(it) {
+    return !!(it.question && it.question.text && openItem(it));
+  }
+
+  function milestoneIndex(data) {
+    var order = {}, titles = {};
+    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
+    return { order: order, titles: titles };
+  }
+
+  function sortedUnplanned(data) {
+    return (data.unplanned || []).slice().sort(function (a, b) { return (Date.parse(b.first_seen) || 0) - (Date.parse(a.first_seen) || 0); });
+  }
+
+  // One row of the shared grammar: mono label, text, mono time on the right.
+  // label and text are HTML, at is an ISO time.
+  function row(opts, label, text, at, labelCls) {
+    return '<li><span class="label' + (labelCls ? ' ' + labelCls : '') + '">' + label + '</span><span class="text">' + text + '</span><span class="when">' + time(at, opts.now, opts.lang) + '</span></li>';
   }
 
   // ---- derived data --------------------------------------------------------
@@ -238,7 +360,7 @@
       });
     });
     (data.unplanned || []).forEach(function (u) {
-      rest.push({ kind: 'unplanned', at: u.first_seen, pr: u.prs && u.prs.length ? u.prs[u.prs.length - 1] : null, label: null, text: t('page.feed.unplanned', { title: u.title }), tag: t('page.feed.notOnRoadmap'), attention: true });
+      rest.push({ kind: 'unplanned', at: u.first_seen, pr: lastPr(u), label: null, text: t('page.feed.unplanned', { title: u.title }), tag: t('page.feed.notOnRoadmap'), attention: true });
     });
     // At most one goal row, the latest change: a daily pulse must not turn the
     // feed into a ticker. A moving number is a message, not an attention signal.
@@ -303,10 +425,6 @@
       var pr = latestPr(data);
       if (pr) parts.push('<span class="sep">&middot;</span><span>' + prLabel(state, t, pr) + '</span>');
     }
-    if (VIEWS.length > 1) {
-      var v = VIEWS.indexOf(opts.view) >= 0 ? opts.view : VIEWS[0];
-      parts.push('<button type="button" class="theme" data-action="view" title="' + esc(t('page.viewTitle')) + '">' + esc(t('page.views.' + v)) + '</button>');
-    }
     if (opts.theme && state.themes && state.themes.length > 1) {
       parts.push('<button type="button" class="theme" data-action="theme-name" title="' + esc(t('page.pickTheme', { list: state.themes.join(', ') })) + '">' + esc(opts.theme) + '</button>');
     }
@@ -367,23 +485,35 @@
 
   function renderWaiting(state, opts) {
     var t = opts.t;
-    var asking = state.data.items.filter(function (it) { return it.question && it.question.text && openItem(it); });
+    var asking = state.data.items.filter(hasQuestion);
     if (!asking.length) return '';
     var rows = asking.map(function (it) {
-      var q = it.question;
-      var out = '<li><span class="label attention">' + esc(it.title) + '</span><div class="q">' + esc(q.text);
-      if (writable(state, opts)) {
-        out += '<div class="answers">';
-        (q.options || []).forEach(function (o) {
-          out += '<button type="button" data-action="answer" data-id="' + esc(it.id) + '" data-text="' + esc(o) + '">' + esc(o) + '</button>';
-        });
-        out += '</div>' + renderCommentForm(it, t);
-      } else {
-        out += '<div class="hint">' + esc(t(state.mode === 'live' ? 'page.readOnly' : 'page.waiting.hint')) + '</div>';
-      }
-      return out + '</div></li>';
+      return '<li><span class="label attention">' + esc(it.title) + '</span><div class="q">' + renderQuestionBody(state, opts, it, false) + '</div></li>';
     });
     return '<section class="waiting"><h2 class="section">' + esc(t('page.waiting.title')) + '</h2><ul>' + rows.join('') + '</ul></section>';
+  }
+
+  // The question text with its answer buttons. inThread: the item's
+  // conversation follows and brings its own field and read-only hint.
+  function renderQuestionBody(state, opts, it, inThread) {
+    var t = opts.t, q = it.question;
+    var out = esc(q.text);
+    if (writable(state, opts)) {
+      out += '<div class="answers">';
+      (q.options || []).forEach(function (o) {
+        out += '<button type="button" data-action="answer" data-id="' + esc(it.id) + '" data-text="' + esc(o) + '">' + esc(o) + '</button>';
+      });
+      out += '</div>' + (inThread ? '' : renderCommentForm(it, t));
+    } else if (!inThread || state.mode !== 'live') {
+      out += '<div class="hint">' + esc(t(state.mode === 'live' ? 'page.readOnly' : 'page.waiting.hint')) + '</div>';
+    }
+    return out;
+  }
+
+  // A question inside an item block (focus, conversations).
+  function renderQuestion(state, opts, it) {
+    if (!hasQuestion(it)) return '';
+    return '<div class="q"><span class="label attention">' + esc(opts.t('page.signals.question')) + '</span>' + renderQuestionBody(state, opts, it, true) + '</div>';
   }
 
   // Writing needs the live page and the write key in the browser. The
@@ -413,8 +543,7 @@
 
   function renderNow(state, opts) {
     var t = opts.t, data = state.data;
-    var titles = {};
-    data.milestones.forEach(function (m) { titles[m.id] = m.title; });
+    var titles = milestoneIndex(data).titles;
     var active = data.items.filter(function (it) { return it.status === 'active'; });
     if (state.mode !== 'live' && !active.length) return '';
     var out = '<div id="now" class="now' + (active.length ? ' has-active' : '') + '">';
@@ -430,8 +559,20 @@
         out += '</div>';
       });
     } else {
+      out += renderIdle(state, opts);
+    }
+    return out + '</div>';
+  }
+
+  // Nothing in progress: name the next open item of the current milestone,
+  // or of the given items when a milestone filter narrows the view.
+  function renderIdle(state, opts, items) {
+    var t = opts.t, data = state.data;
+    var next = null;
+    if (items) {
+      next = items.filter(function (it) { return it.status === 'todo'; })[0] || null;
+    } else {
       var info = milestoneStats(data);
-      var next = null;
       if (info.current) next = data.items.filter(function (it) { return it.status === 'todo' && it.milestone === info.current.m.id; })[0] || null;
       // An empty current milestone has nothing to start; point at the first open item in milestone order.
       if (!next) {
@@ -439,12 +580,11 @@
         data.milestones.forEach(function (m, i) { order[m.id] = i; });
         next = sortItems(data.items.filter(function (it) { return it.status === 'todo'; }), order, 'todo')[0] || null;
       }
-      out += '<div class="eyebrow"><span>' + esc(next ? t('page.now.idle') : t('page.now.allDone')) + '</span></div><div class="idle">';
-      if (next) out += esc(t('page.now.next', { title: '' })).replace(/\s*$/, '') + ' <b>' + esc(next.title) + '</b>';
-      else if (data.items.length) out += esc(t('page.now.summary', { n: data.milestones.length, items: data.items.length }));
-      else out += esc(t('page.now.empty'));
-      out += '</div>';
     }
+    var out = '<div class="eyebrow"><span>' + esc(next ? t('page.now.idle') : t('page.now.allDone')) + '</span></div><div class="idle">';
+    if (next) out += esc(t('page.now.next', { title: '' })).replace(/\s*$/, '') + ' <b>' + esc(next.title) + '</b>';
+    else if (data.items.length) out += esc(t('page.now.summary', { n: data.milestones.length, items: data.items.length }));
+    else out += esc(t('page.now.empty'));
     return out + '</div>';
   }
 
@@ -459,13 +599,17 @@
       (items.length ? items.join('') : '<li class="none">' + esc(t('page.history.empty')) + '</li>') + '</ul></aside>';
   }
 
-  function sortItems(items, order, status) {
+  // mode: a board column ('todo', 'active', 'done') or 'focus'. Done sorts
+  // newest first, the active column puts blocked first, focus puts active
+  // first; everything else follows the milestone order.
+  function sortItems(items, order, mode) {
     return items.slice().sort(function (a, b) {
-      if (status === 'done') {
+      if (mode === 'done') {
         var ta = Date.parse(a.updated) || 0, tb = Date.parse(b.updated) || 0;
         if (ta !== tb) return tb - ta;
       }
-      if (status === 'active' && a.status !== b.status) return a.status === 'blocked' ? -1 : 1;
+      if (mode === 'active' && a.status !== b.status) return a.status === 'blocked' ? -1 : 1;
+      if (mode === 'focus' && a.status !== b.status) return a.status === 'active' ? -1 : 1;
       return (order[a.milestone] || 0) - (order[b.milestone] || 0);
     });
   }
@@ -479,9 +623,7 @@
     // label column shows the numbers for open and done items, while active and
     // blocked items keep their status word (blocked keeps its attention color).
     if (goal) sub.push('<span class="goal' + (goalReached(goal) ? ' reached' : '') + '"' + (measured(goal) ? '' : ' title="' + esc(t('page.goal.unmeasured')) + '"') + '>' + esc(goalText(goal) + ' ' + goal.label) + '</span>');
-    if (it.prs && it.prs.length) {
-      sub.push('<span>' + (it.prs.length === 1 ? prLabel(state, t, it.prs[0]) : esc(t('page.prs', { list: '' })).trim() + ' ' + it.prs.map(function (n) { var u = prUrl(state, n); return u ? '<a href="' + esc(u) + '">#' + n + '</a>' : '#' + n; }).join(', ')) + '</span>');
-    }
+    if (it.prs && it.prs.length) sub.push('<span>' + prList(state, t, it) + '</span>');
     if (it.branch) sub.push('<span>' + esc(it.branch) + '</span>');
     var pts = openPoints(it).length;
     if (pts) sub.push('<span>' + esc(t('page.openPoints', { n: pts })) + '</span>');
@@ -512,9 +654,8 @@
 
   function renderBoard(state, opts) {
     var t = opts.t, data = state.data;
-    var order = {}, titles = {};
-    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
-    var visible = opts.filter ? data.items.filter(function (it) { return it.milestone === opts.filter; }) : data.items;
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
+    var visible = visibleItems(data, opts);
     var cols = [
       { key: 'todo', match: function (it) { return it.status === 'todo'; } },
       { key: 'active', match: function (it) { return it.status === 'active' || it.status === 'blocked'; } },
@@ -543,8 +684,7 @@
   // items collapsed. Answers "where are we" without clicking.
   function renderMilestones(state, opts) {
     var t = opts.t, data = state.data;
-    var order = {}, titles = {};
-    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
     var info = milestoneStats(data);
     var itemOpts = Object.assign({}, opts, { statusLabel: true });
     var sections = info.stats.filter(function (s) { return !opts.filter || s.m.id === opts.filter; }).map(function (s) {
@@ -557,25 +697,312 @@
       if (open.length) out += '<div class="items">' + open.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>';
       else if (!done.length) out += '<div class="empty">' + esc(t('page.empty')) + '</div>';
       if (done.length) {
-        var openAttr = opts.expandedMilestones && opts.expandedMilestones[s.m.id] ? ' open' : '';
-        out += '<details class="ms-done" data-milestone="' + esc(s.m.id) + '"' + openAttr + '><summary>' + esc(t('page.doneCount', { n: done.length })) + '</summary><div class="items">' + done.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div></details>';
+        out += fold(opts, 'ms:' + s.m.id, esc(t('page.doneCount', { n: done.length })), '<div class="items">' + done.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>', 'ms-done', ' data-milestone="' + esc(s.m.id) + '"');
       }
       return out + '</section>';
     });
     return '<main class="milestones">' + sections.join('') + '</main>';
   }
 
-  function renderView(state, opts) {
-    var v = VIEWS.indexOf(opts.view) >= 0 ? opts.view : VIEWS[0];
-    return v === 'board' ? renderBoard(state, opts) : renderMilestones(state, opts);
+  // The active item as a whole block: title and timer large, then note,
+  // open points, question and conversation. Blocked items follow the active
+  // ones with the blocked label where the timer would be.
+  function renderFocus(state, opts) {
+    var t = opts.t, data = state.data;
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
+    var list = sortItems(visibleItems(data, opts).filter(function (it) { return it.status === 'active' || it.status === 'blocked'; }), order, 'focus');
+    if (!list.length) return '<main class="focus"><div class="now">' + renderIdle(state, opts, opts.filter ? visibleItems(data, opts) : null) + '</div></main>';
+    var out = list.map(function (it) {
+      var h = '<article class="item" data-id="' + esc(it.id) + '" data-status="' + esc(it.status) + '"><div class="head"><h2 class="title">' + esc(it.title) + '</h2>';
+      if (it.status === 'blocked') h += '<span class="label attention state">' + esc(t('page.blocked')) + '</span>';
+      else if (it.updated) h += '<div class="elapsed" data-since="' + esc(it.updated) + '"><small>' + esc(t('page.now.since')) + '</small><span>' + elapsed(it.updated, opts.now) + '</span></div>';
+      h += '</div>';
+      var sub = ['<span>' + esc(titles[it.milestone] || it.milestone) + '</span>'];
+      if (it.prs && it.prs.length) sub.push('<span>' + prList(state, t, it) + '</span>');
+      if (it.branch) sub.push('<span>' + esc(it.branch) + '</span>');
+      if (it.updated) sub.push(time(it.updated, opts.now, opts.lang));
+      h += '<div class="sub">' + sub.join('') + '</div>';
+      if (it.note) h += '<p class="note">' + esc(it.note) + '</p>';
+      var pts = openPoints(it);
+      if (pts.length) h += '<ul class="rows pts">' + pts.map(function (p) { return row(opts, pointLabel(state, t, p), esc(p.text), p.opened); }).join('') + '</ul>';
+      h += renderQuestion(state, opts, it);
+      h += renderConversation(state, opts, it);
+      return h + '</article>';
+    });
+    return '<main class="focus">' + out.join('') + '</main>';
+  }
+
+  // Everything with a time, newest first: status changes, open points
+  // opened and resolved, comments, questions, unplanned work, sync runs.
+  function computeTimeline(state, opts) {
+    var t = opts.t, data = state.data;
+    var rows = [];
+    visibleItems(data, opts).forEach(function (it) {
+      if (it.updated && it.status !== 'todo') {
+        var pr = lastPr(it);
+        rows.push({ kind: 'status', at: it.updated, label: pr ? prLabel(state, t, pr) : esc(t('page.status.' + it.status)), attention: it.status === 'blocked', text: esc(t('page.feed.statusChange', { title: it.title, status: t('page.status.' + it.status) })), id: it.id });
+      }
+      (it.open_points || []).forEach(function (p) {
+        var text = esc(t('page.feed.openPoint', { title: it.title, text: p.text }));
+        if (p.opened) rows.push({ kind: 'point', at: p.opened, label: pointLabel(state, t, p), text: text, id: it.id });
+        if (p.resolved) rows.push({ kind: 'resolved', at: p.resolved, label: pointLabel(state, t, p), text: text, tag: t('page.timeline.resolved'), quiet: true, id: it.id });
+      });
+      (it.comments || []).forEach(function (c) {
+        rows.push({ kind: 'comment', at: c.at, label: esc(t(c.from === 'agent' ? 'page.comments.agent' : 'page.comments.you')), text: esc(it.title + ': ' + c.text), quiet: c.from === 'agent', id: it.id });
+      });
+      if (hasQuestion(it) && it.question.asked) {
+        rows.push({ kind: 'question', at: it.question.asked, label: esc(t('page.signals.question')), attention: true, text: esc(it.title + ': ' + it.question.text), id: it.id });
+      }
+    });
+    if (!opts.filter) {
+      (data.unplanned || []).forEach(function (u) {
+        var pr = lastPr(u);
+        rows.push({ kind: 'unplanned', at: u.first_seen, label: pr ? prLabel(state, t, pr) : esc(t('page.unplannedTitle')), attention: true, text: esc(u.title), tag: t('page.feed.notOnRoadmap') });
+      });
+      if (data.sync && data.sync.last_run) {
+        rows.push({ kind: 'sync', at: data.sync.last_run, label: esc(t('page.timeline.sync')), text: esc(t('page.timeline.syncText', { repo: data.sync.repo || '' })), quiet: true });
+      }
+    }
+    rows = rows.filter(function (r) { return !isNaN(Date.parse(r.at)); });
+    rows.sort(function (a, b) { return Date.parse(b.at) - Date.parse(a.at); });
+    return rows;
+  }
+
+  function renderTimeline(state, opts) {
+    var t = opts.t;
+    var rows = computeTimeline(state, opts);
+    if (!rows.length) return '<main class="timeline"><div class="empty">' + esc(t('page.timeline.empty')) + '</div></main>';
+    var total = rows.length, more = '';
+    if (!opts.showAllTimeline && rows.length > TIMELINE_SHORT) {
+      rows = rows.slice(0, TIMELINE_SHORT);
+      more = '<div class="more"><button type="button" data-action="more-timeline">' + esc(t('page.since.showAll', { n: total })) + '</button></div>';
+    }
+    var days = [];
+    rows.forEach(function (r) {
+      var k = dayKey(r.at);
+      if (!days.length || days[days.length - 1].key !== k) days.push({ key: k, at: r.at, rows: [] });
+      days[days.length - 1].rows.push(r);
+    });
+    var out = days.map(function (d) {
+      return '<section class="day"><h2>' + esc(formatDay(d.at, opts.now, opts.lang, t)) + '</h2><ul>' + d.rows.map(function (r) {
+        return '<li data-kind="' + r.kind + '"' + (r.quiet ? ' class="is-quiet"' : '') + '><span class="at">' + esc(formatClock(r.at, opts.lang)) + '</span>' +
+          '<span class="label' + (r.attention ? ' attention' : '') + '">' + r.label + '</span>' +
+          '<span class="text">' + r.text + (r.tag ? '<span class="tag' + (r.attention ? '' : ' quiet') + '">' + esc(r.tag) + '</span>' : '') + '</span></li>';
+      }).join('') + '</ul></section>';
+    });
+    return '<main class="timeline">' + out.join('') + more + '</main>';
+  }
+
+  function lastComment(it) {
+    var c = it.comments || [];
+    return c.length ? c[c.length - 1] : null;
+  }
+
+  // Open items with a thread or a question: questions first, then threads
+  // waiting for the agent, then by the last comment. On the live page with
+  // the key, the remaining open items fold away below to start a thread.
+  function renderConversations(state, opts) {
+    var t = opts.t, data = state.data;
+    var titles = milestoneIndex(data).titles;
+    var open = visibleItems(data, opts).filter(openItem);
+    var withThread = open.filter(function (it) { return commentsOf(it, opts).length || hasQuestion(it); });
+    var rank = function (it) {
+      if (hasQuestion(it)) return 0;
+      var last = lastComment(it);
+      return last && last.from === 'human' ? 1 : 2;
+    };
+    var lastAt = function (it) {
+      var list = commentsOf(it, opts);
+      var last = list[list.length - 1];
+      if (last) return Date.parse(last.at) || 0;
+      return hasQuestion(it) ? Date.parse(it.question.asked) || 0 : 0;
+    };
+    withThread.sort(function (a, b) {
+      var ra = rank(a), rb = rank(b);
+      return ra !== rb ? ra - rb : lastAt(b) - lastAt(a);
+    });
+    var out = withThread.map(function (it) {
+      var last = lastComment(it);
+      var unanswered = last && last.from === 'human' && !hasQuestion(it);
+      var h = '<article class="item" data-id="' + esc(it.id) + '" data-status="' + esc(it.status) + '">' +
+        '<div class="title"><span>' + esc(it.title) + '</span>' + (unanswered ? '<span class="label">' + esc(t('page.conversations.unanswered')) + '</span>' : '') + '</div>' +
+        '<div class="sub"><span>' + esc(titles[it.milestone] || it.milestone) + '</span><span' + (it.status === 'blocked' ? ' class="attention"' : '') + '>' + esc(t('page.status.' + it.status)) + '</span></div>';
+      h += renderQuestion(state, opts, it);
+      h += renderConversation(state, opts, it);
+      return h + '</article>';
+    });
+    var body = out.length ? out.join('') : '<div class="empty">' + esc(t('page.conversations.empty')) + '</div>';
+    if (writable(state, opts)) {
+      var others = open.filter(function (it) { return withThread.indexOf(it) < 0; });
+      if (others.length) {
+        var itemOpts = Object.assign({}, opts, { statusLabel: true });
+        body += fold(opts, 'conv:others', esc(t('page.conversations.others', { n: others.length })), '<div class="items">' + others.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>');
+      }
+    }
+    return '<main class="conversations">' + body + '</main>';
+  }
+
+  // Reviewer requests grouped by item: items with open points first, oldest
+  // open point on top; resolved points fold away per item.
+  function renderPoints(state, opts) {
+    var t = opts.t, data = state.data;
+    var titles = milestoneIndex(data).titles;
+    var items = visibleItems(data, opts).filter(function (it) { return it.open_points && it.open_points.length; });
+    var oldestOpen = function (it) {
+      var o = openPoints(it).map(function (p) { return Date.parse(p.opened) || 0; });
+      return o.length ? Math.min.apply(null, o) : null;
+    };
+    var lastResolved = function (it) { return Math.max.apply(null, [0].concat((it.open_points || []).map(function (p) { return Date.parse(p.resolved) || 0; }))); };
+    items.sort(function (a, b) {
+      var oa = oldestOpen(a), ob = oldestOpen(b);
+      if ((oa === null) !== (ob === null)) return oa === null ? 1 : -1;
+      if (oa !== null) return oa - ob;
+      return lastResolved(b) - lastResolved(a);
+    });
+    var anyOpen = false;
+    var out = items.map(function (it) {
+      var open = openPoints(it), resolved = (it.open_points || []).filter(function (p) { return p.resolved; });
+      if (open.length) anyOpen = true;
+      var h = '<section class="group' + (open.length ? '' : ' is-done') + '" data-id="' + esc(it.id) + '"><header><h2>' + esc(it.title) + '</h2><span class="meta">' + esc(titles[it.milestone] || it.milestone) + '</span>' + (open.length ? '<span class="meta">' + esc(t('page.points.open', { n: open.length })) + '</span>' : '') + '</header>';
+      if (open.length) h += '<ul class="rows pts">' + open.map(function (p) { return row(opts, pointLabel(state, t, p), esc(p.text), p.opened); }).join('') + '</ul>';
+      if (resolved.length) {
+        h += fold(opts, 'pt:' + it.id, esc(t('page.points.resolved', { n: resolved.length })), '<ul class="rows pts resolved">' + resolved.map(function (p) { return row(opts, pointLabel(state, t, p), esc(p.text), p.resolved); }).join('') + '</ul>');
+      }
+      return h + '</section>';
+    });
+    return '<main class="points">' + (anyOpen ? '' : '<div class="empty">' + esc(t('page.points.empty')) + '</div>') + out.join('') + '</main>';
+  }
+
+  // Grouped by pull request number, newest first: linked items with their
+  // status, then the reviewer points from that pull request, then unplanned
+  // work it brought. The page knows no PR state and claims none.
+  function renderPrs(state, opts) {
+    var t = opts.t, data = state.data;
+    var titles = milestoneIndex(data).titles;
+    var groups = {};
+    var group = function (n) { return groups[n] || (groups[n] = { items: [], points: [], unplanned: [] }); };
+    visibleItems(data, opts).forEach(function (it) {
+      (it.prs || []).forEach(function (n) { group(n).items.push(it); });
+      (it.open_points || []).forEach(function (p) { var n = prFromSource(p.source); if (n) group(n).points.push({ p: p, it: it }); });
+    });
+    if (!opts.filter) (data.unplanned || []).forEach(function (u) { (u.prs || []).forEach(function (n) { group(n).unplanned.push(u); }); });
+    var numbers = Object.keys(groups).map(Number).sort(function (a, b) { return b - a; });
+    if (!numbers.length) return '<main class="prs"><div class="empty">' + esc(t('page.pullRequests.empty')) + '</div></main>';
+    var out = numbers.map(function (n) {
+      var g = groups[n];
+      var open = g.points.filter(function (x) { return !x.p.resolved; }), resolved = g.points.filter(function (x) { return x.p.resolved; });
+      var h = '<section class="group" data-pr="' + n + '"><header><h2>' + prLabel(state, t, n) + '</h2>' +
+        (g.items.length ? '<span class="meta">' + esc(t('page.pullRequests.items', { n: g.items.length })) + '</span>' : '') +
+        (open.length ? '<span class="meta">' + esc(t('page.points.open', { n: open.length })) + '</span>' : '') + '</header>';
+      if (g.items.length) {
+        h += '<ul class="rows">' + g.items.map(function (it) {
+          return '<li><span class="label' + (it.status === 'blocked' ? ' attention' : '') + '">' + esc(t('page.status.' + it.status)) + '</span><span class="text">' + esc(it.title) + '</span><span class="when">' + esc(titles[it.milestone] || it.milestone) + '</span></li>';
+        }).join('') + '</ul>';
+      }
+      if (g.unplanned.length) h += '<ul class="rows">' + g.unplanned.map(function (u) { return row(opts, esc(t('page.unplannedTitle')), esc(u.title) + '<span class="tag">' + esc(t('page.feed.notOnRoadmap')) + '</span>', u.first_seen, 'attention'); }).join('') + '</ul>';
+      if (open.length) h += '<ul class="rows pts">' + open.map(function (x) { return row(opts, esc(t('page.pullRequests.review')), esc(x.it.title + ': ' + x.p.text), x.p.opened); }).join('') + '</ul>';
+      if (resolved.length) {
+        h += fold(opts, 'pr:' + n, esc(t('page.points.resolved', { n: resolved.length })), '<ul class="rows pts resolved">' + resolved.map(function (x) { return row(opts, esc(t('page.pullRequests.review')), esc(x.it.title + ': ' + x.p.text), x.p.resolved); }).join('') + '</ul>');
+      }
+      return h + '</section>';
+    });
+    return '<main class="prs">' + out.join('') + '</main>';
+  }
+
+  // Only what needs the human: questions, blocked, stale, unplanned. Empty
+  // is the message.
+  function renderSignals(state, opts) {
+    var t = opts.t, data = state.data;
+    var staleAfter = data.stale_after_days || DEFAULT_STALE_DAYS;
+    var items = visibleItems(data, opts);
+    var lists = [];
+    var asking = items.filter(hasQuestion);
+    if (asking.length) lists.push({ key: 'questions', rows: asking.map(function (it) { return row(opts, esc(t('page.signals.question')), esc(it.title + ': ' + it.question.text), it.question.asked, 'attention'); }) });
+    var blocked = items.filter(function (it) { return it.status === 'blocked'; });
+    if (blocked.length) lists.push({ key: 'blocked', rows: blocked.map(function (it) { var pr = lastPr(it); return row(opts, pr ? prLabel(state, t, pr) : esc(t('page.blocked')), esc(it.title) + (it.note ? '<span class="note">' + esc(it.note) + '</span>' : ''), it.updated, 'attention'); }) });
+    var stale = items.map(function (it) { return { it: it, days: staleDays(it, opts.now, staleAfter) }; }).filter(function (x) { return x.days; }).sort(function (a, b) { return b.days - a.days; });
+    if (stale.length) lists.push({ key: 'stale', rows: stale.map(function (x) { return row(opts, esc(t('page.feed.stale')), esc(t('page.feed.staleText', { n: x.days, title: x.it.title })), new Date(lastActivity(x.it)).toISOString(), 'attention'); }) });
+    var unplanned = opts.filter ? [] : sortedUnplanned(data);
+    if (unplanned.length) lists.push({ key: 'unplanned', rows: unplanned.map(function (u) { var pr = lastPr(u); return row(opts, pr ? prLabel(state, t, pr) : esc(t('page.unplannedTitle')), esc(u.title), u.first_seen, 'attention'); }) });
+    if (!lists.length) {
+      var count = function (s) { return items.filter(function (it) { return it.status === s; }).length; };
+      return '<main class="signals"><div class="calm"><p class="big">' + esc(t('page.signals.calm')) + '</p><p class="counts">' + esc(t('page.signals.counts', { active: count('active'), open: count('todo'), done: count('done') })) + '</p></div></main>';
+    }
+    return '<main class="signals">' + lists.map(function (l) {
+      return '<section class="sig" data-kind="' + l.key + '"><h2 class="section attention">' + esc(t('page.signals.' + l.key)) + '</h2><ul class="rows">' + l.rows.join('') + '</ul></section>';
+    }).join('') + '</main>';
+  }
+
+  // Every item as one table row. Default order: milestone, then blocked,
+  // in progress, open, done. A column header sorts; opts.sort = { key, dir }.
+  function renderList(state, opts) {
+    var t = opts.t, data = state.data;
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
+    var items = visibleItems(data, opts).slice();
+    if (!items.length) return '<main class="list-view"><div class="empty">' + esc(t('page.empty')) + '</div></main>';
+    var sort = opts.sort && LIST_COLS.indexOf(opts.sort.key) >= 0 ? opts.sort : null;
+    var keyOf = {
+      status: function (it) { return STATUS_ORDER[it.status] || 0; },
+      title: function (it) { return String(it.title).toLowerCase(); },
+      milestone: function (it) { return order[it.milestone] || 0; },
+      pr: function (it) { return lastPr(it) || 0; },
+      updated: function (it) { return Date.parse(it.updated) || 0; },
+      points: function (it) { return openPoints(it).length; },
+    };
+    items.sort(function (a, b) {
+      if (sort) {
+        var ka = keyOf[sort.key](a), kb = keyOf[sort.key](b);
+        if (ka !== kb) return (ka < kb ? -1 : 1) * (sort.dir === 'desc' ? -1 : 1);
+      }
+      var d = (order[a.milestone] || 0) - (order[b.milestone] || 0);
+      return d || (STATUS_ORDER[a.status] || 0) - (STATUS_ORDER[b.status] || 0);
+    });
+    var head = LIST_COLS.map(function (c) {
+      var active = sort && sort.key === c;
+      return '<th class="c-' + c + '"' + (active ? ' aria-sort="' + (sort.dir === 'desc' ? 'descending' : 'ascending') + '"' : '') + '><button type="button" data-action="sort" data-key="' + c + '" data-dir="' + (LIST_DESC_FIRST[c] ? 'desc' : 'asc') + '" title="' + esc(t('page.list.sortTitle', { col: t('page.list.' + c) })) + '">' + esc(t('page.list.' + c)) + '</button></th>';
+    }).join('');
+    var rows = items.map(function (it) {
+      var pts = openPoints(it).length;
+      return '<tr data-id="' + esc(it.id) + '"' + (it.status === 'done' ? ' class="is-done"' : '') + '>' +
+        '<td class="c-status mono' + (it.status === 'blocked' ? ' attention' : '') + '">' + esc(t('page.status.' + it.status)) + '</td>' +
+        '<td class="c-title">' + esc(it.title) + '</td>' +
+        '<td class="c-milestone mono">' + esc(titles[it.milestone] || it.milestone) + '</td>' +
+        '<td class="c-pr mono">' + (it.prs && it.prs.length ? prLinks(state, it.prs) : '') + '</td>' +
+        '<td class="c-updated mono">' + (it.updated ? time(it.updated, opts.now, opts.lang) : '') + '</td>' +
+        '<td class="c-points mono">' + (pts || '') + '</td></tr>';
+    });
+    return '<main class="list-view"><table class="list"><thead><tr>' + head + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></main>';
+  }
+
+  // The row of view names above the content. Links, so the static page
+  // switches without JavaScript and every view has an address.
+  function renderViewsNav(state, opts, current) {
+    var t = opts.t;
+    return '<nav class="views" aria-label="' + esc(t('page.viewTitle')) + '">' + availableViews(state.data).map(function (v) {
+      return '<a href="?view=' + esc(v) + '" data-action="view" data-view="' + esc(v) + '"' + (v === current ? ' aria-current="page"' : '') + '>' + esc(t('page.views.' + v)) + '</a>';
+    }).join('') + '</nav>';
+  }
+
+  function renderView(state, opts, v) {
+    switch (v) {
+      case 'board': return renderBoard(state, opts);
+      case 'focus': return renderFocus(state, opts);
+      case 'timeline': return renderTimeline(state, opts);
+      case 'conversations': return renderConversations(state, opts);
+      case 'points': return renderPoints(state, opts);
+      case 'prs': return renderPrs(state, opts);
+      case 'signals': return renderSignals(state, opts);
+      case 'list': return renderList(state, opts);
+      default: return renderMilestones(state, opts);
+    }
   }
 
   function renderUnplanned(state, opts) {
     var t = opts.t;
-    var list = (state.data.unplanned || []).slice().sort(function (a, b) { return (Date.parse(b.first_seen) || 0) - (Date.parse(a.first_seen) || 0); });
+    var list = sortedUnplanned(state.data);
     if (!list.length) return '';
     var rows = list.map(function (u) {
-      var pr = u.prs && u.prs.length ? u.prs[u.prs.length - 1] : null;
+      var pr = lastPr(u);
       return '<li><span class="label attention">' + (pr ? prLabel(state, t, pr) : esc(t('page.feed.notOnRoadmap'))) + '</span><span class="text">' + esc(u.title) + '</span><span class="when">' + time(u.first_seen, opts.now, opts.lang) + '</span></li>';
     });
     return '<section class="unplanned"><h2 class="section">' + esc(t('page.unplannedTitle')) + ' &middot; ' + esc(t('page.feed.notOnRoadmap')) + '</h2><ul>' + rows.join('') + '</ul></section>';
@@ -604,15 +1031,21 @@
     if (!state.data) {
       return out + renderHeader(state, opts) + renderFooter(state, opts);
     }
+    var v = resolveView(state.data, opts.view);
     out += renderHeader(state, opts);
     out += renderProgress(state, opts);
     out += renderFeed(state, opts);
-    out += renderWaiting(state, opts);
-    var now = renderNow(state, opts);
-    if (state.mode === 'live') out += '<section class="live">' + now + renderHistory(state, opts) + '</section>';
-    else if (now) out += '<section class="live single">' + now + '</section>';
-    out += renderView(state, opts);
-    out += renderUnplanned(state, opts);
+    // Conversations show the questions in their threads, focus is the now
+    // block at full size, signals list the unplanned work: no duplicates.
+    if (v !== 'conversations') out += renderWaiting(state, opts);
+    if (v !== 'focus') {
+      var now = renderNow(state, opts);
+      if (state.mode === 'live') out += '<section class="live">' + now + renderHistory(state, opts) + '</section>';
+      else if (now) out += '<section class="live single">' + now + '</section>';
+    }
+    out += renderViewsNav(state, opts, v);
+    out += renderView(state, opts, v);
+    if (v !== 'signals') out += renderUnplanned(state, opts);
     if (state.mode !== 'live') out += renderChangelog(state, opts);
     out += renderFooter(state, opts);
     return out;
@@ -627,7 +1060,10 @@
   return {
     renderApp: renderApp,
     VIEWS: VIEWS,
+    availableViews: availableViews,
+    resolveView: resolveView,
     computeFeed: computeFeed,
+    computeTimeline: computeTimeline,
     milestoneStats: milestoneStats,
     formatCount: formatCount,
     goalText: goalText,

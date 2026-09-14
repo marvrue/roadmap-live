@@ -167,6 +167,8 @@ body {
   max-width: 1180px;
   margin: 0 auto;
   -webkit-font-smoothing: antialiased;
+  /* one label column width for every row grid, so every block shares one left edge */
+  --label-col: 105px;
 }
 h1, h2, h3, p, ul { margin: 0; }
 ul { list-style: none; padding: 0; }
@@ -176,6 +178,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 :focus-visible { outline: 2px solid var(--text); outline-offset: 2px; border-radius: var(--radius); }
 [hidden] { display: none !important; }
 time { white-space: nowrap; }
+::selection { background: var(--attention-bg); }
+input { caret-color: var(--text); }
 
 .mono { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.01em; }
 .muted { color: var(--text-2); }
@@ -184,6 +188,7 @@ time { white-space: nowrap; }
 .label { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); white-space: nowrap; }
 .label.attention { color: var(--attention); }
 h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-3); letter-spacing: 0.02em; text-transform: none; }
+h2.section.attention { color: var(--attention); }
 
 /* banner */
 .banner {
@@ -236,7 +241,7 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
 /* since you last looked */
 .since { margin-bottom: 32px; }
 .since h2 { margin-bottom: 4px; }
-.since ul li { display: grid; grid-template-columns: 7.5em minmax(0, 1fr) auto; column-gap: 16px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); }
+.since ul li { display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr) auto; column-gap: 16px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); }
 .since ul li:last-child { border-bottom: 1px solid var(--line); }
 .since .text { overflow-wrap: anywhere; }
 .since .text .tag { font-family: var(--font-mono); font-size: 12px; color: var(--attention); margin-left: 8px; white-space: nowrap; }
@@ -315,18 +320,107 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
 .milestones .item .title > span:not(.label) { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; }
 .milestones .item .sub, .milestones .item .conv, .milestones .item .comment-form { margin-left: calc(6.5em + 16px); }
 .milestones .item[data-status="active"] .title { font-weight: 500; }
-.ms-done { margin-top: 4px; }
-.ms-done summary { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); cursor: pointer; padding: 8px 0; list-style: none; }
-.ms-done summary::-webkit-details-marker { display: none; }
-.ms-done summary::before { content: "+ "; }
-.ms-done[open] summary::before { content: "\2013 "; }
+.fold { margin-top: 4px; }
+.fold summary { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); cursor: pointer; padding: 8px 0; list-style: none; }
+.fold summary::-webkit-details-marker { display: none; }
+.fold summary::before { content: "+ "; }
+.fold[open] summary::before { content: "\2013 "; }
+.fold summary:hover { color: var(--text); }
 .ms-done .item .title > span:not(.label) { color: var(--text-2); }
 .ms-done .item .sub .note { display: none; }
+
+/* the row of view names above the content */
+.views { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--font-mono); font-size: 12px; padding-bottom: 10px; margin-bottom: 24px; border-bottom: 1px solid var(--line-strong); }
+.views a { position: relative; color: var(--text-3); text-decoration: none; padding-bottom: 2px; border-bottom: 1px solid transparent; }
+/* the tappable box reaches into the gaps, the underline stays where it is */
+.views a::before { content: ""; position: absolute; inset: -8px -8px -6px; }
+.views a:hover { color: var(--text); }
+.views a[aria-current="page"] { color: var(--text); border-bottom-color: var(--text); }
+
+/* shared row grammar of the views: mono label, text, mono column on the right */
+.rows li { display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr) auto; column-gap: 16px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; }
+.rows li:last-child { border-bottom: 1px solid var(--line); }
+.rows .label, .timeline .label { white-space: normal; overflow-wrap: anywhere; }
+.rows .text { overflow-wrap: anywhere; }
+.rows .text .note { display: block; color: var(--text-2); }
+.rows .text .tag { font-family: var(--font-mono); font-size: 12px; color: var(--attention); margin-left: 8px; white-space: nowrap; }
+.rows .when { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); white-space: nowrap; }
+.rows.resolved .text { color: var(--text-3); }
+.group { margin-bottom: 30px; }
+.group > header { display: flex; align-items: baseline; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line-strong); }
+.group h2 { font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+.group.is-done h2 { color: var(--text-2); font-weight: 400; }
+.group .meta { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); white-space: nowrap; }
+.group > .rows li:first-child { border-top: 0; }
+.q { overflow-wrap: anywhere; }
+.answers { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-top: 6px; }
+.answers button { font-family: var(--font-mono); font-size: 12px; border-bottom: 1px solid var(--line-strong); }
+.answers button:hover { border-bottom-color: var(--text); }
+.q .hint { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); margin-top: 6px; }
+.item .q { margin-top: 12px; display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr); column-gap: 16px; padding-top: 10px; border-top: 1px solid var(--line); }
+.item .q .answers, .item .q .hint { grid-column: 2; }
+
+/* focus view */
+.focus .item { padding: 0 0 24px; margin-bottom: 24px; border-bottom: 1px solid var(--line-strong); }
+.focus .item:last-child { margin-bottom: 0; }
+.focus .head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.focus h2.title { display: block; font-family: var(--font-heading); font-size: 32px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.15; overflow-wrap: anywhere; max-width: var(--measure); }
+.focus .elapsed { font-family: var(--font-mono); font-size: 28px; white-space: nowrap; color: var(--text); }
+.focus .elapsed small { font-size: 12px; color: var(--text-3); margin-right: 8px; }
+.focus .head .state { font-size: 13px; }
+.focus .item .sub { margin-top: 10px; gap: 14px; color: var(--text-2); }
+.focus .note { margin-top: 14px; font-size: 16px; line-height: 1.5; max-width: var(--measure); overflow-wrap: anywhere; }
+.focus .rows, .focus .conv { margin-top: 16px; }
+.focus .item .q { margin-top: 16px; }
+.focus .now { border-top: 0; padding-top: 0; }
+
+/* timeline view */
+.timeline .day { margin-bottom: 26px; }
+.timeline .day h2 { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-3); padding-bottom: 6px; border-bottom: 1px solid var(--line-strong); }
+.timeline li { display: grid; grid-template-columns: 52px var(--label-col) minmax(0, 1fr); column-gap: 16px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.timeline .at { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); white-space: nowrap; }
+.timeline .text { overflow-wrap: anywhere; }
+.timeline li.is-quiet .text { color: var(--text-2); }
+.timeline .tag { font-family: var(--font-mono); font-size: 12px; color: var(--attention); margin-left: 8px; white-space: nowrap; }
+.timeline .tag.quiet { color: var(--text-3); }
+
+/* conversations view */
+.conversations .item { padding: 14px 0 16px; }
+.conversations .item:first-child { padding-top: 0; }
+.conversations .item .title { font-size: 15px; font-weight: 500; }
+.conversations .item .title .label { font-size: 12px; font-weight: 400; }
+.conversations .item .sub { margin-top: 4px; }
+.conversations .conv { margin-top: 10px; }
+.conversations .fold { margin-top: 12px; }
+.conversations .fold .item { padding: 10px 0; }
+.conversations .fold .item .title { font-size: 14px; font-weight: 400; }
+
+/* signals view */
+.signals .sig { margin-bottom: 30px; }
+.signals .sig h2 { margin-bottom: 4px; }
+.signals .calm { padding: 4px 0 20px; max-width: var(--measure); }
+.signals .calm .big { font-family: var(--font-heading); font-size: 22px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+.signals .calm .counts { margin-top: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }
+
+/* list view */
+.list { width: 100%; border-collapse: collapse; font-size: 13px; }
+.list th { text-align: left; font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--text-3); padding: 0 16px 8px 0; border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
+.list th button { border-bottom: 1px solid transparent; }
+.list th button:hover { color: var(--text); }
+.list th[aria-sort] button { color: var(--text); border-bottom-color: var(--text); }
+.list th[aria-sort="descending"] button::after { content: " \2193"; }
+.list th[aria-sort="ascending"] button::after { content: " \2191"; }
+.list td { padding: 7px 16px 7px 0; border-bottom: 1px solid var(--line); vertical-align: baseline; }
+.list .mono { color: var(--text-3); white-space: nowrap; }
+.list .mono.attention { color: var(--attention); }
+.list .c-title { overflow-wrap: anywhere; width: 100%; }
+.list tr.is-done td { color: var(--text-2); }
+.list th:last-child, .list td:last-child { padding-right: 0; text-align: right; }
 
 /* unplanned in the board (static and live) */
 .unplanned { margin-top: 40px; }
 .unplanned h2 { margin-bottom: 4px; }
-.unplanned li { display: grid; grid-template-columns: 7.5em minmax(0, 1fr) auto; column-gap: 16px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); }
+.unplanned li { display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr) auto; column-gap: 16px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); }
 .unplanned li:last-child { border-bottom: 1px solid var(--line); }
 .unplanned .when { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
 
@@ -344,20 +438,15 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
 /* waiting for you */
 .waiting { margin-bottom: 32px; }
 .waiting h2 { margin-bottom: 4px; color: var(--attention); }
-.waiting li { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); column-gap: 16px; padding: 10px 0; border-top: 1px solid var(--line); }
+.waiting li { display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr); column-gap: 16px; padding: 10px 0; border-top: 1px solid var(--line); }
 .waiting li .label { white-space: normal; overflow-wrap: anywhere; }
 .waiting li:last-child { border-bottom: 1px solid var(--line); }
-.waiting .q { overflow-wrap: anywhere; }
-.waiting .answers { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-top: 6px; }
-.waiting .answers button { font-family: var(--font-mono); font-size: 12px; border-bottom: 1px solid var(--line-strong); }
-.waiting .answers button:hover { border-bottom-color: var(--text); }
-.waiting .hint { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); margin-top: 6px; }
 
 /* comments */
 .item .toggle { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); border-bottom: 1px solid var(--line); }
 .item .toggle:hover { color: var(--text); border-bottom-color: var(--line-strong); }
 .conv { margin-top: 8px; border-top: 1px solid var(--line); }
-.conv li { display: grid; grid-template-columns: 4em minmax(0, 1fr) auto; column-gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.conv li { display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr) auto; column-gap: 16px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
 .conv li.agent .text { color: var(--text-2); }
 .conv .text { overflow-wrap: anywhere; }
 .conv .when { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
@@ -387,18 +476,26 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
   .total { text-align: left; }
   .segments { flex-wrap: wrap; }
   .seg { min-width: 40%; }
-  .since ul li, .unplanned li { grid-template-columns: 5.5em minmax(0, 1fr); }
-  .since .when, .unplanned .when { grid-column: 2; }
-  .waiting li { grid-template-columns: 1fr; row-gap: 4px; }
-  .conv li { grid-template-columns: 4em minmax(0, 1fr); }
-  .conv .when { grid-column: 2; }
+  body { --label-col: 77px; }
+  .since ul li, .unplanned li, .rows li, .conv li { grid-template-columns: var(--label-col) minmax(0, 1fr); }
+  .since .when, .unplanned .when, .rows .when, .conv .when { grid-column: 2; }
+  .waiting li, .item .q { grid-template-columns: 1fr; row-gap: 4px; }
+  .item .q .answers, .item .q .hint { grid-column: 1; }
+  .views { gap: 6px 16px; }
+  .focus h2.title { font-size: 24px; }
+  .focus .elapsed { font-size: 20px; }
+  .timeline li { grid-template-columns: var(--label-col) minmax(0, 1fr); }
+  .timeline .text { grid-column: 2; }
+  .list .c-milestone, .list .c-pr, .list .c-points { display: none; }
+  .list th, .list td { padding-right: 12px; }
+  .list .c-updated { padding-right: 0; text-align: right; }
 }
 </style>
 </head>
 <body>
-<div id="app"><header class="top"><div class="brand"><h1>storefront</h1><p class="tagline">Secondhand records from a small shop, shipped the next day.</p></div><div class="meta"><span>updated <time class="" datetime="2026-09-09T10:00:00.000Z" data-rel="2026-09-09T10:00:00.000Z" title="Sep 9, 2026, 10:00 AM">yesterday</time></span><span class="sep">&middot;</span><span><a href="https://github.com/acme/storefront/pull/44">PR #44</a></span><button type="button" class="theme" data-action="view" title="Switch the view">Milestones</button><button type="button" class="theme" data-action="theme-name" title="Switch the theme (mono, neutral, paper)">mono</button><button type="button" class="theme" data-action="theme" title="Switch between light, dark and system">Dark</button><button type="button" class="theme" data-action="share" title="Copy the public link">Share</button></div></header><section class="progress"><div class="segments"><div class="seg is-current" role="button" tabindex="0" data-action="filter" data-id="m1" aria-pressed="false" style="flex-grow:3" title="Buying flow: 1 of 3 done"><div class="track"><div class="fill" style="width:33.333333333333336%"></div></div><div class="info"><span class="name">Buying flow</span><span class="count">1/3</span></div></div><div class="seg" role="button" tabindex="0" data-action="filter" data-id="m2" aria-pressed="false" style="flex-grow:3" title="Warehouse: 0 of 3 done"><div class="track"><div class="fill" style="width:0%"></div></div><div class="info"><span class="name">Warehouse</span><span class="count">0/3</span></div></div><div class="seg" role="button" tabindex="0" data-action="filter" data-id="m3" aria-pressed="false" style="flex-grow:5" title="Launch: 4 of 5 done"><div class="track"><div class="fill" style="width:80%"></div></div><div class="info"><span class="name">Launch</span><span class="count">4/5</span></div></div></div><div class="total"><span class="big">5/11 &middot; 45 %</span></div></section><section class="since"><h2 class="section">Since you last looked</h2><ul><li data-kind="stale"><span class="label attention">stale</span><span class="text">Order queue for the warehouse screen: no activity for 21 days</span><span class="when"><time class="" datetime="2026-08-20T10:00:00.000Z" data-rel="2026-08-20T10:00:00.000Z" title="Aug 20, 2026, 10:00 AM">21 days ago</time></span></li><li data-kind="comment"><span class="label">agent</span><span class="text">Checkout with reserved copies: Ok, cart first, checkout after that.</span><span class="when"><time class="" datetime="2026-09-09T09:41:00Z" data-rel="2026-09-09T09:41:00Z" title="Sep 9, 2026, 9:41 AM">yesterday</time></span></li><li data-kind="status"><span class="label"><a href="https://github.com/acme/storefront/pull/44">PR #44</a></span><span class="text">Checkout with reserved copies moved to in progress</span><span class="when"><time class="" datetime="2026-09-09T09:00:00Z" data-rel="2026-09-09T09:00:00Z" title="Sep 9, 2026, 9:00 AM">yesterday</time></span></li><li data-kind="point"><span class="label"><a href="https://github.com/acme/storefront/pull/44">PR #44</a></span><span class="text">Checkout with reserved copies: Add a test for the empty cart case</span><span class="when"><time class="" datetime="2026-09-09T08:31:00Z" data-rel="2026-09-09T08:31:00Z" title="Sep 9, 2026, 8:31 AM">yesterday</time></span></li></ul><div class="more"><button type="button" data-action="more-feed">show all 8</button></div></section><section class="waiting"><h2 class="section">Waiting for you</h2><ul><li><span class="label attention">Checkout with reserved copies</span><div class="q">Hold copies for 15 or 30 minutes?<div class="hint">Answering works on the live page</div></div></li></ul></section><section class="live single"><div id="now" class="now has-active"><div class="eyebrow"><span>2 items in progress</span></div><div class="item"><div class="head"><div class="title">Checkout with reserved copies</div><div class="elapsed" data-since="2026-09-09T09:00:00Z"><small>since</small><span>27:00:00</span></div></div><div class="sub"><span>Buying flow</span><time class="" datetime="2026-09-09T09:00:00Z" data-rel="2026-09-09T09:00:00Z" title="Sep 9, 2026, 9:00 AM">yesterday</time></div></div><div class="item"><div class="head"><div class="title">Order queue for the warehouse screen</div><div class="elapsed" data-since="2026-08-20T10:00:00Z"><small>since</small><span>21d 2h</span></div></div><div class="sub"><span>Warehouse</span><time class="" datetime="2026-08-20T10:00:00Z" data-rel="2026-08-20T10:00:00Z" title="Aug 20, 2026, 10:00 AM">21 days ago</time></div></div></div></section><main class="milestones"><section class="ms is-current" data-milestone="m1"><header><h2>Buying flow</h2><span class="count">1/3</span><span class="label">current milestone</span></header><div class="items"><article class="item" data-id="payment" data-status="blocked"><div class="title"><span class="label status attention">blocked</span><span>Card payment with Stripe</span></div><div class="sub"><span><a href="https://github.com/acme/storefront/pull/43">PR #43</a></span><time class="" datetime="2026-09-07T16:00:00Z" data-rel="2026-09-07T16:00:00Z" title="Sep 7, 2026, 4:00 PM">3 days ago</time><span class="note">Waiting for the Stripe sandbox account.</span></div></article><article class="item" data-id="checkout" data-status="active"><div class="title"><span class="label status">in progress</span><span>Checkout with reserved copies</span></div><div class="sub"><span class="goal">7/20 Test orders</span><span><a href="https://github.com/acme/storefront/pull/44">PR #44</a></span><span>feat/checkout</span><span>2 open points</span><button type="button" class="toggle" data-action="expand" data-id="checkout" aria-expanded="false">2 comments &middot; show</button></div></article></div><details class="ms-done" data-milestone="m1"><summary>1 done</summary><div class="items"><article class="item" data-id="listing-editor" data-status="done"><div class="title"><span class="label status">done</span><span>Listing editor</span></div><div class="sub"><span><a href="https://github.com/acme/storefront/pull/42">PR #42</a></span><span>feat/listing-editor</span><time class="" datetime="2026-09-08T14:02:00Z" data-rel="2026-09-08T14:02:00Z" title="Sep 8, 2026, 2:02 PM">2 days ago</time><span class="note">Images are resized on upload.</span><span>1 comment</span></div></article></div></details></section><section class="ms" data-milestone="m2"><header><h2>Warehouse</h2><span class="count">0/3</span></header><div class="items"><article class="item" data-id="order-queue" data-status="active"><div class="title"><span class="label status">in progress</span><span>Order queue for the warehouse screen</span></div><div class="sub"><button type="button" class="toggle" data-action="expand" data-id="order-queue" aria-expanded="false">1 comment &middot; show</button></div></article><article class="item" data-id="printer" data-status="todo"><div class="title"><span class="label status">open</span><span>Packing slip printer support</span></div></article><article class="item" data-id="notifications" data-status="todo"><div class="title"><span class="label status">open</span><span>Notify the customer when the order ships</span></div><div class="sub"><span class="note">SMS first, push later.</span></div></article></div></section><section class="ms" data-milestone="m3"><header><h2>Launch</h2><span class="count">4/5</span></header><div class="items"><article class="item" data-id="app-store" data-status="todo"><div class="title"><span class="label status goal">34/100</span><span>App store listing</span></div><div class="sub"><span class="goal">34/100 GitHub stars</span></div></article></div><details class="ms-done" data-milestone="m3"><summary>4 done</summary><div class="items"><article class="item" data-id="landing-page" data-status="done"><div class="title"><span class="label status">done</span><span>Landing page</span></div><div class="sub"><time class="" datetime="2026-09-05T11:00:00Z" data-rel="2026-09-05T11:00:00Z" title="Sep 5, 2026, 11:00 AM">5 days ago</time></div></article><article class="item" data-id="analytics" data-status="done"><div class="title"><span class="label status goal">240/200</span><span>Basic analytics</span></div><div class="sub"><span class="goal reached">240/200 Monthly orders</span><time class="" datetime="2026-09-04T11:00:00Z" data-rel="2026-09-04T11:00:00Z" title="Sep 4, 2026, 11:00 AM">6 days ago</time></div></article><article class="item" data-id="legal" data-status="done"><div class="title"><span class="label status">done</span><span>Terms and privacy pages</span></div><div class="sub"><time class="" datetime="2026-09-03T11:00:00Z" data-rel="2026-09-03T11:00:00Z" title="Sep 3, 2026, 11:00 AM">7 days ago</time></div></article><article class="item" data-id="seo" data-status="done"><div class="title"><span class="label status">done</span><span>Search engine basics</span></div><div class="sub"><time class="" datetime="2026-09-02T11:00:00Z" data-rel="2026-09-02T11:00:00Z" title="Sep 2, 2026, 11:00 AM">8 days ago</time></div></article></div></details></section></main><section class="unplanned"><h2 class="section">Unplanned &middot; Not on the roadmap</h2><ul><li><span class="label attention"><a href="https://github.com/acme/storefront/pull/41">PR #41</a></span><span class="text">Wishlist alerts</span><span class="when"><time class="" datetime="2026-09-06T09:00:00Z" data-rel="2026-09-06T09:00:00Z" title="Sep 6, 2026, 9:00 AM">4 days ago</time></span></li></ul></section><section class="changelog"><h2 class="section">Changelog</h2><ul><li>2026-09-08: Listing editor active → done (https://github.com/acme/storefront/pull/42)</li></ul></section><footer class="foot"><a href="https://github.com/acme/storefront">Repository</a><a href="https://github.com/acme/storefront/blob/HEAD/demo-roadmap.json">roadmap.json</a><a href="https://github.com/marvrue/roadmap-live">Built with roadmap-live</a></footer></div>
+<div id="app"><header class="top"><div class="brand"><h1>storefront</h1><p class="tagline">Secondhand records from a small shop, shipped the next day.</p></div><div class="meta"><span>updated <time class="" datetime="2026-09-09T10:00:00.000Z" data-rel="2026-09-09T10:00:00.000Z" title="Sep 9, 2026, 10:00 AM">yesterday</time></span><span class="sep">&middot;</span><span><a href="https://github.com/acme/storefront/pull/44">PR #44</a></span><button type="button" class="theme" data-action="theme-name" title="Switch the theme (mono, neutral, paper)">mono</button><button type="button" class="theme" data-action="theme" title="Switch between light, dark and system">Dark</button><button type="button" class="theme" data-action="share" title="Copy the public link">Share</button></div></header><section class="progress"><div class="segments"><div class="seg is-current" role="button" tabindex="0" data-action="filter" data-id="m1" aria-pressed="false" style="flex-grow:3" title="Buying flow: 1 of 3 done"><div class="track"><div class="fill" style="width:33.333333333333336%"></div></div><div class="info"><span class="name">Buying flow</span><span class="count">1/3</span></div></div><div class="seg" role="button" tabindex="0" data-action="filter" data-id="m2" aria-pressed="false" style="flex-grow:3" title="Warehouse: 0 of 3 done"><div class="track"><div class="fill" style="width:0%"></div></div><div class="info"><span class="name">Warehouse</span><span class="count">0/3</span></div></div><div class="seg" role="button" tabindex="0" data-action="filter" data-id="m3" aria-pressed="false" style="flex-grow:5" title="Launch: 4 of 5 done"><div class="track"><div class="fill" style="width:80%"></div></div><div class="info"><span class="name">Launch</span><span class="count">4/5</span></div></div></div><div class="total"><span class="big">5/11 &middot; 45 %</span></div></section><section class="since"><h2 class="section">Since you last looked</h2><ul><li data-kind="stale"><span class="label attention">stale</span><span class="text">Order queue for the warehouse screen: no activity for 21 days</span><span class="when"><time class="" datetime="2026-08-20T10:00:00.000Z" data-rel="2026-08-20T10:00:00.000Z" title="Aug 20, 2026, 10:00 AM">21 days ago</time></span></li><li data-kind="comment"><span class="label">agent</span><span class="text">Checkout with reserved copies: Ok, cart first, checkout after that.</span><span class="when"><time class="" datetime="2026-09-09T09:41:00Z" data-rel="2026-09-09T09:41:00Z" title="Sep 9, 2026, 9:41 AM">yesterday</time></span></li><li data-kind="status"><span class="label"><a href="https://github.com/acme/storefront/pull/44">PR #44</a></span><span class="text">Checkout with reserved copies moved to in progress</span><span class="when"><time class="" datetime="2026-09-09T09:00:00Z" data-rel="2026-09-09T09:00:00Z" title="Sep 9, 2026, 9:00 AM">yesterday</time></span></li><li data-kind="point"><span class="label"><a href="https://github.com/acme/storefront/pull/44">PR #44</a></span><span class="text">Checkout with reserved copies: Add a test for the empty cart case</span><span class="when"><time class="" datetime="2026-09-09T08:31:00Z" data-rel="2026-09-09T08:31:00Z" title="Sep 9, 2026, 8:31 AM">yesterday</time></span></li></ul><div class="more"><button type="button" data-action="more-feed">show all 8</button></div></section><section class="waiting"><h2 class="section">Waiting for you</h2><ul><li><span class="label attention">Checkout with reserved copies</span><div class="q">Hold copies for 15 or 30 minutes?<div class="hint">Answering works on the live page</div></div></li></ul></section><section class="live single"><div id="now" class="now has-active"><div class="eyebrow"><span>2 items in progress</span></div><div class="item"><div class="head"><div class="title">Checkout with reserved copies</div><div class="elapsed" data-since="2026-09-09T09:00:00Z"><small>since</small><span>27:00:00</span></div></div><div class="sub"><span>Buying flow</span><time class="" datetime="2026-09-09T09:00:00Z" data-rel="2026-09-09T09:00:00Z" title="Sep 9, 2026, 9:00 AM">yesterday</time></div></div><div class="item"><div class="head"><div class="title">Order queue for the warehouse screen</div><div class="elapsed" data-since="2026-08-20T10:00:00Z"><small>since</small><span>21d 2h</span></div></div><div class="sub"><span>Warehouse</span><time class="" datetime="2026-08-20T10:00:00Z" data-rel="2026-08-20T10:00:00Z" title="Aug 20, 2026, 10:00 AM">21 days ago</time></div></div></div></section><nav class="views" aria-label="Switch the view"><a href="?view=milestones" data-action="view" data-view="milestones" aria-current="page">Milestones</a><a href="?view=board" data-action="view" data-view="board">Board</a><a href="?view=focus" data-action="view" data-view="focus">Focus</a><a href="?view=timeline" data-action="view" data-view="timeline">Timeline</a><a href="?view=conversations" data-action="view" data-view="conversations">Conversations</a><a href="?view=points" data-action="view" data-view="points">Open points</a><a href="?view=prs" data-action="view" data-view="prs">Pull requests</a><a href="?view=signals" data-action="view" data-view="signals">Signals</a><a href="?view=list" data-action="view" data-view="list">List</a></nav><main class="milestones"><section class="ms is-current" data-milestone="m1"><header><h2>Buying flow</h2><span class="count">1/3</span><span class="label">current milestone</span></header><div class="items"><article class="item" data-id="payment" data-status="blocked"><div class="title"><span class="label status attention">blocked</span><span>Card payment with Stripe</span></div><div class="sub"><span><a href="https://github.com/acme/storefront/pull/43">PR #43</a></span><time class="" datetime="2026-09-07T16:00:00Z" data-rel="2026-09-07T16:00:00Z" title="Sep 7, 2026, 4:00 PM">3 days ago</time><span class="note">Waiting for the Stripe sandbox account.</span></div></article><article class="item" data-id="checkout" data-status="active"><div class="title"><span class="label status">in progress</span><span>Checkout with reserved copies</span></div><div class="sub"><span class="goal">7/20 Test orders</span><span><a href="https://github.com/acme/storefront/pull/44">PR #44</a></span><span>feat/checkout</span><span>2 open points</span><button type="button" class="toggle" data-action="expand" data-id="checkout" aria-expanded="false">2 comments &middot; show</button></div></article></div><details class="ms-done fold" data-key="ms:m1" data-milestone="m1"><summary>1 done</summary><div class="items"><article class="item" data-id="listing-editor" data-status="done"><div class="title"><span class="label status">done</span><span>Listing editor</span></div><div class="sub"><span><a href="https://github.com/acme/storefront/pull/42">PR #42</a></span><span>feat/listing-editor</span><time class="" datetime="2026-09-08T14:02:00Z" data-rel="2026-09-08T14:02:00Z" title="Sep 8, 2026, 2:02 PM">2 days ago</time><span class="note">Images are resized on upload.</span><span>1 comment</span></div></article></div></details></section><section class="ms" data-milestone="m2"><header><h2>Warehouse</h2><span class="count">0/3</span></header><div class="items"><article class="item" data-id="order-queue" data-status="active"><div class="title"><span class="label status">in progress</span><span>Order queue for the warehouse screen</span></div><div class="sub"><button type="button" class="toggle" data-action="expand" data-id="order-queue" aria-expanded="false">1 comment &middot; show</button></div></article><article class="item" data-id="printer" data-status="todo"><div class="title"><span class="label status">open</span><span>Packing slip printer support</span></div></article><article class="item" data-id="notifications" data-status="todo"><div class="title"><span class="label status">open</span><span>Notify the customer when the order ships</span></div><div class="sub"><span class="note">SMS first, push later.</span></div></article></div></section><section class="ms" data-milestone="m3"><header><h2>Launch</h2><span class="count">4/5</span></header><div class="items"><article class="item" data-id="app-store" data-status="todo"><div class="title"><span class="label status goal">34/100</span><span>App store listing</span></div><div class="sub"><span class="goal">34/100 GitHub stars</span></div></article></div><details class="ms-done fold" data-key="ms:m3" data-milestone="m3"><summary>4 done</summary><div class="items"><article class="item" data-id="landing-page" data-status="done"><div class="title"><span class="label status">done</span><span>Landing page</span></div><div class="sub"><time class="" datetime="2026-09-05T11:00:00Z" data-rel="2026-09-05T11:00:00Z" title="Sep 5, 2026, 11:00 AM">5 days ago</time></div></article><article class="item" data-id="analytics" data-status="done"><div class="title"><span class="label status goal">240/200</span><span>Basic analytics</span></div><div class="sub"><span class="goal reached">240/200 Monthly orders</span><time class="" datetime="2026-09-04T11:00:00Z" data-rel="2026-09-04T11:00:00Z" title="Sep 4, 2026, 11:00 AM">6 days ago</time></div></article><article class="item" data-id="legal" data-status="done"><div class="title"><span class="label status">done</span><span>Terms and privacy pages</span></div><div class="sub"><time class="" datetime="2026-09-03T11:00:00Z" data-rel="2026-09-03T11:00:00Z" title="Sep 3, 2026, 11:00 AM">7 days ago</time></div></article><article class="item" data-id="seo" data-status="done"><div class="title"><span class="label status">done</span><span>Search engine basics</span></div><div class="sub"><time class="" datetime="2026-09-02T11:00:00Z" data-rel="2026-09-02T11:00:00Z" title="Sep 2, 2026, 11:00 AM">8 days ago</time></div></article></div></details></section></main><section class="unplanned"><h2 class="section">Unplanned &middot; Not on the roadmap</h2><ul><li><span class="label attention"><a href="https://github.com/acme/storefront/pull/41">PR #41</a></span><span class="text">Wishlist alerts</span><span class="when"><time class="" datetime="2026-09-06T09:00:00Z" data-rel="2026-09-06T09:00:00Z" title="Sep 6, 2026, 9:00 AM">4 days ago</time></span></li></ul></section><section class="changelog"><h2 class="section">Changelog</h2><ul><li>2026-09-08: Listing editor active → done (https://github.com/acme/storefront/pull/42)</li></ul></section><footer class="foot"><a href="https://github.com/acme/storefront">Repository</a><a href="https://github.com/acme/storefront/blob/HEAD/demo-roadmap.json">roadmap.json</a><a href="https://github.com/marvrue/roadmap-live">Built with roadmap-live</a></footer></div>
 <script id="roadmap-state" type="application/json">{"mode":"static","ok":true,"data":{"project":"storefront","tagline":"Secondhand records from a small shop, shipped the next day.","theme":"neutral","stale_after_days":7,"milestones":[{"id":"m1","title":"Buying flow"},{"id":"m2","title":"Warehouse"},{"id":"m3","title":"Launch"}],"items":[{"id":"listing-editor","title":"Listing editor","milestone":"m1","status":"done","note":"Images are resized on upload.","updated":"2026-09-08T14:02:00Z","branch":"feat/listing-editor","prs":[42],"open_points":[{"text":"Please validate the image size before upload","source":"pr:42#comment:1893","opened":"2026-09-08T13:40:00Z","resolved":"2026-09-08T14:02:00Z"}],"comments":[{"from":"agent","text":"Images are resized on upload now.","at":"2026-09-08T14:00:00Z"}]},{"id":"checkout","title":"Checkout with reserved copies","milestone":"m1","status":"active","updated":"2026-09-09T09:00:00Z","branch":"feat/checkout","prs":[44],"open_points":[{"text":"Please debounce the quantity buttons, double taps add two items","source":"pr:44#review_comment:2001","opened":"2026-09-09T08:30:00Z","resolved":null},{"text":"Add a test for the empty cart case","source":"pr:44#review_comment:2002","opened":"2026-09-09T08:31:00Z","resolved":null}],"comments":[{"from":"human","text":"Finish the cart first, the checkout can wait","at":"2026-09-09T09:30:00Z"},{"from":"agent","text":"Ok, cart first, checkout after that.","at":"2026-09-09T09:41:00Z"}],"question":{"text":"Hold copies for 15 or 30 minutes?","options":["15","30"],"asked":"2026-09-09T09:41:00Z"},"goal":{"label":"Test orders","target":20,"current":7}},{"id":"payment","title":"Card payment with Stripe","milestone":"m1","status":"blocked","note":"Waiting for the Stripe sandbox account.","updated":"2026-09-07T16:00:00Z","prs":[43]},{"id":"order-queue","title":"Order queue for the warehouse screen","milestone":"m2","status":"active","updated":"2026-08-20T10:00:00Z","comments":[{"from":"human","text":"Is this still needed for the launch?","at":"2026-09-08T12:00:00Z"}]},{"id":"printer","title":"Packing slip printer support","milestone":"m2","status":"todo"},{"id":"notifications","title":"Notify the customer when the order ships","milestone":"m2","status":"todo","note":"SMS first, push later."},{"id":"landing-page","title":"Landing page","milestone":"m3","status":"done","updated":"2026-09-05T11:00:00Z"},{"id":"analytics","title":"Basic analytics","milestone":"m3","status":"done","updated":"2026-09-04T11:00:00Z","goal":{"label":"Monthly orders","target":200,"current":240,"changed":"2026-09-04T11:00:00Z"}},{"id":"legal","title":"Terms and privacy pages","milestone":"m3","status":"done","updated":"2026-09-03T11:00:00Z"},{"id":"seo","title":"Search engine basics","milestone":"m3","status":"done","updated":"2026-09-02T11:00:00Z"},{"id":"app-store","title":"App store listing","milestone":"m3","status":"todo","goal":{"label":"GitHub stars","target":100,"current":34,"source":"github-stars:acme/storefront","changed":"2026-09-09T06:00:00Z"}}],"unplanned":[{"title":"Wishlist alerts","prs":[41],"first_seen":"2026-09-06T09:00:00Z"}],"sync":{"last_run":"2026-09-09T10:00:00Z","repo":"acme/storefront"}},"error":null,"file":"test/fixtures/demo-roadmap.json","changelog":["- 2026-09-08: Listing editor active → done (https://github.com/acme/storefront/pull/42)"],"generatedAt":"2026-09-10T12:00:00.000Z","repoUrl":"https://github.com/acme/storefront","roadmapUrl":"https://github.com/acme/storefront/blob/HEAD/demo-roadmap.json","fixedLang":null,"theme":"mono","themes":["mono","neutral","paper"],"base":"/"}</script>
-<script id="roadmap-locales" type="application/json">{"de":{"page":{"live":"live","updated":"aktualisiert {time}","updatedNever":"noch keine Aktivität","pr":"PR #{number}","prs":"PRs {list}","theme":{"system":"System","light":"Hell","dark":"Dunkel"},"themeTitle":"Zwischen hell, dunkel und System wechseln","pickTheme":"Theme wechseln ({list})","connected":"verbunden","disconnected":"getrennt","progress":"{done} von {total} erledigt","todayDone":{"one":"1 heute erledigt","other":"{n} heute erledigt"},"milestoneTitle":"{title}: {done} von {total} erledigt","goal":{"unmeasured":"noch nicht gemessen"},"milestoneComplete":"abgeschlossen","filterOnly":"Nur {title}","filterClear":"alle anzeigen","since":{"title":"Seit dem letzten Blick","empty":"Nichts Neues.","showAll":"alle {n} anzeigen"},"feed":{"statusChange":"{title} ist jetzt {status}","openPoint":"{title}: {text}","unplanned":"{title}","notOnRoadmap":"Nicht auf der Roadmap","stale":"ruht","staleText":{"one":"{title}: seit 1 Tag keine Aktivität","other":"{title}: seit {n} Tagen keine Aktivität"},"agent":"Agent"},"now":{"inProgress":"In Arbeit","inProgressN":"{n} Items in Arbeit","since":"seit","idle":"Gerade ist nichts in Arbeit.","next":"Als Nächstes: {title}","allDone":"Alles erledigt.","summary":{"one":"1 Meilenstein, {items} Items.","other":"{n} Meilensteine, {items} Items."},"empty":"Noch keine Items."},"history":{"title":"Verlauf","empty":"Noch keine Änderungen."},"changelog":{"title":"Änderungen","empty":"Noch keine Einträge."},"columns":{"todo":"Offen","active":"In Arbeit","done":"Erledigt"},"blocked":"blockiert","parallel":"{n} parallel","empty":"Keine Items","andMore":{"one":"und 1 weiteres","other":"und {n} weitere"},"showAll":"alle anzeigen","openPoints":{"one":"1 offener Punkt","other":"{n} offene Punkte"},"status":{"todo":"offen","active":"in Arbeit","blocked":"blockiert","done":"erledigt"},"change":{"done":"erledigt","active":"begonnen","blocked":"blockiert","todo":"zurückgestellt","added":"neu"},"footer":{"repo":"Repository","roadmap":"roadmap.json","builtWith":"Erstellt mit roadmap-live"},"invalid":"{file} ist ungültig, der letzte gültige Stand wird angezeigt.","noData":"noch keine gültigen Daten","justNow":"gerade eben","unplannedTitle":"Ungeplant","waiting":{"title":"Wartet auf dich","hint":"Antworten geht auf der Live-Seite"},"readOnly":"Nur lesen. Zum Schreiben den Link mit Schlüssel öffnen.","comments":{"count":{"one":"1 Kommentar","other":"{n} Kommentare"},"placeholder":"Dem Agenten etwas sagen…","add":"kommentieren","send":"Senden","sent":"gesendet","failed":"nicht gesendet, noch einmal versuchen","you":"du","agent":"Agent","show":"anzeigen","hide":"ausblenden"},"git":{"ahead":{"one":"1 vor main","other":"{n} vor main"},"changed":{"one":"1 geändert","other":"{n} geändert"}},"share":{"button":"Teilen","copied":"Link kopiert","off":"Die öffentliche Seite ist noch aus.","enable":"GitHub Pages einschalten","enabling":"Wird eingeschaltet…","enabled":"Eingeschaltet. Die Seite ist in etwa einer Minute erreichbar.","error":"Einschalten fehlgeschlagen: {message}","title":"Öffentlichen Link kopieren"},"views":{"milestones":"Meilensteine","board":"Board"},"viewTitle":"Ansicht wechseln","milestoneCurrent":"aktueller Meilenstein","doneCount":{"one":"1 erledigt","other":"{n} erledigt"}},"cli":{"usage":"Aufruf: roadmap-live [Befehl] [Datei] [Optionen]\n\nBefehle:\n  (keiner)               Live-Server starten (Standard)\n  sync                   Pull-Request-Aktivität von GitHub lesen und die Roadmap aktualisieren\n  render                 statische HTML-Seite aus dem aktuellen Stand schreiben\n  init                   roadmap.json, AGENTS.md und die Workflow-Datei anlegen\n  auth                   im Browser bei GitHub anmelden (--logout entfernt das Token)\n  doctor                 erklären, welche GitHub-Anmeldung und welcher Provider verwendet würden\n\nOptionen:\n  Datei                  Pfad zur roadmap.json (Standard: ./roadmap.json)\n  --port \u003cn>             HTTP-Port für den Live-Server (Standard: 4242)\n  --key \u003cgeheim>         Schreibschlüssel für die Live-Seite (Standard: beim Start erzeugt, oder ROADMAP_KEY)\n  --check                Datei prüfen und mit 0 (ok) oder 1 (Probleme) beenden\n  --repo owner/name      Repository für sync (Standard: sync.repo, GITHUB_REPOSITORY oder das Git-Remote)\n  --dry-run              sync: geplante Änderungen anzeigen, nichts schreiben\n  --apply                sync: .roadmap-live/result.json vom Coding-Agenten übernehmen\n  --provider \u003cname>      sync: anthropic, claude-cli, codex-cli, gemini-cli oder agent\n  --public               auth: nur den Scope public_repo anfordern\n  --out \u003cPfad>           render: Ausgabedatei (Standard: roadmap/index.html)\n  --theme \u003cname>         render: neutral, paper, mono oder eine Datei in roadmap-themes/\n  --mode light|dark      render: Farbmodus festlegen statt dem System zu folgen\n  -h, --help             diese Hilfe anzeigen","unknownOption":"unbekannte Option: {option}","unknownCommand":"unbekannter Befehl: {command}","invalidPort":"ungültiger Port: {port}","checkOk":"{file}: ok ({milestones} Meilensteine, {items} Items, {done} erledigt, {active} in Arbeit)","checkParallel":"Hinweis: {n} Items sind gleichzeitig in Arbeit","checkLarge":"Hinweis: {file} ist {kb} KB groß, kürze alte Kommentare und Notizen selbst (der Agent löscht nie Kommentare), damit der Agent weniger liest","checkGoalDone":"Hinweis: \"{item}\" ist erledigt, aber das Ziel steht bei {current}/{target}","checkGoalReached":"Hinweis: \"{item}\" hat sein Ziel erreicht ({current}/{target}), ist aber noch offen","checkTagline":"Hinweis: die Tagline hat {length} Zeichen, höchstens {max} halten sie eine kurze Zeile","checkProblems":{"one":"{file}: 1 Problem","other":"{file}: {n} Probleme"},"invalidFile":"{file} ist ungültig:","server":{"watching":"roadmap-live: beobachtet {file}","readUrl":"  lesen      {url}","writeUrl":"  schreiben  {url}   (diesen öffnen, um zu kommentieren)","stop":"  Strg+C zum Beenden","stopped":"roadmap-live: beendet","portInUse":"roadmap-live: Port {port} ist bereits belegt, versuche --port \u003cNummer>","updated":"aktualisiert ({items} Items, in Arbeit: {active})","none":"keins","invalid":"ungültig, der letzte gültige Stand bleibt:"},"auth":{"envToken":"Umgebungsvariable GITHUB_TOKEN","ghCli":"GitHub CLI (gh auth token)","stored":"Token gespeichert in {path}","deviceFlow":"Anmeldung im Browser (Device Flow)","openUrl":"Öffne {url} und gib den Code {code} ein","waiting":"Warte auf die Bestätigung im Browser...","success":"Bei GitHub angemeldet. Das Token liegt in {path}.","loggedOut":"Das gespeicherte GitHub-Token wurde entfernt.","nothingToLogout":"Es gibt kein gespeichertes GitHub-Token.","expired":"Der Code ist abgelaufen, bevor er bestätigt wurde. Führe roadmap-live auth erneut aus.","denied":"Die Anmeldung wurde im Browser abgebrochen.","noClientId":"Die Anmeldung im Browser ist in diesem Build nicht eingerichtet. Setze GITHUB_TOKEN, melde dich mit der GitHub CLI an (gh auth login) oder setze ROADMAP_GITHUB_CLIENT_ID auf die Client-ID einer GitHub-OAuth-App.","none":"Keine GitHub-Anmeldung gefunden: setze GITHUB_TOKEN, melde dich mit der GitHub CLI an (gh auth login) oder führe roadmap-live auth aus, um dich im Browser anzumelden."},"provider":{"anthropic":"Anthropic API (ANTHROPIC_API_KEY)","claude-cli":"Claude Code CLI (claude)","codex-cli":"Codex CLI (codex)","gemini-cli":"Gemini CLI (gemini)","agent":"dein Coding-Agent über .roadmap-live/inbox.json","unknown":"unbekannter Provider: {name}","notAvailable":"Provider {name} ist nicht verfügbar: {reason}"},"doctor":{"title":"roadmap-live doctor","roadmap":"Roadmap: {file}","roadmapMissing":"Roadmap: {file} (nicht gefunden, führe roadmap-live init aus)","repo":"Repository: {repo} ({source})","repoNone":"Repository: nicht gefunden. Setze sync.repo in roadmap.json oder übergib --repo owner/name.","repoSource":{"flag":"aus --repo","roadmap":"aus sync.repo","env":"aus GITHUB_REPOSITORY","git":"aus dem Git-Remote"},"credential":"GitHub-Anmeldung: {name}","credentialWhy":"  weil {reason}","credentialNone":"GitHub-Anmeldung: keine","provider":"Klassifizierung: {name}","providerWhy":"  weil {reason}","skipped":"  übersprungen {name}: {reason}","language":"Sprache: {lang} ({source})","languageSource":{"roadmap":"aus roadmap.json","env":"aus ROADMAP_LANG","system":"aus LANG","default":"Standard"},"theme":"Theme: {theme}"},"why":{"envSet":"{name} ist gesetzt","envUnset":"{name} ist nicht gesetzt","flag":"mit --provider gewählt","envProvider":"mit ROADMAP_PROVIDER gewählt","onPath":"{name} ist installiert und antwortet auf --version","notOnPath":"{name} ist nicht installiert oder antwortet nicht innerhalb von zwei Sekunden auf --version","ghLoggedIn":"gh ist installiert und angemeldet","ghNotLoggedIn":"gh ist nicht installiert oder nicht angemeldet","storedToken":"ein Token aus roadmap-live auth existiert","noStoredToken":"kein Token aus roadmap-live auth","fallback":"nichts anderes verfügbar ist"},"sync":{"repo":"Synchronisiere {repo} seit {since}","firstRun":"den letzten 30 Tagen (erster Lauf)","fetching":"Lade Pull Requests...","noActivity":"Keine neue Pull-Request-Aktivität.","prs":{"one":"1 Pull Request mit neuer Aktivität","other":"{n} Pull Requests mit neuer Aktivität"},"classifying":"Klassifiziere #{number} {title} mit {provider}...","skipped":"Übersprungen #{number}: {reason}","malformed":"der Provider hat zweimal keine gültige Klassifizierung geliefert","agentHandoff":"Dein Coding-Agent klassifiziert {n} Pull Requests beim nächsten Lauf. Danach: roadmap-live sync --apply","noInbox":"Es gibt nichts zu übernehmen: .roadmap-live/result.json existiert nicht. Führe zuerst roadmap-live sync aus.","noPending":"Die Pull-Request-Daten in .roadmap-live/pending.json fehlen. Führe roadmap-live sync erneut aus.","applied":"{n} Klassifizierungen aus .roadmap-live/result.json übernommen.","dryRun":"Probelauf, nichts wurde geschrieben.","planned":"Geplante Änderungen:","noChanges":"Keine Änderungen an der Roadmap.","wrote":"{file} und {changelog} geschrieben.","wroteRoadmap":"{file} geschrieben.","change":{"status":"{title}: {from} → {to} (PR #{number})","pr":"{title}: PR #{number} verknüpft","openPoint":"{title}: neuer offener Punkt aus PR #{number}","resolved":"{title}: offener Punkt erledigt (PR #{number})","unplanned":"Nicht auf der Roadmap: {title} (PR #{number})","unplannedRemoved":"Aus Ungeplant entfernt: {title} (PR #{number})"},"rateLimit":"GitHub-Rate-Limit erreicht, warte {seconds} Sekunden...","providerFailed":"Provider {name} ist fehlgeschlagen: {reason}"},"changelog":{"header":"# Changelog\n\nStatusänderungen, aufgezeichnet von roadmap-live sync. Eine Zeile pro Änderung.\n","line":"- {date}: {title} {from} → {to} ({url})"},"render":{"wrote":"{file} geschrieben (Theme {theme}, {lang})","unknownTheme":"unbekanntes Theme: {theme}. Eingebaut: {list}. Eigene Themes liegen in roadmap-themes/\u003cname>.css."},"init":{"wrote":"{file} geschrieben","exists":"{file} behalten (existiert bereits)","done":"Fertig. Als Nächstes: sag deinem Coding-Agenten, dass er AGENTS.md lesen soll. Dann roadmap-live zum Zuschauen oder roadmap-live sync, um Pull-Request-Aktivität zu übernehmen."},"action":{"noKey":"anthropic_api_key ist leer: sync wird übersprungen, nur die Seite wird gerendert.","noPullsPermission":"Das Workflow-Token darf keine Pull Requests lesen. Ergänze \"pull-requests: read\" unter permissions im Workflow.","noWritePermission":"Das Workflow-Token darf nicht pushen. Ergänze \"contents: write\" unter permissions im Workflow.","nothingToCommit":"Nichts geändert, nichts zu committen.","committed":"{files} committet und gepusht.","commitMessage":"Roadmap aus Pull-Request-Aktivität aktualisieren"}}},"en":{"page":{"live":"live","updated":"updated {time}","updatedNever":"no activity yet","pr":"PR #{number}","prs":"PRs {list}","theme":{"system":"System","light":"Light","dark":"Dark"},"themeTitle":"Switch between light, dark and system","pickTheme":"Switch the theme ({list})","connected":"connected","disconnected":"disconnected","progress":"{done} of {total} done","todayDone":{"one":"1 done today","other":"{n} done today"},"milestoneTitle":"{title}: {done} of {total} done","goal":{"unmeasured":"not measured yet"},"milestoneComplete":"complete","filterOnly":"Only {title}","filterClear":"show all","since":{"title":"Since you last looked","empty":"Nothing new.","showAll":"show all {n}"},"feed":{"statusChange":"{title} moved to {status}","openPoint":"{title}: {text}","unplanned":"{title}","notOnRoadmap":"Not on the roadmap","stale":"stale","staleText":{"one":"{title}: no activity for 1 day","other":"{title}: no activity for {n} days"},"agent":"agent"},"now":{"inProgress":"In progress","inProgressN":"{n} items in progress","since":"since","idle":"Nothing in progress right now.","next":"Next up: {title}","allDone":"Everything is done.","summary":{"one":"1 milestone, {items} items.","other":"{n} milestones, {items} items."},"empty":"No items yet."},"history":{"title":"History","empty":"No changes yet."},"changelog":{"title":"Changelog","empty":"No entries yet."},"columns":{"todo":"Open","active":"In progress","done":"Done"},"blocked":"blocked","parallel":"{n} in parallel","empty":"No items","andMore":{"one":"and 1 more","other":"and {n} more"},"showAll":"show all","openPoints":{"one":"1 open point","other":"{n} open points"},"status":{"todo":"open","active":"in progress","blocked":"blocked","done":"done"},"change":{"done":"done","active":"started","blocked":"blocked","todo":"reopened","added":"added"},"footer":{"repo":"Repository","roadmap":"roadmap.json","builtWith":"Built with roadmap-live"},"invalid":"{file} is invalid, showing the last valid state.","noData":"no valid data yet","justNow":"just now","unplannedTitle":"Unplanned","waiting":{"title":"Waiting for you","hint":"Answering works on the live page"},"readOnly":"Read-only. To write, open the link with the key.","comments":{"count":{"one":"1 comment","other":"{n} comments"},"placeholder":"Tell the agent something…","add":"comment","send":"Send","sent":"sent","failed":"not sent, try again","you":"you","agent":"agent","show":"show","hide":"hide"},"git":{"ahead":{"one":"1 ahead of main","other":"{n} ahead of main"},"changed":{"one":"1 changed","other":"{n} changed"}},"share":{"button":"Share","copied":"Link copied","off":"The public page is off.","enable":"Turn on GitHub Pages","enabling":"Turning on…","enabled":"Turned on. The page appears within about a minute.","error":"Could not turn it on: {message}","title":"Copy the public link"},"views":{"milestones":"Milestones","board":"Board"},"viewTitle":"Switch the view","milestoneCurrent":"current milestone","doneCount":{"one":"1 done","other":"{n} done"}},"cli":{"usage":"Usage: roadmap-live [command] [file] [options]\n\nCommands:\n  (none)                 start the live server (default)\n  sync                   read pull request activity from GitHub and update the roadmap\n  render                 write a static HTML page from the current state\n  init                   create roadmap.json, AGENTS.md and the workflow file\n  auth                   log in to GitHub in the browser (--logout removes the token)\n  doctor                 explain which GitHub credential and which provider would be used\n\nOptions:\n  file                   path to roadmap.json (default: ./roadmap.json)\n  --port \u003cn>             HTTP port for the live server (default: 4242)\n  --key \u003csecret>         write key for the live page (default: generated at start, or ROADMAP_KEY)\n  --check                validate the file and exit with 0 (ok) or 1 (problems)\n  --repo owner/name      repository for sync (default: sync.repo, GITHUB_REPOSITORY or the git remote)\n  --dry-run              sync: print the planned changes and write nothing\n  --apply                sync: apply .roadmap-live/result.json written by your coding agent\n  --provider \u003cname>      sync: anthropic, claude-cli, codex-cli, gemini-cli or agent\n  --public               auth: ask for the public_repo scope only\n  --out \u003cpath>           render: output file (default: roadmap/index.html)\n  --theme \u003cname>         render: neutral, paper, mono or a file in roadmap-themes/\n  --mode light|dark      render: fix the color mode instead of following the system\n  -h, --help             show this help","unknownOption":"unknown option: {option}","unknownCommand":"unknown command: {command}","invalidPort":"invalid port: {port}","checkOk":"{file}: ok ({milestones} milestones, {items} items, {done} done, {active} active)","checkParallel":"note: {n} items are active at the same time","checkLarge":"note: {file} is {kb} KB, trim old comments and notes yourself (the agent never deletes comments) so the agent reads less","checkGoalDone":"note: \"{item}\" is done but its goal stands at {current}/{target}","checkGoalReached":"note: \"{item}\" reached its goal ({current}/{target}) but is still open","checkTagline":"note: the tagline is {length} characters, keep it at {max} or fewer so it stays one short line","checkProblems":{"one":"{file}: 1 problem","other":"{file}: {n} problems"},"invalidFile":"{file} is invalid:","server":{"watching":"roadmap-live: watching {file}","readUrl":"  read   {url}","writeUrl":"  write  {url}   (open this one to comment)","stop":"  press Ctrl+C to stop","stopped":"roadmap-live: stopped","portInUse":"roadmap-live: port {port} is already in use, try --port \u003cnumber>","updated":"updated ({items} items, active: {active})","none":"none","invalid":"invalid, keeping last valid state:"},"auth":{"envToken":"GITHUB_TOKEN environment variable","ghCli":"GitHub CLI (gh auth token)","stored":"token stored in {path}","deviceFlow":"browser login (device flow)","openUrl":"Open {url} and enter the code {code}","waiting":"Waiting for you to confirm in the browser...","success":"Logged in to GitHub. The token is stored in {path}.","loggedOut":"Removed the stored GitHub token.","nothingToLogout":"There is no stored GitHub token.","expired":"The code expired before it was confirmed. Run roadmap-live auth to try again.","denied":"Login was cancelled in the browser.","noClientId":"Browser login is not configured in this build. Set GITHUB_TOKEN, log in with the GitHub CLI (gh auth login), or set ROADMAP_GITHUB_CLIENT_ID to the client id of a GitHub OAuth app.","none":"No GitHub credentials found: set GITHUB_TOKEN, log in with the GitHub CLI (gh auth login), or run roadmap-live auth to log in in the browser."},"provider":{"anthropic":"Anthropic API (ANTHROPIC_API_KEY)","claude-cli":"Claude Code CLI (claude)","codex-cli":"Codex CLI (codex)","gemini-cli":"Gemini CLI (gemini)","agent":"your coding agent via .roadmap-live/inbox.json","unknown":"unknown provider: {name}","notAvailable":"provider {name} is not available: {reason}"},"doctor":{"title":"roadmap-live doctor","roadmap":"Roadmap: {file}","roadmapMissing":"Roadmap: {file} (not found, run roadmap-live init)","repo":"Repository: {repo} ({source})","repoNone":"Repository: not found. Set sync.repo in roadmap.json or pass --repo owner/name.","repoSource":{"flag":"from --repo","roadmap":"from sync.repo","env":"from GITHUB_REPOSITORY","git":"from the git remote"},"credential":"GitHub credential: {name}","credentialWhy":"  because {reason}","credentialNone":"GitHub credential: none","provider":"Classification provider: {name}","providerWhy":"  because {reason}","skipped":"  skipped {name}: {reason}","language":"Language: {lang} ({source})","languageSource":{"roadmap":"from roadmap.json","env":"from ROADMAP_LANG","system":"from LANG","default":"default"},"theme":"Theme: {theme}"},"why":{"envSet":"{name} is set","envUnset":"{name} is not set","flag":"chosen with --provider","envProvider":"chosen with ROADMAP_PROVIDER","onPath":"{name} is installed and answers to --version","notOnPath":"{name} is not installed or does not answer to --version within two seconds","ghLoggedIn":"gh is installed and logged in","ghNotLoggedIn":"gh is not installed or not logged in","storedToken":"a token from roadmap-live auth exists","noStoredToken":"no token from roadmap-live auth","fallback":"nothing else is available"},"sync":{"repo":"Syncing {repo} since {since}","firstRun":"the last 30 days (first run)","fetching":"Fetching pull requests...","noActivity":"No new pull request activity.","prs":{"one":"1 pull request with new activity","other":"{n} pull requests with new activity"},"classifying":"Classifying #{number} {title} with {provider}...","skipped":"Skipped #{number}: {reason}","malformed":"the provider returned no valid classification twice","agentHandoff":"Your coding agent will classify {n} pull requests on its next run. Then run: roadmap-live sync --apply","noInbox":"There is nothing to apply: .roadmap-live/result.json does not exist. Run roadmap-live sync first.","noPending":"The pending pull request data in .roadmap-live/pending.json is missing. Run roadmap-live sync again.","applied":"Applied {n} classifications from .roadmap-live/result.json.","dryRun":"Dry run, nothing was written.","planned":"Planned changes:","noChanges":"No changes to the roadmap.","wrote":"Wrote {file} and {changelog}.","wroteRoadmap":"Wrote {file}.","change":{"status":"{title}: {from} → {to} (PR #{number})","pr":"{title}: linked PR #{number}","openPoint":"{title}: new open point from PR #{number}","resolved":"{title}: open point resolved (PR #{number})","unplanned":"Not on the roadmap: {title} (PR #{number})","unplannedRemoved":"Removed from unplanned: {title} (PR #{number})"},"rateLimit":"GitHub rate limit reached, waiting {seconds} seconds...","providerFailed":"Provider {name} failed: {reason}"},"changelog":{"header":"# Changelog\n\nStatus changes recorded by roadmap-live sync. One line per change.\n","line":"- {date}: {title} {from} → {to} ({url})"},"render":{"wrote":"Wrote {file} ({theme} theme, {lang})","unknownTheme":"unknown theme: {theme}. Built in: {list}. Custom themes go in roadmap-themes/\u003cname>.css."},"init":{"wrote":"Wrote {file}","exists":"Kept {file} (already exists)","done":"Done. Next: tell your coding agent to read AGENTS.md, then run roadmap-live to watch, or roadmap-live sync to pull in pull request activity."},"action":{"noKey":"anthropic_api_key is empty: skipping sync and only rendering the page.","noPullsPermission":"The workflow token cannot read pull requests. Add \"pull-requests: read\" under permissions in the workflow.","noWritePermission":"The workflow token cannot push. Add \"contents: write\" under permissions in the workflow.","nothingToCommit":"Nothing changed, nothing to commit.","committed":"Committed and pushed {files}.","commitMessage":"Update roadmap from pull request activity"}}}}</script>
+<script id="roadmap-locales" type="application/json">{"de":{"page":{"live":"live","updated":"aktualisiert {time}","updatedNever":"noch keine Aktivität","pr":"PR #{number}","prs":"PRs {list}","theme":{"system":"System","light":"Hell","dark":"Dunkel"},"themeTitle":"Zwischen hell, dunkel und System wechseln","pickTheme":"Theme wechseln ({list})","connected":"verbunden","disconnected":"getrennt","progress":"{done} von {total} erledigt","todayDone":{"one":"1 heute erledigt","other":"{n} heute erledigt"},"milestoneTitle":"{title}: {done} von {total} erledigt","goal":{"unmeasured":"noch nicht gemessen"},"milestoneComplete":"abgeschlossen","filterOnly":"Nur {title}","filterClear":"alle anzeigen","since":{"title":"Seit dem letzten Blick","empty":"Nichts Neues.","showAll":"alle {n} anzeigen"},"feed":{"statusChange":"{title} ist jetzt {status}","openPoint":"{title}: {text}","unplanned":"{title}","notOnRoadmap":"Nicht auf der Roadmap","stale":"ruht","staleText":{"one":"{title}: seit 1 Tag keine Aktivität","other":"{title}: seit {n} Tagen keine Aktivität"},"agent":"Agent"},"now":{"inProgress":"In Arbeit","inProgressN":"{n} Items in Arbeit","since":"seit","idle":"Gerade ist nichts in Arbeit.","next":"Als Nächstes: {title}","allDone":"Alles erledigt.","summary":{"one":"1 Meilenstein, {items} Items.","other":"{n} Meilensteine, {items} Items."},"empty":"Noch keine Items."},"history":{"title":"Verlauf","empty":"Noch keine Änderungen."},"changelog":{"title":"Änderungen","empty":"Noch keine Einträge."},"columns":{"todo":"Offen","active":"In Arbeit","done":"Erledigt"},"blocked":"blockiert","parallel":"{n} parallel","empty":"Keine Items","andMore":{"one":"und 1 weiteres","other":"und {n} weitere"},"showAll":"alle anzeigen","openPoints":{"one":"1 offener Punkt","other":"{n} offene Punkte"},"status":{"todo":"offen","active":"in Arbeit","blocked":"blockiert","done":"erledigt"},"change":{"done":"erledigt","active":"begonnen","blocked":"blockiert","todo":"zurückgestellt","added":"neu"},"footer":{"repo":"Repository","roadmap":"roadmap.json","builtWith":"Erstellt mit roadmap-live"},"invalid":"{file} ist ungültig, der letzte gültige Stand wird angezeigt.","noData":"noch keine gültigen Daten","justNow":"gerade eben","unplannedTitle":"Ungeplant","waiting":{"title":"Wartet auf dich","hint":"Antworten geht auf der Live-Seite"},"readOnly":"Nur lesen. Zum Schreiben den Link mit Schlüssel öffnen.","comments":{"count":{"one":"1 Kommentar","other":"{n} Kommentare"},"placeholder":"Dem Agenten etwas sagen…","add":"kommentieren","send":"Senden","sent":"gesendet","failed":"nicht gesendet, noch einmal versuchen","you":"du","agent":"Agent","show":"anzeigen","hide":"ausblenden"},"git":{"ahead":{"one":"1 vor main","other":"{n} vor main"},"changed":{"one":"1 geändert","other":"{n} geändert"}},"share":{"button":"Teilen","copied":"Link kopiert","off":"Die öffentliche Seite ist noch aus.","enable":"GitHub Pages einschalten","enabling":"Wird eingeschaltet…","enabled":"Eingeschaltet. Die Seite ist in etwa einer Minute erreichbar.","error":"Einschalten fehlgeschlagen: {message}","title":"Öffentlichen Link kopieren"},"views":{"milestones":"Meilensteine","board":"Board","focus":"Fokus","timeline":"Chronik","conversations":"Gespräche","points":"Offene Punkte","prs":"Pull Requests","signals":"Signale","list":"Liste"},"viewTitle":"Ansicht wechseln","timeline":{"today":"heute","yesterday":"gestern","resolved":"erledigt","sync":"Sync","syncText":"Pull Requests aus {repo} gelesen","empty":"Noch nichts passiert."},"conversations":{"unanswered":"unbeantwortet","empty":"Noch keine Gespräche. Kommentare und Fragen erscheinen hier.","others":{"one":"1 Item ohne Gespräch","other":"{n} Items ohne Gespräch"}},"points":{"open":{"one":"1 offen","other":"{n} offen"},"resolved":{"one":"1 erledigt","other":"{n} erledigt"},"empty":"Keine offenen Punkte. Die Reviewer wollen nichts mehr."},"pullRequests":{"items":{"one":"1 Item","other":"{n} Items"},"review":"Review","empty":"Noch keine Pull Requests verknüpft."},"signals":{"questions":"Offene Fragen","blocked":"Blockiert","stale":"Eingeschlafen","unplanned":"Nicht auf der Roadmap","question":"Frage","calm":"Nichts braucht dich.","counts":"{active} in Arbeit, {open} offen, {done} erledigt."},"list":{"status":"Status","title":"Item","milestone":"Meilenstein","pr":"PR","updated":"Geändert","points":"Punkte","sortTitle":"Sortieren nach {col}"},"milestoneCurrent":"aktueller Meilenstein","doneCount":{"one":"1 erledigt","other":"{n} erledigt"}},"cli":{"usage":"Aufruf: roadmap-live [Befehl] [Datei] [Optionen]\n\nBefehle:\n  (keiner)               Live-Server starten (Standard)\n  sync                   Pull-Request-Aktivität von GitHub lesen und die Roadmap aktualisieren\n  render                 statische HTML-Seite aus dem aktuellen Stand schreiben\n  init                   roadmap.json, AGENTS.md und die Workflow-Datei anlegen\n  auth                   im Browser bei GitHub anmelden (--logout entfernt das Token)\n  doctor                 erklären, welche GitHub-Anmeldung und welcher Provider verwendet würden\n\nOptionen:\n  Datei                  Pfad zur roadmap.json (Standard: ./roadmap.json)\n  --port \u003cn>             HTTP-Port für den Live-Server (Standard: 4242)\n  --key \u003cgeheim>         Schreibschlüssel für die Live-Seite (Standard: beim Start erzeugt, oder ROADMAP_KEY)\n  --check                Datei prüfen und mit 0 (ok) oder 1 (Probleme) beenden\n  --repo owner/name      Repository für sync (Standard: sync.repo, GITHUB_REPOSITORY oder das Git-Remote)\n  --dry-run              sync: geplante Änderungen anzeigen, nichts schreiben\n  --apply                sync: .roadmap-live/result.json vom Coding-Agenten übernehmen\n  --provider \u003cname>      sync: anthropic, claude-cli, codex-cli, gemini-cli oder agent\n  --public               auth: nur den Scope public_repo anfordern\n  --out \u003cPfad>           render: Ausgabedatei (Standard: roadmap/index.html)\n  --theme \u003cname>         render: neutral, paper, mono oder eine Datei in roadmap-themes/\n  --mode light|dark      render: Farbmodus festlegen statt dem System zu folgen\n  -h, --help             diese Hilfe anzeigen","unknownOption":"unbekannte Option: {option}","unknownCommand":"unbekannter Befehl: {command}","invalidPort":"ungültiger Port: {port}","checkOk":"{file}: ok ({milestones} Meilensteine, {items} Items, {done} erledigt, {active} in Arbeit)","checkParallel":"Hinweis: {n} Items sind gleichzeitig in Arbeit","checkLarge":"Hinweis: {file} ist {kb} KB groß, kürze alte Kommentare und Notizen selbst (der Agent löscht nie Kommentare), damit der Agent weniger liest","checkGoalDone":"Hinweis: \"{item}\" ist erledigt, aber das Ziel steht bei {current}/{target}","checkGoalReached":"Hinweis: \"{item}\" hat sein Ziel erreicht ({current}/{target}), ist aber noch offen","checkTagline":"Hinweis: die Tagline hat {length} Zeichen, höchstens {max} halten sie eine kurze Zeile","checkProblems":{"one":"{file}: 1 Problem","other":"{file}: {n} Probleme"},"invalidFile":"{file} ist ungültig:","server":{"watching":"roadmap-live: beobachtet {file}","readUrl":"  lesen      {url}","writeUrl":"  schreiben  {url}   (diesen öffnen, um zu kommentieren)","stop":"  Strg+C zum Beenden","stopped":"roadmap-live: beendet","portInUse":"roadmap-live: Port {port} ist bereits belegt, versuche --port \u003cNummer>","updated":"aktualisiert ({items} Items, in Arbeit: {active})","none":"keins","invalid":"ungültig, der letzte gültige Stand bleibt:"},"auth":{"envToken":"Umgebungsvariable GITHUB_TOKEN","ghCli":"GitHub CLI (gh auth token)","stored":"Token gespeichert in {path}","deviceFlow":"Anmeldung im Browser (Device Flow)","openUrl":"Öffne {url} und gib den Code {code} ein","waiting":"Warte auf die Bestätigung im Browser...","success":"Bei GitHub angemeldet. Das Token liegt in {path}.","loggedOut":"Das gespeicherte GitHub-Token wurde entfernt.","nothingToLogout":"Es gibt kein gespeichertes GitHub-Token.","expired":"Der Code ist abgelaufen, bevor er bestätigt wurde. Führe roadmap-live auth erneut aus.","denied":"Die Anmeldung wurde im Browser abgebrochen.","noClientId":"Die Anmeldung im Browser ist in diesem Build nicht eingerichtet. Setze GITHUB_TOKEN, melde dich mit der GitHub CLI an (gh auth login) oder setze ROADMAP_GITHUB_CLIENT_ID auf die Client-ID einer GitHub-OAuth-App.","none":"Keine GitHub-Anmeldung gefunden: setze GITHUB_TOKEN, melde dich mit der GitHub CLI an (gh auth login) oder führe roadmap-live auth aus, um dich im Browser anzumelden."},"provider":{"anthropic":"Anthropic API (ANTHROPIC_API_KEY)","claude-cli":"Claude Code CLI (claude)","codex-cli":"Codex CLI (codex)","gemini-cli":"Gemini CLI (gemini)","agent":"dein Coding-Agent über .roadmap-live/inbox.json","unknown":"unbekannter Provider: {name}","notAvailable":"Provider {name} ist nicht verfügbar: {reason}"},"doctor":{"title":"roadmap-live doctor","roadmap":"Roadmap: {file}","roadmapMissing":"Roadmap: {file} (nicht gefunden, führe roadmap-live init aus)","repo":"Repository: {repo} ({source})","repoNone":"Repository: nicht gefunden. Setze sync.repo in roadmap.json oder übergib --repo owner/name.","repoSource":{"flag":"aus --repo","roadmap":"aus sync.repo","env":"aus GITHUB_REPOSITORY","git":"aus dem Git-Remote"},"credential":"GitHub-Anmeldung: {name}","credentialWhy":"  weil {reason}","credentialNone":"GitHub-Anmeldung: keine","provider":"Klassifizierung: {name}","providerWhy":"  weil {reason}","skipped":"  übersprungen {name}: {reason}","language":"Sprache: {lang} ({source})","languageSource":{"roadmap":"aus roadmap.json","env":"aus ROADMAP_LANG","system":"aus LANG","default":"Standard"},"theme":"Theme: {theme}"},"why":{"envSet":"{name} ist gesetzt","envUnset":"{name} ist nicht gesetzt","flag":"mit --provider gewählt","envProvider":"mit ROADMAP_PROVIDER gewählt","onPath":"{name} ist installiert und antwortet auf --version","notOnPath":"{name} ist nicht installiert oder antwortet nicht innerhalb von zwei Sekunden auf --version","ghLoggedIn":"gh ist installiert und angemeldet","ghNotLoggedIn":"gh ist nicht installiert oder nicht angemeldet","storedToken":"ein Token aus roadmap-live auth existiert","noStoredToken":"kein Token aus roadmap-live auth","fallback":"nichts anderes verfügbar ist"},"sync":{"repo":"Synchronisiere {repo} seit {since}","firstRun":"den letzten 30 Tagen (erster Lauf)","fetching":"Lade Pull Requests...","noActivity":"Keine neue Pull-Request-Aktivität.","prs":{"one":"1 Pull Request mit neuer Aktivität","other":"{n} Pull Requests mit neuer Aktivität"},"classifying":"Klassifiziere #{number} {title} mit {provider}...","skipped":"Übersprungen #{number}: {reason}","malformed":"der Provider hat zweimal keine gültige Klassifizierung geliefert","agentHandoff":"Dein Coding-Agent klassifiziert {n} Pull Requests beim nächsten Lauf. Danach: roadmap-live sync --apply","noInbox":"Es gibt nichts zu übernehmen: .roadmap-live/result.json existiert nicht. Führe zuerst roadmap-live sync aus.","noPending":"Die Pull-Request-Daten in .roadmap-live/pending.json fehlen. Führe roadmap-live sync erneut aus.","applied":"{n} Klassifizierungen aus .roadmap-live/result.json übernommen.","dryRun":"Probelauf, nichts wurde geschrieben.","planned":"Geplante Änderungen:","noChanges":"Keine Änderungen an der Roadmap.","wrote":"{file} und {changelog} geschrieben.","wroteRoadmap":"{file} geschrieben.","change":{"status":"{title}: {from} → {to} (PR #{number})","pr":"{title}: PR #{number} verknüpft","openPoint":"{title}: neuer offener Punkt aus PR #{number}","resolved":"{title}: offener Punkt erledigt (PR #{number})","unplanned":"Nicht auf der Roadmap: {title} (PR #{number})","unplannedRemoved":"Aus Ungeplant entfernt: {title} (PR #{number})"},"rateLimit":"GitHub-Rate-Limit erreicht, warte {seconds} Sekunden...","providerFailed":"Provider {name} ist fehlgeschlagen: {reason}"},"changelog":{"header":"# Changelog\n\nStatusänderungen, aufgezeichnet von roadmap-live sync. Eine Zeile pro Änderung.\n","line":"- {date}: {title} {from} → {to} ({url})"},"render":{"wrote":"{file} geschrieben (Theme {theme}, {lang})","unknownTheme":"unbekanntes Theme: {theme}. Eingebaut: {list}. Eigene Themes liegen in roadmap-themes/\u003cname>.css."},"init":{"wrote":"{file} geschrieben","exists":"{file} behalten (existiert bereits)","done":"Fertig. Als Nächstes: sag deinem Coding-Agenten, dass er AGENTS.md lesen soll. Dann roadmap-live zum Zuschauen oder roadmap-live sync, um Pull-Request-Aktivität zu übernehmen."},"action":{"noKey":"anthropic_api_key ist leer: sync wird übersprungen, nur die Seite wird gerendert.","noPullsPermission":"Das Workflow-Token darf keine Pull Requests lesen. Ergänze \"pull-requests: read\" unter permissions im Workflow.","noWritePermission":"Das Workflow-Token darf nicht pushen. Ergänze \"contents: write\" unter permissions im Workflow.","nothingToCommit":"Nichts geändert, nichts zu committen.","committed":"{files} committet und gepusht.","commitMessage":"Roadmap aus Pull-Request-Aktivität aktualisieren"}}},"en":{"page":{"live":"live","updated":"updated {time}","updatedNever":"no activity yet","pr":"PR #{number}","prs":"PRs {list}","theme":{"system":"System","light":"Light","dark":"Dark"},"themeTitle":"Switch between light, dark and system","pickTheme":"Switch the theme ({list})","connected":"connected","disconnected":"disconnected","progress":"{done} of {total} done","todayDone":{"one":"1 done today","other":"{n} done today"},"milestoneTitle":"{title}: {done} of {total} done","goal":{"unmeasured":"not measured yet"},"milestoneComplete":"complete","filterOnly":"Only {title}","filterClear":"show all","since":{"title":"Since you last looked","empty":"Nothing new.","showAll":"show all {n}"},"feed":{"statusChange":"{title} moved to {status}","openPoint":"{title}: {text}","unplanned":"{title}","notOnRoadmap":"Not on the roadmap","stale":"stale","staleText":{"one":"{title}: no activity for 1 day","other":"{title}: no activity for {n} days"},"agent":"agent"},"now":{"inProgress":"In progress","inProgressN":"{n} items in progress","since":"since","idle":"Nothing in progress right now.","next":"Next up: {title}","allDone":"Everything is done.","summary":{"one":"1 milestone, {items} items.","other":"{n} milestones, {items} items."},"empty":"No items yet."},"history":{"title":"History","empty":"No changes yet."},"changelog":{"title":"Changelog","empty":"No entries yet."},"columns":{"todo":"Open","active":"In progress","done":"Done"},"blocked":"blocked","parallel":"{n} in parallel","empty":"No items","andMore":{"one":"and 1 more","other":"and {n} more"},"showAll":"show all","openPoints":{"one":"1 open point","other":"{n} open points"},"status":{"todo":"open","active":"in progress","blocked":"blocked","done":"done"},"change":{"done":"done","active":"started","blocked":"blocked","todo":"reopened","added":"added"},"footer":{"repo":"Repository","roadmap":"roadmap.json","builtWith":"Built with roadmap-live"},"invalid":"{file} is invalid, showing the last valid state.","noData":"no valid data yet","justNow":"just now","unplannedTitle":"Unplanned","waiting":{"title":"Waiting for you","hint":"Answering works on the live page"},"readOnly":"Read-only. To write, open the link with the key.","comments":{"count":{"one":"1 comment","other":"{n} comments"},"placeholder":"Tell the agent something…","add":"comment","send":"Send","sent":"sent","failed":"not sent, try again","you":"you","agent":"agent","show":"show","hide":"hide"},"git":{"ahead":{"one":"1 ahead of main","other":"{n} ahead of main"},"changed":{"one":"1 changed","other":"{n} changed"}},"share":{"button":"Share","copied":"Link copied","off":"The public page is off.","enable":"Turn on GitHub Pages","enabling":"Turning on…","enabled":"Turned on. The page appears within about a minute.","error":"Could not turn it on: {message}","title":"Copy the public link"},"views":{"milestones":"Milestones","board":"Board","focus":"Focus","timeline":"Timeline","conversations":"Conversations","points":"Open points","prs":"Pull requests","signals":"Signals","list":"List"},"viewTitle":"Switch the view","timeline":{"today":"today","yesterday":"yesterday","resolved":"resolved","sync":"sync","syncText":"Pull requests read from {repo}","empty":"Nothing has happened yet."},"conversations":{"unanswered":"unanswered","empty":"No conversations yet. Comments and questions show up here.","others":{"one":"1 item without a conversation","other":"{n} items without a conversation"}},"points":{"open":{"one":"1 open","other":"{n} open"},"resolved":{"one":"1 resolved","other":"{n} resolved"},"empty":"No open points. Reviewers have nothing outstanding."},"pullRequests":{"items":{"one":"1 item","other":"{n} items"},"review":"review","empty":"No pull requests linked yet."},"signals":{"questions":"Open questions","blocked":"Blocked","stale":"Gone quiet","unplanned":"Not on the roadmap","question":"question","calm":"Nothing needs you.","counts":"{active} in progress, {open} open, {done} done."},"list":{"status":"Status","title":"Item","milestone":"Milestone","pr":"PR","updated":"Updated","points":"Points","sortTitle":"Sort by {col}"},"milestoneCurrent":"current milestone","doneCount":{"one":"1 done","other":"{n} done"}},"cli":{"usage":"Usage: roadmap-live [command] [file] [options]\n\nCommands:\n  (none)                 start the live server (default)\n  sync                   read pull request activity from GitHub and update the roadmap\n  render                 write a static HTML page from the current state\n  init                   create roadmap.json, AGENTS.md and the workflow file\n  auth                   log in to GitHub in the browser (--logout removes the token)\n  doctor                 explain which GitHub credential and which provider would be used\n\nOptions:\n  file                   path to roadmap.json (default: ./roadmap.json)\n  --port \u003cn>             HTTP port for the live server (default: 4242)\n  --key \u003csecret>         write key for the live page (default: generated at start, or ROADMAP_KEY)\n  --check                validate the file and exit with 0 (ok) or 1 (problems)\n  --repo owner/name      repository for sync (default: sync.repo, GITHUB_REPOSITORY or the git remote)\n  --dry-run              sync: print the planned changes and write nothing\n  --apply                sync: apply .roadmap-live/result.json written by your coding agent\n  --provider \u003cname>      sync: anthropic, claude-cli, codex-cli, gemini-cli or agent\n  --public               auth: ask for the public_repo scope only\n  --out \u003cpath>           render: output file (default: roadmap/index.html)\n  --theme \u003cname>         render: neutral, paper, mono or a file in roadmap-themes/\n  --mode light|dark      render: fix the color mode instead of following the system\n  -h, --help             show this help","unknownOption":"unknown option: {option}","unknownCommand":"unknown command: {command}","invalidPort":"invalid port: {port}","checkOk":"{file}: ok ({milestones} milestones, {items} items, {done} done, {active} active)","checkParallel":"note: {n} items are active at the same time","checkLarge":"note: {file} is {kb} KB, trim old comments and notes yourself (the agent never deletes comments) so the agent reads less","checkGoalDone":"note: \"{item}\" is done but its goal stands at {current}/{target}","checkGoalReached":"note: \"{item}\" reached its goal ({current}/{target}) but is still open","checkTagline":"note: the tagline is {length} characters, keep it at {max} or fewer so it stays one short line","checkProblems":{"one":"{file}: 1 problem","other":"{file}: {n} problems"},"invalidFile":"{file} is invalid:","server":{"watching":"roadmap-live: watching {file}","readUrl":"  read   {url}","writeUrl":"  write  {url}   (open this one to comment)","stop":"  press Ctrl+C to stop","stopped":"roadmap-live: stopped","portInUse":"roadmap-live: port {port} is already in use, try --port \u003cnumber>","updated":"updated ({items} items, active: {active})","none":"none","invalid":"invalid, keeping last valid state:"},"auth":{"envToken":"GITHUB_TOKEN environment variable","ghCli":"GitHub CLI (gh auth token)","stored":"token stored in {path}","deviceFlow":"browser login (device flow)","openUrl":"Open {url} and enter the code {code}","waiting":"Waiting for you to confirm in the browser...","success":"Logged in to GitHub. The token is stored in {path}.","loggedOut":"Removed the stored GitHub token.","nothingToLogout":"There is no stored GitHub token.","expired":"The code expired before it was confirmed. Run roadmap-live auth to try again.","denied":"Login was cancelled in the browser.","noClientId":"Browser login is not configured in this build. Set GITHUB_TOKEN, log in with the GitHub CLI (gh auth login), or set ROADMAP_GITHUB_CLIENT_ID to the client id of a GitHub OAuth app.","none":"No GitHub credentials found: set GITHUB_TOKEN, log in with the GitHub CLI (gh auth login), or run roadmap-live auth to log in in the browser."},"provider":{"anthropic":"Anthropic API (ANTHROPIC_API_KEY)","claude-cli":"Claude Code CLI (claude)","codex-cli":"Codex CLI (codex)","gemini-cli":"Gemini CLI (gemini)","agent":"your coding agent via .roadmap-live/inbox.json","unknown":"unknown provider: {name}","notAvailable":"provider {name} is not available: {reason}"},"doctor":{"title":"roadmap-live doctor","roadmap":"Roadmap: {file}","roadmapMissing":"Roadmap: {file} (not found, run roadmap-live init)","repo":"Repository: {repo} ({source})","repoNone":"Repository: not found. Set sync.repo in roadmap.json or pass --repo owner/name.","repoSource":{"flag":"from --repo","roadmap":"from sync.repo","env":"from GITHUB_REPOSITORY","git":"from the git remote"},"credential":"GitHub credential: {name}","credentialWhy":"  because {reason}","credentialNone":"GitHub credential: none","provider":"Classification provider: {name}","providerWhy":"  because {reason}","skipped":"  skipped {name}: {reason}","language":"Language: {lang} ({source})","languageSource":{"roadmap":"from roadmap.json","env":"from ROADMAP_LANG","system":"from LANG","default":"default"},"theme":"Theme: {theme}"},"why":{"envSet":"{name} is set","envUnset":"{name} is not set","flag":"chosen with --provider","envProvider":"chosen with ROADMAP_PROVIDER","onPath":"{name} is installed and answers to --version","notOnPath":"{name} is not installed or does not answer to --version within two seconds","ghLoggedIn":"gh is installed and logged in","ghNotLoggedIn":"gh is not installed or not logged in","storedToken":"a token from roadmap-live auth exists","noStoredToken":"no token from roadmap-live auth","fallback":"nothing else is available"},"sync":{"repo":"Syncing {repo} since {since}","firstRun":"the last 30 days (first run)","fetching":"Fetching pull requests...","noActivity":"No new pull request activity.","prs":{"one":"1 pull request with new activity","other":"{n} pull requests with new activity"},"classifying":"Classifying #{number} {title} with {provider}...","skipped":"Skipped #{number}: {reason}","malformed":"the provider returned no valid classification twice","agentHandoff":"Your coding agent will classify {n} pull requests on its next run. Then run: roadmap-live sync --apply","noInbox":"There is nothing to apply: .roadmap-live/result.json does not exist. Run roadmap-live sync first.","noPending":"The pending pull request data in .roadmap-live/pending.json is missing. Run roadmap-live sync again.","applied":"Applied {n} classifications from .roadmap-live/result.json.","dryRun":"Dry run, nothing was written.","planned":"Planned changes:","noChanges":"No changes to the roadmap.","wrote":"Wrote {file} and {changelog}.","wroteRoadmap":"Wrote {file}.","change":{"status":"{title}: {from} → {to} (PR #{number})","pr":"{title}: linked PR #{number}","openPoint":"{title}: new open point from PR #{number}","resolved":"{title}: open point resolved (PR #{number})","unplanned":"Not on the roadmap: {title} (PR #{number})","unplannedRemoved":"Removed from unplanned: {title} (PR #{number})"},"rateLimit":"GitHub rate limit reached, waiting {seconds} seconds...","providerFailed":"Provider {name} failed: {reason}"},"changelog":{"header":"# Changelog\n\nStatus changes recorded by roadmap-live sync. One line per change.\n","line":"- {date}: {title} {from} → {to} ({url})"},"render":{"wrote":"Wrote {file} ({theme} theme, {lang})","unknownTheme":"unknown theme: {theme}. Built in: {list}. Custom themes go in roadmap-themes/\u003cname>.css."},"init":{"wrote":"Wrote {file}","exists":"Kept {file} (already exists)","done":"Done. Next: tell your coding agent to read AGENTS.md, then run roadmap-live to watch, or roadmap-live sync to pull in pull request activity."},"action":{"noKey":"anthropic_api_key is empty: skipping sync and only rendering the page.","noPullsPermission":"The workflow token cannot read pull requests. Add \"pull-requests: read\" under permissions in the workflow.","noWritePermission":"The workflow token cannot push. Add \"contents: write\" under permissions in the workflow.","nothingToCommit":"Nothing changed, nothing to commit.","committed":"Committed and pushed {files}.","commitMessage":"Update roadmap from pull request activity"}}}}</script>
 <script>/*
  * Shared page renderer. Runs in Node (static render, live server) and in the
  * browser (live updates, language and filter changes). It renders HTML from a
@@ -411,7 +508,8 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
  *   changelog: [lines], generatedAt,  static view
  *   repoUrl, roadmapUrl
  * }
- * opts = { t, lang, now, filter, colorMode, theme, showAllDone, changed }
+ * opts = { t, lang, now, filter, colorMode, theme, view, showAllDone, showAllFeed,
+ *          showAllTimeline, sort, open, expanded, pending, share, canWrite, changed }
  */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
@@ -422,10 +520,17 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
   var DEFAULT_STALE_DAYS = 7;
   var FEED_MAX = 8;
   var FEED_SHORT = 4;
-  // Views the button in the header cycles through. Adding one: a render
-  // function, an entry here, a label under page.views.<name> in the locales.
-  var VIEWS = ['milestones', 'board'];
+  // Views, in the order of the row above the content. Adding one: a render
+  // function, a case in renderView, an entry here, a label under
+  // page.views.<name> in the locales. Views that need synced data (prs,
+  // points) are listed only when the roadmap has such data; see availableViews.
+  var VIEWS = ['milestones', 'board', 'focus', 'timeline', 'conversations', 'points', 'prs', 'signals', 'list'];
   var DONE_VISIBLE = 3;
+  var TIMELINE_SHORT = 40;
+  var LIST_COLS = ['status', 'title', 'milestone', 'pr', 'updated', 'points'];
+  // Columns whose first click sorts descending (newest, highest first).
+  var LIST_DESC_FIRST = { updated: true, pr: true, points: true };
+  var STATUS_ORDER = { blocked: 0, active: 1, todo: 2, done: 3 };
 
   // ---- small helpers ------------------------------------------------------
 
@@ -463,13 +568,24 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
     return t;
   }
 
+  // Intl formatters are the expensive part of a render; one per language
+  // and option set serves every row.
+  var formatters = {};
+  function formatter(kind, lang, options) {
+    var key = kind + ':' + (lang || 'en') + ':' + JSON.stringify(options);
+    if (!formatters[key]) {
+      var Ctor = Intl[kind];
+      try { formatters[key] = new Ctor(lang || 'en', options); } catch (e) { formatters[key] = new Ctor('en', options); }
+    }
+    return formatters[key];
+  }
+
   function relativeTime(iso, now, lang) {
     var t = Date.parse(iso);
     if (isNaN(t)) return '';
     var diff = (t - now) / 1000;
     var abs = Math.abs(diff);
-    var rtf;
-    try { rtf = new Intl.RelativeTimeFormat(lang || 'en', { numeric: 'auto' }); } catch (e) { rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' }); }
+    var rtf = formatter('RelativeTimeFormat', lang, { numeric: 'auto' });
     if (abs < 45) return rtf.format(0, 'second');
     if (abs < 3600) return rtf.format(Math.round(diff / 60), 'minute');
     if (abs < 86400) return rtf.format(Math.round(diff / 3600), 'hour');
@@ -481,7 +597,7 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
   function formatDateTime(iso, lang) {
     var d = new Date(iso);
     if (isNaN(d.getTime())) return '';
-    try { return new Intl.DateTimeFormat(lang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(d); } catch (e) { return d.toISOString(); }
+    try { return formatter('DateTimeFormat', lang, { dateStyle: 'medium', timeStyle: 'short' }).format(d); } catch (e) { return d.toISOString(); }
   }
 
   function elapsed(iso, now) {
@@ -521,6 +637,109 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
     var text = t('page.pr', { number: number });
     var url = prUrl(state, number);
     return url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text);
+  }
+
+  // "#44, #45", each a link when the repository is known.
+  function prLinks(state, prs) {
+    return prs.map(function (n) { var u = prUrl(state, n); return u ? '<a href="' + esc(u) + '">#' + n + '</a>' : '#' + n; }).join(', ');
+  }
+
+  // "PR #44", or "PRs #44, #45" for items with several pull requests.
+  function prList(state, t, it) {
+    if (it.prs.length === 1) return prLabel(state, t, it.prs[0]);
+    return esc(t('page.prs', { list: '' })).trim() + ' ' + prLinks(state, it.prs);
+  }
+
+  // The GitHub address of the comment an open point came from. Sources look
+  // like pr:44#review_comment:2001, pr:42#comment:1893 or pr:42#review:7.
+  function pointUrl(state, source) {
+    var m = /^pr:(\d+)(?:#(review_comment|comment|review):(\d+))?/.exec(source || '');
+    if (!m) return null;
+    var base = prUrl(state, m[1]);
+    if (!base) return null;
+    if (m[2] === 'review_comment') return base + '#discussion_r' + m[3];
+    if (m[2] === 'comment') return base + '#issuecomment-' + m[3];
+    if (m[2] === 'review') return base + '#pullrequestreview-' + m[3];
+    return base;
+  }
+
+  function pointLabel(state, t, p) {
+    var n = prFromSource(p.source);
+    if (!n) return '';
+    var url = pointUrl(state, p.source);
+    var text = t('page.pr', { number: n });
+    return url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text);
+  }
+
+  function dayKey(iso) {
+    var d = new Date(iso);
+    return isNaN(d.getTime()) ? '' : d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+  }
+
+  function formatDay(iso, now, lang, t) {
+    var d = new Date(iso), n = new Date(now);
+    if (isNaN(d.getTime())) return '';
+    if (isSameDay(iso, now)) return t('page.timeline.today');
+    var y = new Date(now);
+    y.setDate(y.getDate() - 1);
+    if (isSameDay(iso, y.getTime())) return t('page.timeline.yesterday');
+    var o = { weekday: 'short', day: 'numeric', month: 'short' };
+    if (d.getFullYear() !== n.getFullYear()) o.year = 'numeric';
+    try { return formatter('DateTimeFormat', lang, o).format(d); } catch (e) { return d.toDateString(); }
+  }
+
+  function formatClock(iso, lang) {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    try { return formatter('DateTimeFormat', lang, { hour: '2-digit', minute: '2-digit' }).format(d); } catch (e) { return ''; }
+  }
+
+  // The views this roadmap can show. Pull requests and open points only
+  // exist after a sync; until then their views would be empty, so their
+  // names stay out of the row.
+  function availableViews(data) {
+    if (!data) return VIEWS.slice();
+    var hasPrs = data.items.some(function (it) { return it.prs && it.prs.length; }) || (data.unplanned || []).some(function (u) { return u.prs && u.prs.length; });
+    var hasPoints = data.items.some(function (it) { return it.open_points && it.open_points.length; });
+    return VIEWS.filter(function (v) { return v === 'prs' ? hasPrs : v === 'points' ? hasPoints : true; });
+  }
+
+  function resolveView(data, v) {
+    var avail = availableViews(data);
+    return avail.indexOf(v) >= 0 ? v : avail[0];
+  }
+
+  function visibleItems(data, opts) {
+    return opts.filter ? data.items.filter(function (it) { return it.milestone === opts.filter; }) : data.items;
+  }
+
+  function isOpen(opts, key) {
+    return !!(opts.open && opts.open[key]);
+  }
+
+  // A folded list that remembers being open across re-renders by its key.
+  function fold(opts, key, summary, body, cls, attrs) {
+    return '<details class="' + (cls ? cls + ' ' : '') + 'fold" data-key="' + esc(key) + '"' + (attrs || '') + (isOpen(opts, key) ? ' open' : '') + '><summary>' + summary + '</summary>' + body + '</details>';
+  }
+
+  function hasQuestion(it) {
+    return !!(it.question && it.question.text && openItem(it));
+  }
+
+  function milestoneIndex(data) {
+    var order = {}, titles = {};
+    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
+    return { order: order, titles: titles };
+  }
+
+  function sortedUnplanned(data) {
+    return (data.unplanned || []).slice().sort(function (a, b) { return (Date.parse(b.first_seen) || 0) - (Date.parse(a.first_seen) || 0); });
+  }
+
+  // One row of the shared grammar: mono label, text, mono time on the right.
+  // label and text are HTML, at is an ISO time.
+  function row(opts, label, text, at, labelCls) {
+    return '<li><span class="label' + (labelCls ? ' ' + labelCls : '') + '">' + label + '</span><span class="text">' + text + '</span><span class="when">' + time(at, opts.now, opts.lang) + '</span></li>';
   }
 
   // ---- derived data --------------------------------------------------------
@@ -639,7 +858,7 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
       });
     });
     (data.unplanned || []).forEach(function (u) {
-      rest.push({ kind: 'unplanned', at: u.first_seen, pr: u.prs && u.prs.length ? u.prs[u.prs.length - 1] : null, label: null, text: t('page.feed.unplanned', { title: u.title }), tag: t('page.feed.notOnRoadmap'), attention: true });
+      rest.push({ kind: 'unplanned', at: u.first_seen, pr: lastPr(u), label: null, text: t('page.feed.unplanned', { title: u.title }), tag: t('page.feed.notOnRoadmap'), attention: true });
     });
     // At most one goal row, the latest change: a daily pulse must not turn the
     // feed into a ticker. A moving number is a message, not an attention signal.
@@ -704,10 +923,6 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
       var pr = latestPr(data);
       if (pr) parts.push('<span class="sep">&middot;</span><span>' + prLabel(state, t, pr) + '</span>');
     }
-    if (VIEWS.length > 1) {
-      var v = VIEWS.indexOf(opts.view) >= 0 ? opts.view : VIEWS[0];
-      parts.push('<button type="button" class="theme" data-action="view" title="' + esc(t('page.viewTitle')) + '">' + esc(t('page.views.' + v)) + '</button>');
-    }
     if (opts.theme && state.themes && state.themes.length > 1) {
       parts.push('<button type="button" class="theme" data-action="theme-name" title="' + esc(t('page.pickTheme', { list: state.themes.join(', ') })) + '">' + esc(opts.theme) + '</button>');
     }
@@ -768,23 +983,35 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
 
   function renderWaiting(state, opts) {
     var t = opts.t;
-    var asking = state.data.items.filter(function (it) { return it.question && it.question.text && openItem(it); });
+    var asking = state.data.items.filter(hasQuestion);
     if (!asking.length) return '';
     var rows = asking.map(function (it) {
-      var q = it.question;
-      var out = '<li><span class="label attention">' + esc(it.title) + '</span><div class="q">' + esc(q.text);
-      if (writable(state, opts)) {
-        out += '<div class="answers">';
-        (q.options || []).forEach(function (o) {
-          out += '<button type="button" data-action="answer" data-id="' + esc(it.id) + '" data-text="' + esc(o) + '">' + esc(o) + '</button>';
-        });
-        out += '</div>' + renderCommentForm(it, t);
-      } else {
-        out += '<div class="hint">' + esc(t(state.mode === 'live' ? 'page.readOnly' : 'page.waiting.hint')) + '</div>';
-      }
-      return out + '</div></li>';
+      return '<li><span class="label attention">' + esc(it.title) + '</span><div class="q">' + renderQuestionBody(state, opts, it, false) + '</div></li>';
     });
     return '<section class="waiting"><h2 class="section">' + esc(t('page.waiting.title')) + '</h2><ul>' + rows.join('') + '</ul></section>';
+  }
+
+  // The question text with its answer buttons. inThread: the item's
+  // conversation follows and brings its own field and read-only hint.
+  function renderQuestionBody(state, opts, it, inThread) {
+    var t = opts.t, q = it.question;
+    var out = esc(q.text);
+    if (writable(state, opts)) {
+      out += '<div class="answers">';
+      (q.options || []).forEach(function (o) {
+        out += '<button type="button" data-action="answer" data-id="' + esc(it.id) + '" data-text="' + esc(o) + '">' + esc(o) + '</button>';
+      });
+      out += '</div>' + (inThread ? '' : renderCommentForm(it, t));
+    } else if (!inThread || state.mode !== 'live') {
+      out += '<div class="hint">' + esc(t(state.mode === 'live' ? 'page.readOnly' : 'page.waiting.hint')) + '</div>';
+    }
+    return out;
+  }
+
+  // A question inside an item block (focus, conversations).
+  function renderQuestion(state, opts, it) {
+    if (!hasQuestion(it)) return '';
+    return '<div class="q"><span class="label attention">' + esc(opts.t('page.signals.question')) + '</span>' + renderQuestionBody(state, opts, it, true) + '</div>';
   }
 
   // Writing needs the live page and the write key in the browser. The
@@ -814,8 +1041,7 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
 
   function renderNow(state, opts) {
     var t = opts.t, data = state.data;
-    var titles = {};
-    data.milestones.forEach(function (m) { titles[m.id] = m.title; });
+    var titles = milestoneIndex(data).titles;
     var active = data.items.filter(function (it) { return it.status === 'active'; });
     if (state.mode !== 'live' && !active.length) return '';
     var out = '<div id="now" class="now' + (active.length ? ' has-active' : '') + '">';
@@ -831,8 +1057,20 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
         out += '</div>';
       });
     } else {
+      out += renderIdle(state, opts);
+    }
+    return out + '</div>';
+  }
+
+  // Nothing in progress: name the next open item of the current milestone,
+  // or of the given items when a milestone filter narrows the view.
+  function renderIdle(state, opts, items) {
+    var t = opts.t, data = state.data;
+    var next = null;
+    if (items) {
+      next = items.filter(function (it) { return it.status === 'todo'; })[0] || null;
+    } else {
       var info = milestoneStats(data);
-      var next = null;
       if (info.current) next = data.items.filter(function (it) { return it.status === 'todo' && it.milestone === info.current.m.id; })[0] || null;
       // An empty current milestone has nothing to start; point at the first open item in milestone order.
       if (!next) {
@@ -840,12 +1078,11 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
         data.milestones.forEach(function (m, i) { order[m.id] = i; });
         next = sortItems(data.items.filter(function (it) { return it.status === 'todo'; }), order, 'todo')[0] || null;
       }
-      out += '<div class="eyebrow"><span>' + esc(next ? t('page.now.idle') : t('page.now.allDone')) + '</span></div><div class="idle">';
-      if (next) out += esc(t('page.now.next', { title: '' })).replace(/\s*$/, '') + ' <b>' + esc(next.title) + '</b>';
-      else if (data.items.length) out += esc(t('page.now.summary', { n: data.milestones.length, items: data.items.length }));
-      else out += esc(t('page.now.empty'));
-      out += '</div>';
     }
+    var out = '<div class="eyebrow"><span>' + esc(next ? t('page.now.idle') : t('page.now.allDone')) + '</span></div><div class="idle">';
+    if (next) out += esc(t('page.now.next', { title: '' })).replace(/\s*$/, '') + ' <b>' + esc(next.title) + '</b>';
+    else if (data.items.length) out += esc(t('page.now.summary', { n: data.milestones.length, items: data.items.length }));
+    else out += esc(t('page.now.empty'));
     return out + '</div>';
   }
 
@@ -860,13 +1097,17 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
       (items.length ? items.join('') : '<li class="none">' + esc(t('page.history.empty')) + '</li>') + '</ul></aside>';
   }
 
-  function sortItems(items, order, status) {
+  // mode: a board column ('todo', 'active', 'done') or 'focus'. Done sorts
+  // newest first, the active column puts blocked first, focus puts active
+  // first; everything else follows the milestone order.
+  function sortItems(items, order, mode) {
     return items.slice().sort(function (a, b) {
-      if (status === 'done') {
+      if (mode === 'done') {
         var ta = Date.parse(a.updated) || 0, tb = Date.parse(b.updated) || 0;
         if (ta !== tb) return tb - ta;
       }
-      if (status === 'active' && a.status !== b.status) return a.status === 'blocked' ? -1 : 1;
+      if (mode === 'active' && a.status !== b.status) return a.status === 'blocked' ? -1 : 1;
+      if (mode === 'focus' && a.status !== b.status) return a.status === 'active' ? -1 : 1;
       return (order[a.milestone] || 0) - (order[b.milestone] || 0);
     });
   }
@@ -880,9 +1121,7 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
     // label column shows the numbers for open and done items, while active and
     // blocked items keep their status word (blocked keeps its attention color).
     if (goal) sub.push('<span class="goal' + (goalReached(goal) ? ' reached' : '') + '"' + (measured(goal) ? '' : ' title="' + esc(t('page.goal.unmeasured')) + '"') + '>' + esc(goalText(goal) + ' ' + goal.label) + '</span>');
-    if (it.prs && it.prs.length) {
-      sub.push('<span>' + (it.prs.length === 1 ? prLabel(state, t, it.prs[0]) : esc(t('page.prs', { list: '' })).trim() + ' ' + it.prs.map(function (n) { var u = prUrl(state, n); return u ? '<a href="' + esc(u) + '">#' + n + '</a>' : '#' + n; }).join(', ')) + '</span>');
-    }
+    if (it.prs && it.prs.length) sub.push('<span>' + prList(state, t, it) + '</span>');
     if (it.branch) sub.push('<span>' + esc(it.branch) + '</span>');
     var pts = openPoints(it).length;
     if (pts) sub.push('<span>' + esc(t('page.openPoints', { n: pts })) + '</span>');
@@ -913,9 +1152,8 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
 
   function renderBoard(state, opts) {
     var t = opts.t, data = state.data;
-    var order = {}, titles = {};
-    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
-    var visible = opts.filter ? data.items.filter(function (it) { return it.milestone === opts.filter; }) : data.items;
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
+    var visible = visibleItems(data, opts);
     var cols = [
       { key: 'todo', match: function (it) { return it.status === 'todo'; } },
       { key: 'active', match: function (it) { return it.status === 'active' || it.status === 'blocked'; } },
@@ -944,8 +1182,7 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
   // items collapsed. Answers "where are we" without clicking.
   function renderMilestones(state, opts) {
     var t = opts.t, data = state.data;
-    var order = {}, titles = {};
-    data.milestones.forEach(function (m, i) { order[m.id] = i; titles[m.id] = m.title; });
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
     var info = milestoneStats(data);
     var itemOpts = Object.assign({}, opts, { statusLabel: true });
     var sections = info.stats.filter(function (s) { return !opts.filter || s.m.id === opts.filter; }).map(function (s) {
@@ -958,25 +1195,312 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
       if (open.length) out += '<div class="items">' + open.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>';
       else if (!done.length) out += '<div class="empty">' + esc(t('page.empty')) + '</div>';
       if (done.length) {
-        var openAttr = opts.expandedMilestones && opts.expandedMilestones[s.m.id] ? ' open' : '';
-        out += '<details class="ms-done" data-milestone="' + esc(s.m.id) + '"' + openAttr + '><summary>' + esc(t('page.doneCount', { n: done.length })) + '</summary><div class="items">' + done.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div></details>';
+        out += fold(opts, 'ms:' + s.m.id, esc(t('page.doneCount', { n: done.length })), '<div class="items">' + done.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>', 'ms-done', ' data-milestone="' + esc(s.m.id) + '"');
       }
       return out + '</section>';
     });
     return '<main class="milestones">' + sections.join('') + '</main>';
   }
 
-  function renderView(state, opts) {
-    var v = VIEWS.indexOf(opts.view) >= 0 ? opts.view : VIEWS[0];
-    return v === 'board' ? renderBoard(state, opts) : renderMilestones(state, opts);
+  // The active item as a whole block: title and timer large, then note,
+  // open points, question and conversation. Blocked items follow the active
+  // ones with the blocked label where the timer would be.
+  function renderFocus(state, opts) {
+    var t = opts.t, data = state.data;
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
+    var list = sortItems(visibleItems(data, opts).filter(function (it) { return it.status === 'active' || it.status === 'blocked'; }), order, 'focus');
+    if (!list.length) return '<main class="focus"><div class="now">' + renderIdle(state, opts, opts.filter ? visibleItems(data, opts) : null) + '</div></main>';
+    var out = list.map(function (it) {
+      var h = '<article class="item" data-id="' + esc(it.id) + '" data-status="' + esc(it.status) + '"><div class="head"><h2 class="title">' + esc(it.title) + '</h2>';
+      if (it.status === 'blocked') h += '<span class="label attention state">' + esc(t('page.blocked')) + '</span>';
+      else if (it.updated) h += '<div class="elapsed" data-since="' + esc(it.updated) + '"><small>' + esc(t('page.now.since')) + '</small><span>' + elapsed(it.updated, opts.now) + '</span></div>';
+      h += '</div>';
+      var sub = ['<span>' + esc(titles[it.milestone] || it.milestone) + '</span>'];
+      if (it.prs && it.prs.length) sub.push('<span>' + prList(state, t, it) + '</span>');
+      if (it.branch) sub.push('<span>' + esc(it.branch) + '</span>');
+      if (it.updated) sub.push(time(it.updated, opts.now, opts.lang));
+      h += '<div class="sub">' + sub.join('') + '</div>';
+      if (it.note) h += '<p class="note">' + esc(it.note) + '</p>';
+      var pts = openPoints(it);
+      if (pts.length) h += '<ul class="rows pts">' + pts.map(function (p) { return row(opts, pointLabel(state, t, p), esc(p.text), p.opened); }).join('') + '</ul>';
+      h += renderQuestion(state, opts, it);
+      h += renderConversation(state, opts, it);
+      return h + '</article>';
+    });
+    return '<main class="focus">' + out.join('') + '</main>';
+  }
+
+  // Everything with a time, newest first: status changes, open points
+  // opened and resolved, comments, questions, unplanned work, sync runs.
+  function computeTimeline(state, opts) {
+    var t = opts.t, data = state.data;
+    var rows = [];
+    visibleItems(data, opts).forEach(function (it) {
+      if (it.updated && it.status !== 'todo') {
+        var pr = lastPr(it);
+        rows.push({ kind: 'status', at: it.updated, label: pr ? prLabel(state, t, pr) : esc(t('page.status.' + it.status)), attention: it.status === 'blocked', text: esc(t('page.feed.statusChange', { title: it.title, status: t('page.status.' + it.status) })), id: it.id });
+      }
+      (it.open_points || []).forEach(function (p) {
+        var text = esc(t('page.feed.openPoint', { title: it.title, text: p.text }));
+        if (p.opened) rows.push({ kind: 'point', at: p.opened, label: pointLabel(state, t, p), text: text, id: it.id });
+        if (p.resolved) rows.push({ kind: 'resolved', at: p.resolved, label: pointLabel(state, t, p), text: text, tag: t('page.timeline.resolved'), quiet: true, id: it.id });
+      });
+      (it.comments || []).forEach(function (c) {
+        rows.push({ kind: 'comment', at: c.at, label: esc(t(c.from === 'agent' ? 'page.comments.agent' : 'page.comments.you')), text: esc(it.title + ': ' + c.text), quiet: c.from === 'agent', id: it.id });
+      });
+      if (hasQuestion(it) && it.question.asked) {
+        rows.push({ kind: 'question', at: it.question.asked, label: esc(t('page.signals.question')), attention: true, text: esc(it.title + ': ' + it.question.text), id: it.id });
+      }
+    });
+    if (!opts.filter) {
+      (data.unplanned || []).forEach(function (u) {
+        var pr = lastPr(u);
+        rows.push({ kind: 'unplanned', at: u.first_seen, label: pr ? prLabel(state, t, pr) : esc(t('page.unplannedTitle')), attention: true, text: esc(u.title), tag: t('page.feed.notOnRoadmap') });
+      });
+      if (data.sync && data.sync.last_run) {
+        rows.push({ kind: 'sync', at: data.sync.last_run, label: esc(t('page.timeline.sync')), text: esc(t('page.timeline.syncText', { repo: data.sync.repo || '' })), quiet: true });
+      }
+    }
+    rows = rows.filter(function (r) { return !isNaN(Date.parse(r.at)); });
+    rows.sort(function (a, b) { return Date.parse(b.at) - Date.parse(a.at); });
+    return rows;
+  }
+
+  function renderTimeline(state, opts) {
+    var t = opts.t;
+    var rows = computeTimeline(state, opts);
+    if (!rows.length) return '<main class="timeline"><div class="empty">' + esc(t('page.timeline.empty')) + '</div></main>';
+    var total = rows.length, more = '';
+    if (!opts.showAllTimeline && rows.length > TIMELINE_SHORT) {
+      rows = rows.slice(0, TIMELINE_SHORT);
+      more = '<div class="more"><button type="button" data-action="more-timeline">' + esc(t('page.since.showAll', { n: total })) + '</button></div>';
+    }
+    var days = [];
+    rows.forEach(function (r) {
+      var k = dayKey(r.at);
+      if (!days.length || days[days.length - 1].key !== k) days.push({ key: k, at: r.at, rows: [] });
+      days[days.length - 1].rows.push(r);
+    });
+    var out = days.map(function (d) {
+      return '<section class="day"><h2>' + esc(formatDay(d.at, opts.now, opts.lang, t)) + '</h2><ul>' + d.rows.map(function (r) {
+        return '<li data-kind="' + r.kind + '"' + (r.quiet ? ' class="is-quiet"' : '') + '><span class="at">' + esc(formatClock(r.at, opts.lang)) + '</span>' +
+          '<span class="label' + (r.attention ? ' attention' : '') + '">' + r.label + '</span>' +
+          '<span class="text">' + r.text + (r.tag ? '<span class="tag' + (r.attention ? '' : ' quiet') + '">' + esc(r.tag) + '</span>' : '') + '</span></li>';
+      }).join('') + '</ul></section>';
+    });
+    return '<main class="timeline">' + out.join('') + more + '</main>';
+  }
+
+  function lastComment(it) {
+    var c = it.comments || [];
+    return c.length ? c[c.length - 1] : null;
+  }
+
+  // Open items with a thread or a question: questions first, then threads
+  // waiting for the agent, then by the last comment. On the live page with
+  // the key, the remaining open items fold away below to start a thread.
+  function renderConversations(state, opts) {
+    var t = opts.t, data = state.data;
+    var titles = milestoneIndex(data).titles;
+    var open = visibleItems(data, opts).filter(openItem);
+    var withThread = open.filter(function (it) { return commentsOf(it, opts).length || hasQuestion(it); });
+    var rank = function (it) {
+      if (hasQuestion(it)) return 0;
+      var last = lastComment(it);
+      return last && last.from === 'human' ? 1 : 2;
+    };
+    var lastAt = function (it) {
+      var list = commentsOf(it, opts);
+      var last = list[list.length - 1];
+      if (last) return Date.parse(last.at) || 0;
+      return hasQuestion(it) ? Date.parse(it.question.asked) || 0 : 0;
+    };
+    withThread.sort(function (a, b) {
+      var ra = rank(a), rb = rank(b);
+      return ra !== rb ? ra - rb : lastAt(b) - lastAt(a);
+    });
+    var out = withThread.map(function (it) {
+      var last = lastComment(it);
+      var unanswered = last && last.from === 'human' && !hasQuestion(it);
+      var h = '<article class="item" data-id="' + esc(it.id) + '" data-status="' + esc(it.status) + '">' +
+        '<div class="title"><span>' + esc(it.title) + '</span>' + (unanswered ? '<span class="label">' + esc(t('page.conversations.unanswered')) + '</span>' : '') + '</div>' +
+        '<div class="sub"><span>' + esc(titles[it.milestone] || it.milestone) + '</span><span' + (it.status === 'blocked' ? ' class="attention"' : '') + '>' + esc(t('page.status.' + it.status)) + '</span></div>';
+      h += renderQuestion(state, opts, it);
+      h += renderConversation(state, opts, it);
+      return h + '</article>';
+    });
+    var body = out.length ? out.join('') : '<div class="empty">' + esc(t('page.conversations.empty')) + '</div>';
+    if (writable(state, opts)) {
+      var others = open.filter(function (it) { return withThread.indexOf(it) < 0; });
+      if (others.length) {
+        var itemOpts = Object.assign({}, opts, { statusLabel: true });
+        body += fold(opts, 'conv:others', esc(t('page.conversations.others', { n: others.length })), '<div class="items">' + others.map(function (it) { return renderItem(state, itemOpts, it, titles); }).join('') + '</div>');
+      }
+    }
+    return '<main class="conversations">' + body + '</main>';
+  }
+
+  // Reviewer requests grouped by item: items with open points first, oldest
+  // open point on top; resolved points fold away per item.
+  function renderPoints(state, opts) {
+    var t = opts.t, data = state.data;
+    var titles = milestoneIndex(data).titles;
+    var items = visibleItems(data, opts).filter(function (it) { return it.open_points && it.open_points.length; });
+    var oldestOpen = function (it) {
+      var o = openPoints(it).map(function (p) { return Date.parse(p.opened) || 0; });
+      return o.length ? Math.min.apply(null, o) : null;
+    };
+    var lastResolved = function (it) { return Math.max.apply(null, [0].concat((it.open_points || []).map(function (p) { return Date.parse(p.resolved) || 0; }))); };
+    items.sort(function (a, b) {
+      var oa = oldestOpen(a), ob = oldestOpen(b);
+      if ((oa === null) !== (ob === null)) return oa === null ? 1 : -1;
+      if (oa !== null) return oa - ob;
+      return lastResolved(b) - lastResolved(a);
+    });
+    var anyOpen = false;
+    var out = items.map(function (it) {
+      var open = openPoints(it), resolved = (it.open_points || []).filter(function (p) { return p.resolved; });
+      if (open.length) anyOpen = true;
+      var h = '<section class="group' + (open.length ? '' : ' is-done') + '" data-id="' + esc(it.id) + '"><header><h2>' + esc(it.title) + '</h2><span class="meta">' + esc(titles[it.milestone] || it.milestone) + '</span>' + (open.length ? '<span class="meta">' + esc(t('page.points.open', { n: open.length })) + '</span>' : '') + '</header>';
+      if (open.length) h += '<ul class="rows pts">' + open.map(function (p) { return row(opts, pointLabel(state, t, p), esc(p.text), p.opened); }).join('') + '</ul>';
+      if (resolved.length) {
+        h += fold(opts, 'pt:' + it.id, esc(t('page.points.resolved', { n: resolved.length })), '<ul class="rows pts resolved">' + resolved.map(function (p) { return row(opts, pointLabel(state, t, p), esc(p.text), p.resolved); }).join('') + '</ul>');
+      }
+      return h + '</section>';
+    });
+    return '<main class="points">' + (anyOpen ? '' : '<div class="empty">' + esc(t('page.points.empty')) + '</div>') + out.join('') + '</main>';
+  }
+
+  // Grouped by pull request number, newest first: linked items with their
+  // status, then the reviewer points from that pull request, then unplanned
+  // work it brought. The page knows no PR state and claims none.
+  function renderPrs(state, opts) {
+    var t = opts.t, data = state.data;
+    var titles = milestoneIndex(data).titles;
+    var groups = {};
+    var group = function (n) { return groups[n] || (groups[n] = { items: [], points: [], unplanned: [] }); };
+    visibleItems(data, opts).forEach(function (it) {
+      (it.prs || []).forEach(function (n) { group(n).items.push(it); });
+      (it.open_points || []).forEach(function (p) { var n = prFromSource(p.source); if (n) group(n).points.push({ p: p, it: it }); });
+    });
+    if (!opts.filter) (data.unplanned || []).forEach(function (u) { (u.prs || []).forEach(function (n) { group(n).unplanned.push(u); }); });
+    var numbers = Object.keys(groups).map(Number).sort(function (a, b) { return b - a; });
+    if (!numbers.length) return '<main class="prs"><div class="empty">' + esc(t('page.pullRequests.empty')) + '</div></main>';
+    var out = numbers.map(function (n) {
+      var g = groups[n];
+      var open = g.points.filter(function (x) { return !x.p.resolved; }), resolved = g.points.filter(function (x) { return x.p.resolved; });
+      var h = '<section class="group" data-pr="' + n + '"><header><h2>' + prLabel(state, t, n) + '</h2>' +
+        (g.items.length ? '<span class="meta">' + esc(t('page.pullRequests.items', { n: g.items.length })) + '</span>' : '') +
+        (open.length ? '<span class="meta">' + esc(t('page.points.open', { n: open.length })) + '</span>' : '') + '</header>';
+      if (g.items.length) {
+        h += '<ul class="rows">' + g.items.map(function (it) {
+          return '<li><span class="label' + (it.status === 'blocked' ? ' attention' : '') + '">' + esc(t('page.status.' + it.status)) + '</span><span class="text">' + esc(it.title) + '</span><span class="when">' + esc(titles[it.milestone] || it.milestone) + '</span></li>';
+        }).join('') + '</ul>';
+      }
+      if (g.unplanned.length) h += '<ul class="rows">' + g.unplanned.map(function (u) { return row(opts, esc(t('page.unplannedTitle')), esc(u.title) + '<span class="tag">' + esc(t('page.feed.notOnRoadmap')) + '</span>', u.first_seen, 'attention'); }).join('') + '</ul>';
+      if (open.length) h += '<ul class="rows pts">' + open.map(function (x) { return row(opts, esc(t('page.pullRequests.review')), esc(x.it.title + ': ' + x.p.text), x.p.opened); }).join('') + '</ul>';
+      if (resolved.length) {
+        h += fold(opts, 'pr:' + n, esc(t('page.points.resolved', { n: resolved.length })), '<ul class="rows pts resolved">' + resolved.map(function (x) { return row(opts, esc(t('page.pullRequests.review')), esc(x.it.title + ': ' + x.p.text), x.p.resolved); }).join('') + '</ul>');
+      }
+      return h + '</section>';
+    });
+    return '<main class="prs">' + out.join('') + '</main>';
+  }
+
+  // Only what needs the human: questions, blocked, stale, unplanned. Empty
+  // is the message.
+  function renderSignals(state, opts) {
+    var t = opts.t, data = state.data;
+    var staleAfter = data.stale_after_days || DEFAULT_STALE_DAYS;
+    var items = visibleItems(data, opts);
+    var lists = [];
+    var asking = items.filter(hasQuestion);
+    if (asking.length) lists.push({ key: 'questions', rows: asking.map(function (it) { return row(opts, esc(t('page.signals.question')), esc(it.title + ': ' + it.question.text), it.question.asked, 'attention'); }) });
+    var blocked = items.filter(function (it) { return it.status === 'blocked'; });
+    if (blocked.length) lists.push({ key: 'blocked', rows: blocked.map(function (it) { var pr = lastPr(it); return row(opts, pr ? prLabel(state, t, pr) : esc(t('page.blocked')), esc(it.title) + (it.note ? '<span class="note">' + esc(it.note) + '</span>' : ''), it.updated, 'attention'); }) });
+    var stale = items.map(function (it) { return { it: it, days: staleDays(it, opts.now, staleAfter) }; }).filter(function (x) { return x.days; }).sort(function (a, b) { return b.days - a.days; });
+    if (stale.length) lists.push({ key: 'stale', rows: stale.map(function (x) { return row(opts, esc(t('page.feed.stale')), esc(t('page.feed.staleText', { n: x.days, title: x.it.title })), new Date(lastActivity(x.it)).toISOString(), 'attention'); }) });
+    var unplanned = opts.filter ? [] : sortedUnplanned(data);
+    if (unplanned.length) lists.push({ key: 'unplanned', rows: unplanned.map(function (u) { var pr = lastPr(u); return row(opts, pr ? prLabel(state, t, pr) : esc(t('page.unplannedTitle')), esc(u.title), u.first_seen, 'attention'); }) });
+    if (!lists.length) {
+      var count = function (s) { return items.filter(function (it) { return it.status === s; }).length; };
+      return '<main class="signals"><div class="calm"><p class="big">' + esc(t('page.signals.calm')) + '</p><p class="counts">' + esc(t('page.signals.counts', { active: count('active'), open: count('todo'), done: count('done') })) + '</p></div></main>';
+    }
+    return '<main class="signals">' + lists.map(function (l) {
+      return '<section class="sig" data-kind="' + l.key + '"><h2 class="section attention">' + esc(t('page.signals.' + l.key)) + '</h2><ul class="rows">' + l.rows.join('') + '</ul></section>';
+    }).join('') + '</main>';
+  }
+
+  // Every item as one table row. Default order: milestone, then blocked,
+  // in progress, open, done. A column header sorts; opts.sort = { key, dir }.
+  function renderList(state, opts) {
+    var t = opts.t, data = state.data;
+    var mi = milestoneIndex(data), order = mi.order, titles = mi.titles;
+    var items = visibleItems(data, opts).slice();
+    if (!items.length) return '<main class="list-view"><div class="empty">' + esc(t('page.empty')) + '</div></main>';
+    var sort = opts.sort && LIST_COLS.indexOf(opts.sort.key) >= 0 ? opts.sort : null;
+    var keyOf = {
+      status: function (it) { return STATUS_ORDER[it.status] || 0; },
+      title: function (it) { return String(it.title).toLowerCase(); },
+      milestone: function (it) { return order[it.milestone] || 0; },
+      pr: function (it) { return lastPr(it) || 0; },
+      updated: function (it) { return Date.parse(it.updated) || 0; },
+      points: function (it) { return openPoints(it).length; },
+    };
+    items.sort(function (a, b) {
+      if (sort) {
+        var ka = keyOf[sort.key](a), kb = keyOf[sort.key](b);
+        if (ka !== kb) return (ka < kb ? -1 : 1) * (sort.dir === 'desc' ? -1 : 1);
+      }
+      var d = (order[a.milestone] || 0) - (order[b.milestone] || 0);
+      return d || (STATUS_ORDER[a.status] || 0) - (STATUS_ORDER[b.status] || 0);
+    });
+    var head = LIST_COLS.map(function (c) {
+      var active = sort && sort.key === c;
+      return '<th class="c-' + c + '"' + (active ? ' aria-sort="' + (sort.dir === 'desc' ? 'descending' : 'ascending') + '"' : '') + '><button type="button" data-action="sort" data-key="' + c + '" data-dir="' + (LIST_DESC_FIRST[c] ? 'desc' : 'asc') + '" title="' + esc(t('page.list.sortTitle', { col: t('page.list.' + c) })) + '">' + esc(t('page.list.' + c)) + '</button></th>';
+    }).join('');
+    var rows = items.map(function (it) {
+      var pts = openPoints(it).length;
+      return '<tr data-id="' + esc(it.id) + '"' + (it.status === 'done' ? ' class="is-done"' : '') + '>' +
+        '<td class="c-status mono' + (it.status === 'blocked' ? ' attention' : '') + '">' + esc(t('page.status.' + it.status)) + '</td>' +
+        '<td class="c-title">' + esc(it.title) + '</td>' +
+        '<td class="c-milestone mono">' + esc(titles[it.milestone] || it.milestone) + '</td>' +
+        '<td class="c-pr mono">' + (it.prs && it.prs.length ? prLinks(state, it.prs) : '') + '</td>' +
+        '<td class="c-updated mono">' + (it.updated ? time(it.updated, opts.now, opts.lang) : '') + '</td>' +
+        '<td class="c-points mono">' + (pts || '') + '</td></tr>';
+    });
+    return '<main class="list-view"><table class="list"><thead><tr>' + head + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></main>';
+  }
+
+  // The row of view names above the content. Links, so the static page
+  // switches without JavaScript and every view has an address.
+  function renderViewsNav(state, opts, current) {
+    var t = opts.t;
+    return '<nav class="views" aria-label="' + esc(t('page.viewTitle')) + '">' + availableViews(state.data).map(function (v) {
+      return '<a href="?view=' + esc(v) + '" data-action="view" data-view="' + esc(v) + '"' + (v === current ? ' aria-current="page"' : '') + '>' + esc(t('page.views.' + v)) + '</a>';
+    }).join('') + '</nav>';
+  }
+
+  function renderView(state, opts, v) {
+    switch (v) {
+      case 'board': return renderBoard(state, opts);
+      case 'focus': return renderFocus(state, opts);
+      case 'timeline': return renderTimeline(state, opts);
+      case 'conversations': return renderConversations(state, opts);
+      case 'points': return renderPoints(state, opts);
+      case 'prs': return renderPrs(state, opts);
+      case 'signals': return renderSignals(state, opts);
+      case 'list': return renderList(state, opts);
+      default: return renderMilestones(state, opts);
+    }
   }
 
   function renderUnplanned(state, opts) {
     var t = opts.t;
-    var list = (state.data.unplanned || []).slice().sort(function (a, b) { return (Date.parse(b.first_seen) || 0) - (Date.parse(a.first_seen) || 0); });
+    var list = sortedUnplanned(state.data);
     if (!list.length) return '';
     var rows = list.map(function (u) {
-      var pr = u.prs && u.prs.length ? u.prs[u.prs.length - 1] : null;
+      var pr = lastPr(u);
       return '<li><span class="label attention">' + (pr ? prLabel(state, t, pr) : esc(t('page.feed.notOnRoadmap'))) + '</span><span class="text">' + esc(u.title) + '</span><span class="when">' + time(u.first_seen, opts.now, opts.lang) + '</span></li>';
     });
     return '<section class="unplanned"><h2 class="section">' + esc(t('page.unplannedTitle')) + ' &middot; ' + esc(t('page.feed.notOnRoadmap')) + '</h2><ul>' + rows.join('') + '</ul></section>';
@@ -1005,15 +1529,21 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
     if (!state.data) {
       return out + renderHeader(state, opts) + renderFooter(state, opts);
     }
+    var v = resolveView(state.data, opts.view);
     out += renderHeader(state, opts);
     out += renderProgress(state, opts);
     out += renderFeed(state, opts);
-    out += renderWaiting(state, opts);
-    var now = renderNow(state, opts);
-    if (state.mode === 'live') out += '<section class="live">' + now + renderHistory(state, opts) + '</section>';
-    else if (now) out += '<section class="live single">' + now + '</section>';
-    out += renderView(state, opts);
-    out += renderUnplanned(state, opts);
+    // Conversations show the questions in their threads, focus is the now
+    // block at full size, signals list the unplanned work: no duplicates.
+    if (v !== 'conversations') out += renderWaiting(state, opts);
+    if (v !== 'focus') {
+      var now = renderNow(state, opts);
+      if (state.mode === 'live') out += '<section class="live">' + now + renderHistory(state, opts) + '</section>';
+      else if (now) out += '<section class="live single">' + now + '</section>';
+    }
+    out += renderViewsNav(state, opts, v);
+    out += renderView(state, opts, v);
+    if (v !== 'signals') out += renderUnplanned(state, opts);
     if (state.mode !== 'live') out += renderChangelog(state, opts);
     out += renderFooter(state, opts);
     return out;
@@ -1028,7 +1558,10 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
   return {
     renderApp: renderApp,
     VIEWS: VIEWS,
+    availableViews: availableViews,
+    resolveView: resolveView,
     computeFeed: computeFeed,
+    computeTimeline: computeTimeline,
     milestoneStats: milestoneStats,
     formatCount: formatCount,
     goalText: goalText,
@@ -1141,8 +1674,9 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
   var showAllDone = false;
   var showAllFeed = false;
   var VIEW_KEY = 'roadmap-live-view';
-  var VIEWS = V.VIEWS;
-  var expandedMilestones = {};
+  var open = {};         // details[data-key] that are open, kept across re-renders
+  var showAllTimeline = false;
+  var sort = null;       // list view: { key, dir }
   var view = pickView();
   var share = null;      // { note: 'copied' | 'off' | 'enabling' | 'enabled' | 'error', message }
   var shareTimer = null;
@@ -1153,23 +1687,29 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
 
   // ---- view: ?view, then the browser's memory, then roadmap.json, then the first
   function pickView() {
+    var avail = V.availableViews(state.data);
     var q = null;
     try { q = new URLSearchParams(location.search).get('view'); } catch (e) { q = null; }
-    if (q && VIEWS.indexOf(q) >= 0) return q;
+    if (q && avail.indexOf(q) >= 0) return q;
     var stored = null;
     try { stored = localStorage.getItem(VIEW_KEY); } catch (e) { stored = null; }
-    if (stored && VIEWS.indexOf(stored) >= 0) return stored;
-    if (state.data && VIEWS.indexOf(state.data.view) >= 0) return state.data.view;
-    return VIEWS[0];
+    if (stored && avail.indexOf(stored) >= 0) return stored;
+    if (state.data && avail.indexOf(state.data.view) >= 0) return state.data.view;
+    return avail[0];
   }
   function setView(v) {
     view = v;
     try { localStorage.setItem(VIEW_KEY, v); } catch (e) { /* ignore */ }
+    // An address that names a view keeps naming the current one.
+    try {
+      var p = new URLSearchParams(location.search);
+      if (p.has('view')) { p.set('view', v); history.replaceState(null, '', location.pathname + '?' + p.toString() + location.hash); }
+    } catch (e) { /* ignore */ }
     render();
   }
 
   function opts(changed) {
-    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, view: view, showAllFeed: showAllFeed, expandedMilestones: expandedMilestones, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending, share: share, canWrite: state.mode === 'live' && !!key };
+    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, view: view, showAllFeed: showAllFeed, showAllTimeline: showAllTimeline, sort: sort, open: open, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending, share: share, canWrite: state.mode === 'live' && !!key };
   }
 
   function render(changed) {
@@ -1315,8 +1855,10 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
   app.addEventListener('click', function (e) {
     var el = e.target.closest('[data-action]');
     if (!el) return;
-    if (e.target.closest('a')) return;
     var action = el.getAttribute('data-action');
+    // View names are links (they work without JavaScript); with it, switch in place.
+    if (action === 'view') { e.preventDefault(); setView(el.getAttribute('data-view')); return; }
+    if (e.target.closest('a')) return;
     if (action === 'theme') applyMode(MODES[(MODES.indexOf(colorMode) + 1) % MODES.length]), render();
     else if (action === 'share') shareLink();
     else if (action === 'enable-pages') enablePages();
@@ -1325,16 +1867,25 @@ h2.section { font-family: var(--font-mono); font-size: 12px; font-weight: 400; c
     else if (action === 'clear-filter') setFilter(null);
     else if (action === 'more-done') showAllDone = true, render();
     else if (action === 'more-feed') showAllFeed = true, render();
-    else if (action === 'view') setView(VIEWS[(VIEWS.indexOf(view) + 1) % VIEWS.length]);
+    else if (action === 'more-timeline') showAllTimeline = true, render();
+    else if (action === 'sort') {
+      var k = el.getAttribute('data-key');
+      // Same column again flips the direction; a new column starts with the
+      // direction the renderer marked on the header (newest, highest first).
+      if (sort && sort.key === k) sort = { key: k, dir: sort.dir === 'asc' ? 'desc' : 'asc' };
+      else sort = { key: k, dir: el.getAttribute('data-dir') === 'desc' ? 'desc' : 'asc' };
+      render();
+    }
     else if (action === 'expand') { var id = el.getAttribute('data-id'); if (expanded[id]) delete expanded[id]; else expanded[id] = true; render(); }
     else if (action === 'answer') sendComment(el.getAttribute('data-id'), el.getAttribute('data-text'));
   });
-  // Remember which milestones' done lists are open across re-renders.
+  // Remember which folded lists (done items, resolved points, ...) are open
+  // across re-renders.
   app.addEventListener('toggle', function (e) {
     var d = e.target;
-    if (!d.matches || !d.matches('details.ms-done')) return;
-    var id = d.getAttribute('data-milestone');
-    if (d.open) expandedMilestones[id] = true; else delete expandedMilestones[id];
+    if (!d.matches || !d.matches('details[data-key]')) return;
+    var k = d.getAttribute('data-key');
+    if (d.open) open[k] = true; else delete open[k];
   }, true);
   app.addEventListener('submit', function (e) {
     var form = e.target.closest('form.comment-form');
