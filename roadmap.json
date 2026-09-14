@@ -104,6 +104,15 @@
       "note": "fs.watch behaves differently per platform."
     },
     {
+      "id": "init-draft",
+      "title": "init drafts the first roadmap from the repository",
+      "milestone": "m2",
+      "status": "done",
+      "note": "Commit subjects, README headings and pull request titles go through the provider chain; the empty skeleton stays the fallback.",
+      "updated": "2026-09-14T11:59:53Z",
+      "branch": "feat/init-draft"
+    },
+    {
       "id": "npm-publish",
       "title": "Publish to npm for npx roadmap-live",
       "milestone": "m2",

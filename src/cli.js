@@ -28,6 +28,7 @@ function parseArgs(argv) {
     theme: null,
     mode: null,
     key: null,
+    noBootstrap: false,
   };
   const takeValue = (i, name) => {
     if (argv[i + 1] === undefined) throw new Error(`${name} needs a value`);
@@ -52,6 +53,7 @@ function parseArgs(argv) {
     else if (name === '--theme') opts.theme = value();
     else if (name === '--mode') opts.mode = value();
     else if (name === '--key') opts.key = value();
+    else if (name === '--no-bootstrap') opts.noBootstrap = true;
     else if (name.startsWith('-')) throw Object.assign(new Error(`unknown option: ${name}`), { key: 'cli.unknownOption', params: { option: name } });
     else if (opts.command === null && COMMANDS.includes(a) && opts.file === DEFAULT_FILE) opts.command = a;
     else opts.file = a;
@@ -119,7 +121,7 @@ async function main(argv = process.argv.slice(2), env = process.env) {
       code = require('./render').runRender(opts, env);
       break;
     case 'init':
-      code = require('./init').runInit(opts, env);
+      code = await require('./init').runInit(opts, env);
       break;
     case 'auth':
       code = await require('./auth').runAuth(opts, env);
