@@ -94,14 +94,15 @@
   var filter = null;
   var showAllDone = false;
   var showAllFeed = false;
-  var VIEW_KEY = 'roadmap-live-view';
+  // The remembered view is per page, like the write key: a host serving many
+  // roadmaps must not carry one roadmap's choice into another.
+  var VIEW_KEY = 'roadmap-live-view:' + base;
   var open = {};         // details[data-key] that are open, kept across re-renders
-  var showAllTimeline = false;
   var sort = null;       // list view: { key, dir }
   var view = pickView();
   var share = null;      // { note: 'copied' | 'off' | 'enabling' | 'enabled' | 'error', message }
   var shareTimer = null;
-  var expanded = {};     // item id -> true
+  var expanded = Object.create(null);     // item id -> true (no prototype: ids are user text)
   var pending = [];      // comments sent but not yet in a snapshot
   var prevStatus = null;
   var unseen = false;
@@ -130,10 +131,17 @@
   }
 
   function opts(changed) {
-    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, view: view, showAllFeed: showAllFeed, showAllTimeline: showAllTimeline, sort: sort, open: open, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending, share: share, canWrite: state.mode === 'live' && !!key };
+    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, view: view, showAllFeed: showAllFeed, sort: sort, open: open, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending, share: share, canWrite: state.mode === 'live' && !!key };
   }
 
   function render(changed) {
+    // Folded lists: read their state from the DOM right before it is rebuilt,
+    // so a click that has not fired its toggle event yet is not lost.
+    var folds = app.querySelectorAll('details[data-key]');
+    for (var f = 0; f < folds.length; f++) {
+      var fk = folds[f].getAttribute('data-key');
+      if (folds[f].open) open[fk] = true; else delete open[fk];
+    }
     // FLIP: remember where every item is, rebuild, then animate from old to new.
     var before = {};
     var old = app.querySelectorAll('.item[data-id]');
@@ -220,8 +228,12 @@
   });
 
   // ---- per-second updates ----------------------------------------------------
+  var lastDay = new Date().toDateString();
   function tick() {
     var now = Date.now();
+    // "today" and "yesterday" in the timeline change at midnight.
+    var day = new Date(now).toDateString();
+    if (day !== lastDay) { lastDay = day; render(); return; }
     var i, nodes;
     nodes = app.querySelectorAll('[data-rel]');
     for (i = 0; i < nodes.length; i++) nodes[i].textContent = V.relativeTime(nodes[i].getAttribute('data-rel'), now, lang);
@@ -277,8 +289,15 @@
     var el = e.target.closest('[data-action]');
     if (!el) return;
     var action = el.getAttribute('data-action');
-    // View names are links (they work without JavaScript); with it, switch in place.
-    if (action === 'view') { e.preventDefault(); setView(el.getAttribute('data-view')); return; }
+    // View names are links (the live server renders the named view); with
+    // JavaScript a plain click switches in place. A modifier click or a middle
+    // click stays a navigation, so "open in a new tab" keeps working.
+    if (action === 'view') {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      setView(el.getAttribute('data-view'));
+      return;
+    }
     if (e.target.closest('a')) return;
     if (action === 'theme') applyMode(MODES[(MODES.indexOf(colorMode) + 1) % MODES.length]), render();
     else if (action === 'share') shareLink();
@@ -288,7 +307,6 @@
     else if (action === 'clear-filter') setFilter(null);
     else if (action === 'more-done') showAllDone = true, render();
     else if (action === 'more-feed') showAllFeed = true, render();
-    else if (action === 'more-timeline') showAllTimeline = true, render();
     else if (action === 'sort') {
       var k = el.getAttribute('data-key');
       // Same column again flips the direction; a new column starts with the
@@ -376,10 +394,10 @@
       settlePending();
       var changed = null;
       if (state.data) {
-        var status = {};
+        var status = Object.create(null);
         state.data.items.forEach(function (it) { status[it.id] = it.status; });
         if (prevStatus) {
-          changed = {};
+          changed = Object.create(null);
           var any = false;
           state.data.items.forEach(function (it) { if (prevStatus[it.id] !== undefined && prevStatus[it.id] !== it.status) { changed[it.id] = true; any = true; } });
           if (any && document.visibilityState === 'hidden') unseen = true;

@@ -169,7 +169,7 @@ rl.addComment(data, 'listing-editor', 'Finish the cart first');
 
 ## Views
 
-A row of names above the content switches between the views. The browser remembers your choice, `?view=board` in the address forces one, and `"view": "board"` in `roadmap.json` sets the default for everyone. Clicking a milestone in the progress bar narrows every view to it.
+A row of names above the content switches between the views. The browser remembers your choice, `?view=board` in the address opens that view (the live server renders it directly, the shared page switches once its script has run), and `"view": "board"` in `roadmap.json` sets the default for everyone. Clicking a milestone in the progress bar narrows every view to it.
 
 - **Milestones** (the default): one list per milestone, open items first with their status, done items folded away. "What is left until Release" needs no clicking.
 - **Board**: the classic three columns Open, In progress and Done across all milestones.
