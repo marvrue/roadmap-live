@@ -8,6 +8,20 @@
 2. When the item is finished: set `status` to `done` and update `updated`.
 3. Normally only one item is `active` at a time. Finish or hand back the current item before starting the next one.
 
+## Checkpoints when `focus` is present
+
+The human selects the current milestone and agrees its scope with `node roadmap-live.js focus --milestone <id> --reason "..."`; the order of milestones stays unchanged. Never reset the baseline just to silence a finding. Agree an outcome, acceptance criteria and numerical goal targets before starting; record material changes and their reason in `DECISIONS.md`.
+
+- Before setting an item to `active`, run `node roadmap-live.js checkpoint --event start --item <id>`.
+- Before setting an item to `done`, inspect the actual changes against its criteria, run the relevant tests and write concrete `evidence` on every acceptance criterion, then run `node roadmap-live.js checkpoint --event complete --item <id>`.
+- After changing tasks, their titles, criteria, numerical goal targets or the milestone outcome/limit, run `node roadmap-live.js checkpoint --event scope`; ask the human before agreeing an expanded or weakened scope.
+- Before declaring a milestone complete, run `node roadmap-live.js checkpoint --event milestone`.
+- After a status change and before handing work back, run `node roadmap-live.js checkpoint`; after every change keep running `--check` as below.
+- Exit 2 means findings need review: finish the current task, fix the missing information, or put the decision in an item's `question`; do not move to another task merely to get a passing check. Exit 1 means invalid input or a file problem. Exit 0 means the rules passed, not that evidence was independently verified.
+- Each acceptance criterion has a stable kebab-case `id`, a `text`, and optional `evidence`. Evidence names the test and result or the actual observation; never fabricate it or weaken a criterion to finish. Unknown usage numbers remain unset.
+- The CLI writes `focus` and the latest `checkpoint`; preserve their contents when editing the file. Recorded results refer to the roadmap inputs, not to an independently verified source-code revision. A changed roadmap needs another check.
+- These commands guide this session; they do not start or stop agents. Human comments remain the decision channel described below.
+
 ## When you plan
 
 - Add new items with a stable kebab-case `id` (for example `auth-magic-link`) and assign each one to exactly one milestone.

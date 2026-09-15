@@ -324,3 +324,15 @@ h2.section.attention { color: var(--attention); }
   .list th, .list td { padding-right: 12px; }
   .list .c-updated { padding-right: 0; text-align: right; }
 }
+/* The checkpoint is the current agreement, shared by every view. */
+.checkpoint { border-bottom: 1px solid var(--line); padding: 0 0 24px; margin-bottom: 24px; overflow-wrap: anywhere; }
+.checkpoint h3 { font: 500 20px/1.35 var(--font-heading); margin: 0 0 8px; }
+.checkpoint p { margin: 8px 0; max-width: var(--measure); }
+.checkpoint-reason, .checkpoint-record, .checkpoint-proof { color: var(--text-2); font-size: 13px; }
+.checkpoint-result { font-weight: 500; }
+.checkpoint-result.attention { color: var(--attention); }
+.checkpoint-findings, .checkpoint-criteria { padding-left: 20px; margin: 12px 0; }
+.checkpoint-findings li, .checkpoint-criteria li { margin: 8px 0; }
+.checkpoint summary { cursor: pointer; font-size: 13px; color: var(--text-2); padding: 8px 0; }
+.checkpoint h4 { font-weight: 500; font-size: 14px; margin: 16px 0 8px; }
+.checkpoint strong { font-weight: 500; }

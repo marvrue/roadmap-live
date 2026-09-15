@@ -14,9 +14,9 @@
  *          sort, open, expanded, pending, share, canWrite, changed }
  */
 (function (root, factory) {
-  if (typeof module === 'object' && module.exports) module.exports = factory();
-  else root.RoadmapView = factory();
-})(typeof self !== 'undefined' ? self : this, function () {
+  if (typeof module === 'object' && module.exports) module.exports = factory(require('../checkpoint'));
+  else root.RoadmapView = factory(root.RoadmapCheckpoint);
+})(typeof self !== 'undefined' ? self : this, function (checkpoints) {
   'use strict';
 
   var DEFAULT_STALE_DAYS = 7;
@@ -254,6 +254,7 @@
     for (var i = 0; i < stats.length; i++) {
       if (!stats[i].complete) { current = stats[i]; break; }
     }
+    if (data.focus) current = stats.find(function (s) { return s.m.id === data.focus.milestone; }) || current;
     return { stats: stats, current: current };
   }
 
@@ -1027,6 +1028,45 @@
 
   // ---- page ----------------------------------------------------------------
 
+  function renderCheckpoint(state, opts) {
+    var data = state.data;
+    if (!data || !data.focus) return '';
+    var t = opts.t;
+    var report = checkpoints.inspectCheckpoint(data);
+    var milestone = data.milestones.find(function (m) { return m.id === data.focus.milestone; });
+    if (!milestone) return '';
+    var h = '<section class="checkpoint" aria-labelledby="checkpoint-title"><h2 class="section" id="checkpoint-title">' + esc(t('checkpoint.title')) + '</h2>';
+    h += '<h3>' + esc(milestone.title) + '</h3><p>' + esc(milestone.outcome || '') + '</p>';
+    h += '<p class="checkpoint-reason"><span>' + esc(t('checkpoint.reason')) + ': </span>' + esc(data.focus.reason) + '</p>';
+    h += '<p class="checkpoint-result' + (report.result === 'review' ? ' attention' : '') + '">' + esc(t('checkpoint.results.' + report.result)) + '</p>';
+    h += '<p>' + esc(t('checkpoint.evidenceCount', report.criteria)) + '</p>';
+    var focusedItems = data.items.filter(function (i) { return i.milestone === milestone.id; });
+    var activeItems = focusedItems.filter(function (i) { return i.status === 'active' || i.status === 'blocked'; });
+    var nextItem = activeItems[0] || focusedItems.find(function (i) { return i.status === 'todo'; });
+    if (nextItem) h += '<p><strong>' + esc(t(activeItems.length ? 'checkpoint.workingOn' : 'checkpoint.nextTask')) + ': </strong>' + esc(activeItems.length ? activeItems.map(function (i) { return i.title; }).join(' · ') : nextItem.title) + '</p>';
+    if (report.findings.length) h += '<ul class="checkpoint-findings">' + report.findings.map(function (f) {
+      return '<li>' + esc(t('checkpoint.findings.' + f.code, f.params)) + '</li>';
+    }).join('') + '</ul>';
+    h += '<p class="checkpoint-next"><strong>' + esc(t('checkpoint.next')) + ': </strong>' + esc(t(report.result === 'review' ? 'checkpoint.reviewHint' : 'checkpoint.continueHint')) + '</p>';
+    var saved = data.checkpoint;
+    h += '<p class="checkpoint-record">';
+    if (saved) {
+      h += esc(t('checkpoint.recorded')) + ': ' + esc(t('checkpoint.events.' + saved.event)) + ' · ' + time(saved.at, opts.now, opts.lang);
+      if (!checkpoints.checkpointCurrent(data)) h += '<br>' + esc(t('checkpoint.stale'));
+      else h += ' · ' + esc(t('checkpoint.results.' + saved.result));
+    } else h += esc(t('checkpoint.none'));
+    h += '</p><details data-key="checkpoint-criteria"' + (isOpen(opts, 'checkpoint-criteria') ? ' open' : '') + '><summary>' + esc(t('checkpoint.criteriaTitle')) + '</summary><p class="checkpoint-reason">' + esc(t('checkpoint.evidenceHint')) + '</p>';
+    data.items.filter(function (i) { return i.milestone === milestone.id; }).forEach(function (i) {
+      h += '<h4>' + esc(i.title) + '</h4><ul class="checkpoint-criteria">';
+      if (!(i.acceptance || []).length) h += '<li>' + esc(t('checkpoint.findings.missingCriteria', { item: i.title })) + '</li>';
+      (i.acceptance || []).forEach(function (c) {
+        h += '<li>' + esc(c.text) + '<p class="checkpoint-proof">' + esc(c.evidence || t('checkpoint.pending')) + '</p></li>';
+      });
+      h += '</ul>';
+    });
+    return h + '</details></section>';
+  }
+
   function renderApp(state, opts) {
     var out = renderBanner(state, opts.t);
     if (!state.data) {
@@ -1035,6 +1075,7 @@
     var v = resolveView(state.data, opts.view);
     out += renderHeader(state, opts);
     out += renderProgress(state, opts);
+    out += renderCheckpoint(state, opts);
     out += renderFeed(state, opts);
     // Conversations show the questions in their threads, focus is the now
     // block at full size (the live history steps aside with it; the timeline

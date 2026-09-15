@@ -9,7 +9,7 @@ const { loadRoadmap, displayName, warnings, stripControls, LARGE_FILE_BYTES, TAG
 
 const DEFAULT_FILE = 'roadmap.json';
 const DEFAULT_PORT = 4242;
-const COMMANDS = ['sync', 'render', 'init', 'auth', 'doctor'];
+const COMMANDS = ['sync', 'render', 'init', 'auth', 'doctor', 'focus', 'checkpoint'];
 
 function parseArgs(argv) {
   const opts = {
@@ -54,6 +54,10 @@ function parseArgs(argv) {
     else if (name === '--mode') opts.mode = value();
     else if (name === '--key') opts.key = value();
     else if (name === '--no-bootstrap') opts.noBootstrap = true;
+    else if (name === '--milestone') opts.milestone = value();
+    else if (name === '--reason') opts.reason = value();
+    else if (name === '--event') opts.event = value();
+    else if (name === '--item') opts.item = value();
     else if (name.startsWith('-')) throw Object.assign(new Error(`unknown option: ${name}`), { key: 'cli.unknownOption', params: { option: name } });
     else if (opts.command === null && COMMANDS.includes(a) && opts.file === DEFAULT_FILE) opts.command = a;
     else opts.file = a;
@@ -115,6 +119,10 @@ async function main(argv = process.argv.slice(2), env = process.env) {
 
   let code = 0;
   switch (opts.command) {
+    case 'focus':
+    case 'checkpoint':
+      code = require('./checkpoint-cli').runCheckpoint(opts, env);
+      break;
     case 'sync':
       code = await require('./sync').runSync(opts, env);
       break;

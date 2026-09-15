@@ -1,5 +1,15 @@
 # Decisions
 
+## Checkpoints (2026-09-15)
+
+- **The human can choose `focus.milestone` with a reason while milestone order stays unchanged.** This allows a deliberate delivery to take priority without silently reordering the plan.
+- **The focus baseline includes the outcome, open-task limit, task titles, criteria and numerical goal targets.** Shrinking a target or weakening a criterion must be as visible as adding a task.
+- **A criterion's `evidence` is recorded text, never a claim that the tool ran that test.** Rule checks cannot substitute for inspecting the implementation and evidence.
+- **The browser and CLI use the same pure checkpoint module.** Live updates detect direct status edits without a second rule engine or automatic file writes.
+- **Only the latest explicit checkpoint is stored, with the exact relevant roadmap inputs.** It is invalidated by relevant edits and does not touch item activity timestamps; code-only edits remain a limit of this first version.
+- **Existing roadmaps opt in through `focus`; `--check` retains its schema-validation meaning.** A separate checkpoint command returns exit 2 for findings and offers a read-only CI mode.
+- **Time/token accounting, execution hooks and multi-worktree aggregation remain separate work.** The current delivery proves the transition checks on roadmap-live's own roadmap first.
+
 Judgment calls made while adding pull request sync, render, themes and languages. One sentence of reasoning each.
 
 ## Structure

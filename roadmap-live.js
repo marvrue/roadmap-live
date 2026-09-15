@@ -72,4 +72,5 @@ module.exports = {
   github,
   providers,
   i18n,
+  ...require('./src/checkpoint'),
 };

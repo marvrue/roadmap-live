@@ -70,6 +70,16 @@ Three properties together; none carries alone. A kanban tool or a GitHub Project
 
 ## Product Principles
 
+### First use: keep the owner on course
+
+As of 2026-09-15, the owner is building roadmap-live for his own work with agents; there are no external users or paying customers yet. The immediate success criterion is whether he can identify the current delivery, missing evidence and next useful action without searching terminals.
+
+Optional checkpoints add an agreed `focus` without reordering milestones, a usable `outcome` per milestone, and `acceptance` criteria with recorded `evidence` per item. The page evaluates scope and completion rules on each render and shows when a stored check no longer matches the roadmap. The selected focus is the current milestone everywhere on the page. The CLI runs the same rules before task start, completion, scope changes and milestone closure; CI can run it read-only. Evidence is a statement to review, not automatic proof of working software. Source-code changes without roadmap edits are not detected by these checks.
+
+The first delivery is tracked in the project's own roadmap; its five-workday usage trial remains open until the owner reports real use. There is no token budget, timer-triggered review, autonomous agent control or multi-worktree aggregation in this delivery.
+
+### Principles
+
 1. **Answer "where are we" before anything else.** Progress per milestone and the item in progress are the first things on the page in every situation.
 2. **Only what needs a human stands out.** Blocked, unplanned, quiet and open questions share the one attention color; the rest recedes. Adding a second highlight dilutes all of them.
 3. **One page, three situations.** Live beside the session, later from a phone, shared without context. Nothing may depend on which one the reader is in; live-only parts disappear cleanly.

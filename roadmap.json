@@ -20,6 +20,12 @@
     {
       "id": "m5",
       "title": "Goals and pulse"
+    },
+    {
+      "id": "m6",
+      "title": "Auf Kurs bleiben",
+      "outcome": "Vor dem nächsten Arbeitsschritt sehe ich, ob die Arbeit zum vereinbarten Meilenstein gehört und welche Nachweise fehlen.",
+      "limit": 7
     }
   ],
   "items": [
@@ -476,12 +482,117 @@
       "id": "drift-unplanned-ratio",
       "title": "Planned vs unplanned pull requests in 30 days",
       "milestone": "m5",
-      "status": "active",
+      "status": "todo",
       "prs": [
         18
       ],
-      "updated": "2026-09-14T16:52:02Z",
-      "branch": "feat/views-followup"
+      "updated": "2026-09-15T11:30:58.859567Z",
+      "branch": "feat/views-followup",
+      "note": "Zurückgestellt, während wir die vereinbarte erste Lieferung der Zielprüfungen umsetzen."
+    },
+    {
+      "id": "checkpoint-core",
+      "title": "Ziel und Abnahme an festen Prüfpunkten kontrollieren",
+      "milestone": "m6",
+      "status": "done",
+      "updated": "2026-09-15T11:37:09.813Z",
+      "acceptance": [
+        {
+          "id": "rules",
+          "text": "Start, Abschluss, Umfangsänderung und Meilensteinabschluss werden mit eindeutigen Befunden geprüft.",
+          "evidence": "node --test test/checkpoint.test.js test/checkpoint-cli.test.js test/validate.test.js test/i18n.test.js: 51 Tests bestanden am 2026-09-15."
+        },
+        {
+          "id": "compatibility",
+          "text": "Alte Roadmaps bleiben gültig und werden ohne Aktivierung nicht gesperrt.",
+          "evidence": "node --test test/checkpoint.test.js test/checkpoint-cli.test.js test/validate.test.js test/i18n.test.js: 51 Tests bestanden am 2026-09-15."
+        },
+        {
+          "id": "record",
+          "text": "Wiederholte Prüfungen schreiben nichts und verändern weder Aufgabenstatus noch Aktivitätszeit.",
+          "evidence": "node --test test/checkpoint.test.js test/checkpoint-cli.test.js test/validate.test.js test/i18n.test.js: 51 Tests bestanden am 2026-09-15."
+        }
+      ],
+      "branch": "feat/roadmap-checkpoints",
+      "note": "Die Regeln und CLI sind geprüft; der Übergang zur Seitenanzeige ist freigegeben."
+    },
+    {
+      "id": "checkpoint-page",
+      "title": "Ziel, Nachweise und Abweichungen auf der Seite zeigen",
+      "milestone": "m6",
+      "status": "done",
+      "updated": "2026-09-15T11:45:31.314Z",
+      "acceptance": [
+        {
+          "id": "shared",
+          "text": "Live-Seite, statische Seite und CLI verwenden dieselben Regeln.",
+          "evidence": "test/checkpoint-page.test.js: statische Ausgabe, Browser/Node-Gleichheit, Escaping, veraltete Prüfungen und Live-Dateiänderungen bestanden; gstack: 1280x900 und 380x820, kein Überlauf, keine Konsolenfehler."
+        },
+        {
+          "id": "evidence",
+          "text": "Offene Kriterien und eingetragene Nachweise sind auf Deutsch und Englisch lesbar.",
+          "evidence": "test/checkpoint-page.test.js: statische Ausgabe, Browser/Node-Gleichheit, Escaping, veraltete Prüfungen und Live-Dateiänderungen bestanden; gstack: 1280x900 und 380x820, kein Überlauf, keine Konsolenfehler."
+        },
+        {
+          "id": "freshness",
+          "text": "Eine veraltete gespeicherte Prüfung wird nach Änderungen nicht als aktuell angezeigt.",
+          "evidence": "test/checkpoint-page.test.js: statische Ausgabe, Browser/Node-Gleichheit, Escaping, veraltete Prüfungen und Live-Dateiänderungen bestanden; gstack: 1280x900 und 380x820, kein Überlauf, keine Konsolenfehler."
+        }
+      ],
+      "branch": "feat/roadmap-checkpoints",
+      "note": "Die Anzeige besteht die automatisierten Prüfungen und den Browser-Test auf Desktop und Mobil."
+    },
+    {
+      "id": "checkpoint-workflow",
+      "title": "Den Prüfablauf am eigenen Projekt durchlaufen",
+      "milestone": "m6",
+      "status": "done",
+      "updated": "2026-09-15T11:58:23.861Z",
+      "acceptance": [
+        {
+          "id": "workflow",
+          "text": "Agent-Anleitung und CI rufen die Prüfung an den dokumentierten Übergängen auf.",
+          "evidence": "docs/checkpoint-validation.md: vollständiger CLI-Ablauf bestanden; npm test: 211 bestanden, 1 übersprungen; --check, checkpoint --dry-run und git diff --check erfolgreich."
+        },
+        {
+          "id": "exercise",
+          "text": "Ein echter Durchlauf zeigt erst einen fehlenden Nachweis und danach einen erfolgreichen Abschluss.",
+          "evidence": "docs/checkpoint-validation.md: vollständiger CLI-Ablauf bestanden; npm test: 211 bestanden, 1 übersprungen; --check, checkpoint --dry-run und git diff --check erfolgreich."
+        },
+        {
+          "id": "checks",
+          "text": "Tests, Dateiprüfung und statische Darstellung bestehen.",
+          "evidence": "docs/checkpoint-validation.md: vollständiger CLI-Ablauf bestanden; npm test: 211 bestanden, 1 übersprungen; --check, checkpoint --dry-run und git diff --check erfolgreich."
+        }
+      ],
+      "branch": "feat/roadmap-checkpoints",
+      "note": "Der vollständige Ablauf und 211 Tests bestehen; offen bleibt die Rückmeldung aus fünf echten Arbeitstagen."
+    },
+    {
+      "id": "checkpoint-week-trial",
+      "title": "Prüfpunkte fünf Arbeitstage selbst nutzen",
+      "milestone": "m6",
+      "status": "todo",
+      "updated": "2026-09-15T11:30:58.859567Z",
+      "acceptance": [
+        {
+          "id": "experience",
+          "text": "Marvin berichtet nach fünf Arbeitstagen, ob der aktuelle Stand und nächste Schritt ohne Terminalsuche klar waren."
+        }
+      ],
+      "goal": {
+        "label": "Arbeitstage selbst genutzt",
+        "target": 5
+      },
+      "question": {
+        "text": "Wie viele Arbeitstage hast du die Prüfpunkte tatsächlich genutzt, und helfen sie dir, den nächsten Schritt klarer zu sehen?",
+        "options": [
+          "Noch nicht ausprobiert",
+          "Hilft mir beim Fokus",
+          "Zu viele Unterbrechungen"
+        ],
+        "asked": "2026-09-15T11:56:03.155Z"
+      }
     }
   ],
   "unplanned": [
@@ -510,5 +621,369 @@
   "sync": {
     "last_run": "2026-09-14T16:53:06.000Z",
     "repo": "marvrue/roadmap-live"
+  },
+  "focus": {
+    "milestone": "m6",
+    "reason": "Marvin möchte roadmap-live an der eigenen Roadmap entwickeln und vor weiteren Arbeiten feste Zielprüfungen nutzen.",
+    "baseline": {
+      "outcome": "Vor dem nächsten Arbeitsschritt sehe ich, ob die Arbeit zum vereinbarten Meilenstein gehört und welche Nachweise fehlen.",
+      "limit": 7,
+      "items": [
+        {
+          "id": "checkpoint-core",
+          "title": "Ziel und Abnahme an festen Prüfpunkten kontrollieren",
+          "acceptance": [
+            {
+              "id": "compatibility",
+              "text": "Alte Roadmaps bleiben gültig und werden ohne Aktivierung nicht gesperrt."
+            },
+            {
+              "id": "record",
+              "text": "Wiederholte Prüfungen schreiben nichts und verändern weder Aufgabenstatus noch Aktivitätszeit."
+            },
+            {
+              "id": "rules",
+              "text": "Start, Abschluss, Umfangsänderung und Meilensteinabschluss werden mit eindeutigen Befunden geprüft."
+            }
+          ],
+          "goal": null
+        },
+        {
+          "id": "checkpoint-page",
+          "title": "Ziel, Nachweise und Abweichungen auf der Seite zeigen",
+          "acceptance": [
+            {
+              "id": "evidence",
+              "text": "Offene Kriterien und eingetragene Nachweise sind auf Deutsch und Englisch lesbar."
+            },
+            {
+              "id": "freshness",
+              "text": "Eine veraltete gespeicherte Prüfung wird nach Änderungen nicht als aktuell angezeigt."
+            },
+            {
+              "id": "shared",
+              "text": "Live-Seite, statische Seite und CLI verwenden dieselben Regeln."
+            }
+          ],
+          "goal": null
+        },
+        {
+          "id": "checkpoint-week-trial",
+          "title": "Prüfpunkte fünf Arbeitstage selbst nutzen",
+          "acceptance": [
+            {
+              "id": "experience",
+              "text": "Marvin berichtet nach fünf Arbeitstagen, ob der aktuelle Stand und nächste Schritt ohne Terminalsuche klar waren."
+            }
+          ],
+          "goal": {
+            "label": "Arbeitstage selbst genutzt",
+            "target": 5,
+            "source": null
+          }
+        },
+        {
+          "id": "checkpoint-workflow",
+          "title": "Den Prüfablauf am eigenen Projekt durchlaufen",
+          "acceptance": [
+            {
+              "id": "checks",
+              "text": "Tests, Dateiprüfung und statische Darstellung bestehen."
+            },
+            {
+              "id": "exercise",
+              "text": "Ein echter Durchlauf zeigt erst einen fehlenden Nachweis und danach einen erfolgreichen Abschluss."
+            },
+            {
+              "id": "workflow",
+              "text": "Agent-Anleitung und CI rufen die Prüfung an den dokumentierten Übergängen auf."
+            }
+          ],
+          "goal": null
+        }
+      ]
+    }
+  },
+  "checkpoint": {
+    "event": "check",
+    "item": null,
+    "result": "continue",
+    "findings": [],
+    "input": {
+      "focus": {
+        "milestone": "m6",
+        "reason": "Marvin möchte roadmap-live an der eigenen Roadmap entwickeln und vor weiteren Arbeiten feste Zielprüfungen nutzen.",
+        "baseline": {
+          "outcome": "Vor dem nächsten Arbeitsschritt sehe ich, ob die Arbeit zum vereinbarten Meilenstein gehört und welche Nachweise fehlen.",
+          "limit": 7,
+          "items": [
+            {
+              "id": "checkpoint-core",
+              "title": "Ziel und Abnahme an festen Prüfpunkten kontrollieren",
+              "acceptance": [
+                {
+                  "id": "compatibility",
+                  "text": "Alte Roadmaps bleiben gültig und werden ohne Aktivierung nicht gesperrt."
+                },
+                {
+                  "id": "record",
+                  "text": "Wiederholte Prüfungen schreiben nichts und verändern weder Aufgabenstatus noch Aktivitätszeit."
+                },
+                {
+                  "id": "rules",
+                  "text": "Start, Abschluss, Umfangsänderung und Meilensteinabschluss werden mit eindeutigen Befunden geprüft."
+                }
+              ],
+              "goal": null
+            },
+            {
+              "id": "checkpoint-page",
+              "title": "Ziel, Nachweise und Abweichungen auf der Seite zeigen",
+              "acceptance": [
+                {
+                  "id": "evidence",
+                  "text": "Offene Kriterien und eingetragene Nachweise sind auf Deutsch und Englisch lesbar."
+                },
+                {
+                  "id": "freshness",
+                  "text": "Eine veraltete gespeicherte Prüfung wird nach Änderungen nicht als aktuell angezeigt."
+                },
+                {
+                  "id": "shared",
+                  "text": "Live-Seite, statische Seite und CLI verwenden dieselben Regeln."
+                }
+              ],
+              "goal": null
+            },
+            {
+              "id": "checkpoint-week-trial",
+              "title": "Prüfpunkte fünf Arbeitstage selbst nutzen",
+              "acceptance": [
+                {
+                  "id": "experience",
+                  "text": "Marvin berichtet nach fünf Arbeitstagen, ob der aktuelle Stand und nächste Schritt ohne Terminalsuche klar waren."
+                }
+              ],
+              "goal": {
+                "label": "Arbeitstage selbst genutzt",
+                "target": 5,
+                "source": null
+              }
+            },
+            {
+              "id": "checkpoint-workflow",
+              "title": "Den Prüfablauf am eigenen Projekt durchlaufen",
+              "acceptance": [
+                {
+                  "id": "checks",
+                  "text": "Tests, Dateiprüfung und statische Darstellung bestehen."
+                },
+                {
+                  "id": "exercise",
+                  "text": "Ein echter Durchlauf zeigt erst einen fehlenden Nachweis und danach einen erfolgreichen Abschluss."
+                },
+                {
+                  "id": "workflow",
+                  "text": "Agent-Anleitung und CI rufen die Prüfung an den dokumentierten Übergängen auf."
+                }
+              ],
+              "goal": null
+            }
+          ]
+        }
+      },
+      "scope": {
+        "outcome": "Vor dem nächsten Arbeitsschritt sehe ich, ob die Arbeit zum vereinbarten Meilenstein gehört und welche Nachweise fehlen.",
+        "limit": 7,
+        "items": [
+          {
+            "id": "checkpoint-core",
+            "title": "Ziel und Abnahme an festen Prüfpunkten kontrollieren",
+            "acceptance": [
+              {
+                "id": "compatibility",
+                "text": "Alte Roadmaps bleiben gültig und werden ohne Aktivierung nicht gesperrt."
+              },
+              {
+                "id": "record",
+                "text": "Wiederholte Prüfungen schreiben nichts und verändern weder Aufgabenstatus noch Aktivitätszeit."
+              },
+              {
+                "id": "rules",
+                "text": "Start, Abschluss, Umfangsänderung und Meilensteinabschluss werden mit eindeutigen Befunden geprüft."
+              }
+            ],
+            "goal": null
+          },
+          {
+            "id": "checkpoint-page",
+            "title": "Ziel, Nachweise und Abweichungen auf der Seite zeigen",
+            "acceptance": [
+              {
+                "id": "evidence",
+                "text": "Offene Kriterien und eingetragene Nachweise sind auf Deutsch und Englisch lesbar."
+              },
+              {
+                "id": "freshness",
+                "text": "Eine veraltete gespeicherte Prüfung wird nach Änderungen nicht als aktuell angezeigt."
+              },
+              {
+                "id": "shared",
+                "text": "Live-Seite, statische Seite und CLI verwenden dieselben Regeln."
+              }
+            ],
+            "goal": null
+          },
+          {
+            "id": "checkpoint-week-trial",
+            "title": "Prüfpunkte fünf Arbeitstage selbst nutzen",
+            "acceptance": [
+              {
+                "id": "experience",
+                "text": "Marvin berichtet nach fünf Arbeitstagen, ob der aktuelle Stand und nächste Schritt ohne Terminalsuche klar waren."
+              }
+            ],
+            "goal": {
+              "label": "Arbeitstage selbst genutzt",
+              "target": 5,
+              "source": null
+            }
+          },
+          {
+            "id": "checkpoint-workflow",
+            "title": "Den Prüfablauf am eigenen Projekt durchlaufen",
+            "acceptance": [
+              {
+                "id": "checks",
+                "text": "Tests, Dateiprüfung und statische Darstellung bestehen."
+              },
+              {
+                "id": "exercise",
+                "text": "Ein echter Durchlauf zeigt erst einen fehlenden Nachweis und danach einen erfolgreichen Abschluss."
+              },
+              {
+                "id": "workflow",
+                "text": "Agent-Anleitung und CI rufen die Prüfung an den dokumentierten Übergängen auf."
+              }
+            ],
+            "goal": null
+          }
+        ]
+      },
+      "items": [
+        {
+          "id": "checkpoint-core",
+          "title": "Ziel und Abnahme an festen Prüfpunkten kontrollieren",
+          "milestone": "m6",
+          "status": "done",
+          "branch": "feat/roadmap-checkpoints",
+          "acceptance": [
+            {
+              "id": "compatibility",
+              "text": "Alte Roadmaps bleiben gültig und werden ohne Aktivierung nicht gesperrt.",
+              "evidence": "node --test test/checkpoint.test.js test/checkpoint-cli.test.js test/validate.test.js test/i18n.test.js: 51 Tests bestanden am 2026-09-15."
+            },
+            {
+              "id": "record",
+              "text": "Wiederholte Prüfungen schreiben nichts und verändern weder Aufgabenstatus noch Aktivitätszeit.",
+              "evidence": "node --test test/checkpoint.test.js test/checkpoint-cli.test.js test/validate.test.js test/i18n.test.js: 51 Tests bestanden am 2026-09-15."
+            },
+            {
+              "id": "rules",
+              "text": "Start, Abschluss, Umfangsänderung und Meilensteinabschluss werden mit eindeutigen Befunden geprüft.",
+              "evidence": "node --test test/checkpoint.test.js test/checkpoint-cli.test.js test/validate.test.js test/i18n.test.js: 51 Tests bestanden am 2026-09-15."
+            }
+          ],
+          "question": null,
+          "points": [],
+          "goal": null
+        },
+        {
+          "id": "checkpoint-page",
+          "title": "Ziel, Nachweise und Abweichungen auf der Seite zeigen",
+          "milestone": "m6",
+          "status": "done",
+          "branch": "feat/roadmap-checkpoints",
+          "acceptance": [
+            {
+              "id": "evidence",
+              "text": "Offene Kriterien und eingetragene Nachweise sind auf Deutsch und Englisch lesbar.",
+              "evidence": "test/checkpoint-page.test.js: statische Ausgabe, Browser/Node-Gleichheit, Escaping, veraltete Prüfungen und Live-Dateiänderungen bestanden; gstack: 1280x900 und 380x820, kein Überlauf, keine Konsolenfehler."
+            },
+            {
+              "id": "freshness",
+              "text": "Eine veraltete gespeicherte Prüfung wird nach Änderungen nicht als aktuell angezeigt.",
+              "evidence": "test/checkpoint-page.test.js: statische Ausgabe, Browser/Node-Gleichheit, Escaping, veraltete Prüfungen und Live-Dateiänderungen bestanden; gstack: 1280x900 und 380x820, kein Überlauf, keine Konsolenfehler."
+            },
+            {
+              "id": "shared",
+              "text": "Live-Seite, statische Seite und CLI verwenden dieselben Regeln.",
+              "evidence": "test/checkpoint-page.test.js: statische Ausgabe, Browser/Node-Gleichheit, Escaping, veraltete Prüfungen und Live-Dateiänderungen bestanden; gstack: 1280x900 und 380x820, kein Überlauf, keine Konsolenfehler."
+            }
+          ],
+          "question": null,
+          "points": [],
+          "goal": null
+        },
+        {
+          "id": "checkpoint-week-trial",
+          "title": "Prüfpunkte fünf Arbeitstage selbst nutzen",
+          "milestone": "m6",
+          "status": "todo",
+          "branch": null,
+          "acceptance": [
+            {
+              "id": "experience",
+              "text": "Marvin berichtet nach fünf Arbeitstagen, ob der aktuelle Stand und nächste Schritt ohne Terminalsuche klar waren.",
+              "evidence": ""
+            }
+          ],
+          "question": {
+            "text": "Wie viele Arbeitstage hast du die Prüfpunkte tatsächlich genutzt, und helfen sie dir, den nächsten Schritt klarer zu sehen?",
+            "options": [
+              "Noch nicht ausprobiert",
+              "Hilft mir beim Fokus",
+              "Zu viele Unterbrechungen"
+            ],
+            "asked": "2026-09-15T11:56:03.155Z"
+          },
+          "points": [],
+          "goal": {
+            "label": "Arbeitstage selbst genutzt",
+            "current": null,
+            "target": 5,
+            "source": null
+          }
+        },
+        {
+          "id": "checkpoint-workflow",
+          "title": "Den Prüfablauf am eigenen Projekt durchlaufen",
+          "milestone": "m6",
+          "status": "done",
+          "branch": "feat/roadmap-checkpoints",
+          "acceptance": [
+            {
+              "id": "checks",
+              "text": "Tests, Dateiprüfung und statische Darstellung bestehen.",
+              "evidence": "docs/checkpoint-validation.md: vollständiger CLI-Ablauf bestanden; npm test: 211 bestanden, 1 übersprungen; --check, checkpoint --dry-run und git diff --check erfolgreich."
+            },
+            {
+              "id": "exercise",
+              "text": "Ein echter Durchlauf zeigt erst einen fehlenden Nachweis und danach einen erfolgreichen Abschluss.",
+              "evidence": "docs/checkpoint-validation.md: vollständiger CLI-Ablauf bestanden; npm test: 211 bestanden, 1 übersprungen; --check, checkpoint --dry-run und git diff --check erfolgreich."
+            },
+            {
+              "id": "workflow",
+              "text": "Agent-Anleitung und CI rufen die Prüfung an den dokumentierten Übergängen auf.",
+              "evidence": "docs/checkpoint-validation.md: vollständiger CLI-Ablauf bestanden; npm test: 211 bestanden, 1 übersprungen; --check, checkpoint --dry-run und git diff --check erfolgreich."
+            }
+          ],
+          "question": null,
+          "points": [],
+          "goal": null
+        }
+      ]
+    },
+    "at": "2026-09-15T11:59:00.821Z"
   }
 }

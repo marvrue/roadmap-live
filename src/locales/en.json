@@ -215,7 +215,7 @@
     }
   },
   "cli": {
-    "usage": "Usage: roadmap-live [command] [file] [options]\n\nCommands:\n  (none)                 start the live server (default)\n  sync                   read pull request activity from GitHub and update the roadmap\n  render                 write a static HTML page from the current state\n  init                   create roadmap.json (drafted from the repository), AGENTS.md and the workflow file\n  auth                   log in to GitHub in the browser (--logout removes the token)\n  doctor                 explain which GitHub credential and which provider would be used\n\nOptions:\n  file                   path to roadmap.json (default: ./roadmap.json)\n  --port <n>             HTTP port for the live server (default: 4242)\n  --key <secret>         write key for the live page (default: generated at start, or ROADMAP_KEY)\n  --check                validate the file and exit with 0 (ok) or 1 (problems)\n  --repo owner/name      repository for sync and init (default: sync.repo, GITHUB_REPOSITORY or the git remote)\n  --dry-run              sync: print the planned changes and write nothing\n  --apply                sync: apply .roadmap-live/result.json written by your coding agent\n  --no-bootstrap         init: write an empty roadmap instead of drafting one from the repository\n  --provider <name>      sync, init: anthropic, claude-cli, codex-cli, gemini-cli or agent\n  --public               auth: ask for the public_repo scope only\n  --out <path>           render: output file (default: roadmap/index.html)\n  --theme <name>         render: neutral, paper, mono or a file in roadmap-themes/\n  --mode light|dark      render: fix the color mode instead of following the system\n  -h, --help             show this help",
+    "usage": "Usage: roadmap-live [command] [file] [options]\n\nCommands:\n  (none)                 start the live server (default)\n  sync                   read pull request activity from GitHub and update the roadmap\n  render                 write a static HTML page from the current state\n  init                   create roadmap.json (drafted from the repository), AGENTS.md and the workflow file\n  auth                   log in to GitHub in the browser (--logout removes the token)\n  doctor                 explain which GitHub credential and which provider would be used\n\nOptions:\n  file                   path to roadmap.json (default: ./roadmap.json)\n  --port <n>             HTTP port for the live server (default: 4242)\n  --key <secret>         write key for the live page (default: generated at start, or ROADMAP_KEY)\n  --check                validate the file and exit with 0 (ok) or 1 (problems)\n  --repo owner/name      repository for sync and init (default: sync.repo, GITHUB_REPOSITORY or the git remote)\n  --dry-run              sync: print the planned changes and write nothing\n  --apply                sync: apply .roadmap-live/result.json written by your coding agent\n  --no-bootstrap         init: write an empty roadmap instead of drafting one from the repository\n  --provider <name>      sync, init: anthropic, claude-cli, codex-cli, gemini-cli or agent\n  --public               auth: ask for the public_repo scope only\n  --out <path>           render: output file (default: roadmap/index.html)\n  --theme <name>         render: neutral, paper, mono or a file in roadmap-themes/\n  --mode light|dark      render: fix the color mode instead of following the system\n  -h, --help             show this help\n\nCheckpoints:\n  roadmap-live focus --milestone <id> --reason <text>\n  roadmap-live checkpoint [--event check|start|complete|scope|milestone] [--item <id>] [--dry-run]",
     "unknownOption": "unknown option: {option}",
     "unknownCommand": "unknown command: {command}",
     "invalidPort": "invalid port: {port}",
@@ -366,5 +366,56 @@
       "committed": "Committed and pushed {files}.",
       "commitMessage": "Update roadmap from pull request activity"
     }
+  },
+  "checkpoint": {
+    "title": "Checkpoint",
+    "results": {
+      "continue": "Rules checked: no findings",
+      "review": "Review needed",
+      "disabled": "Checkpoints are not enabled"
+    },
+    "focusUsage": "Use focus --milestone <id> --reason <why this scope>.",
+    "focusSet": "Scope agreed for {milestone}.",
+    "usage": "Use checkpoint --event check|start|complete|scope|milestone; start and complete require --item <id>.",
+    "reason": "Why this milestone",
+    "evidenceCount": "{evidenced} of {total} criteria have evidence",
+    "evidenceHint": "Recorded evidence still needs a substantive review.",
+    "pending": "Evidence missing",
+    "recorded": "Last recorded check",
+    "stale": "The roadmap changed since that check.",
+    "none": "No checkpoint recorded yet.",
+    "criteriaTitle": "Acceptance criteria",
+    "events": {
+      "check": "Roadmap check",
+      "start": "Before starting",
+      "complete": "Before completion",
+      "scope": "Scope check",
+      "milestone": "Milestone completion"
+    },
+    "next": "Next step",
+    "continueHint": "Work on the agreed task and check its result before completing it.",
+    "reviewHint": "Resolve the findings before starting the next task; agree scope changes with the human.",
+    "findings": {
+      "focusRequired": "Choose a milestone and agree its scope first.",
+      "invalidEvent": "Unknown checkpoint event.",
+      "unknownItem": "Task not found: {item}.",
+      "wrongMilestone": "{item} is outside the selected milestone {milestone}.",
+      "missingOutcome": "Describe the intended outcome of {milestone}.",
+      "emptyMilestone": "This milestone has no tasks.",
+      "scopeChanged": "The outcome, limit, tasks, acceptance criteria or goal targets changed since the scope was agreed.",
+      "tooManyItems": "{count} open tasks exceed the agreed limit of {limit}.",
+      "finishCurrent": "Finish or hand back {item} before starting another task.",
+      "finishedItem": "{item} is already done.",
+      "notStarted": "Start {item} before completing it.",
+      "missingCriteria": "Define acceptance criteria for {item}.",
+      "missingEvidence": "{item}: evidence missing for “{criterion}”.",
+      "openQuestion": "Answer and resolve the open question on {item}.",
+      "reviewPoints": "{item} still has unresolved reviewer requests.",
+      "blocked": "{item} is blocked.",
+      "unfinishedItem": "Complete {item} before closing the milestone.",
+      "goalPending": "{item}: the goal “{label}” has not been measured at or above {target}."
+    },
+    "workingOn": "Working on",
+    "nextTask": "Next task"
   }
 }
