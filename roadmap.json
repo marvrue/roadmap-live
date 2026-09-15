@@ -573,7 +573,7 @@
       "title": "Prüfpunkte fünf Arbeitstage selbst nutzen",
       "milestone": "m6",
       "status": "todo",
-      "updated": "2026-09-15T11:30:58.859567Z",
+      "updated": "2026-09-15T12:25:33.064644Z",
       "acceptance": [
         {
           "id": "experience",
@@ -584,15 +584,70 @@
         "label": "Arbeitstage selbst genutzt",
         "target": 5
       },
-      "question": {
-        "text": "Wie viele Arbeitstage hast du die Prüfpunkte tatsächlich genutzt, und helfen sie dir, den nächsten Schritt klarer zu sehen?",
-        "options": [
-          "Noch nicht ausprobiert",
-          "Hilft mir beim Fokus",
-          "Zu viele Unterbrechungen"
-        ],
-        "asked": "2026-09-15T11:56:03.155Z"
-      }
+      "comments": [
+        {
+          "from": "human",
+          "text": "Noch nicht ausprobiert",
+          "at": "2026-09-15T12:12:26.799Z"
+        },
+        {
+          "from": "human",
+          "text": "Noch nicht ausprobiert",
+          "at": "2026-09-15T12:12:27.710Z"
+        },
+        {
+          "from": "human",
+          "text": "Noch nicht ausprobiert",
+          "at": "2026-09-15T12:12:29.082Z"
+        },
+        {
+          "from": "human",
+          "text": "Noch nicht ausprobiert",
+          "at": "2026-09-15T12:12:30.167Z"
+        },
+        {
+          "from": "human",
+          "text": "Noch nicht probiert",
+          "at": "2026-09-15T12:12:35.675Z"
+        },
+        {
+          "from": "agent",
+          "text": "Deine Antworten sind angekommen; der Praxistest bleibt offen, und ich behebe jetzt die fehlende sichtbare Bestätigung beim Antworten.",
+          "at": "2026-09-15T12:25:33.064644Z"
+        },
+        {
+          "from": "agent",
+          "text": "Die Antwortanzeige ist korrigiert und getestet; nach dem Neuladen siehst du direkt an der Eingabe, ob deine Nachricht gespeichert wurde.",
+          "at": "2026-09-15T12:54:04.215054Z"
+        }
+      ],
+      "note": "Die Antwortanzeige ist korrigiert; der Praxistest über fünf Arbeitstage steht noch aus."
+    },
+    {
+      "id": "comment-send-feedback",
+      "title": "Gespeicherte Antworten direkt bestätigen",
+      "milestone": "m6",
+      "status": "done",
+      "updated": "2026-09-15T12:54:04.215054Z",
+      "note": "Antworten werden direkt bestätigt; fehlgeschlagene Texte bleiben für einen erneuten Versuch erhalten.",
+      "acceptance": [
+        {
+          "id": "visible-result",
+          "text": "Antwortbuttons und Freitext zeigen direkt an der Eingabe den laufenden Versand, Erfolg oder Fehler.",
+          "evidence": "12 Regressionstests und gstack-Browsertest: Antwortbutton und Freitext zeigen Versand, Bestätigung und Fehler direkt an der Eingabe; Bestätigung bleibt nach Neuladen sichtbar."
+        },
+        {
+          "id": "reliable-send",
+          "text": "Während des Versands entstehen keine Doppelübermittlungen, und fehlgeschlagene Texte bleiben für einen erneuten Versuch erhalten.",
+          "evidence": "Automatisierte Tests prüfen Doppelübermittlung, abgelaufenen Schlüssel und SSE-Reihenfolge; der Browsertest bestätigt Texterhalt nach Fehler und genau einen gespeicherten Kommentar beim erneuten Versuch."
+        },
+        {
+          "id": "verified-flow",
+          "text": "Automatisierte Regressionstests und ein lokaler Browsertest prüfen beide Eingabewege einschließlich Neuladen.",
+          "evidence": "node --test test/*.test.js: 223 bestanden, 0 fehlgeschlagen, 1 optional übersprungen; gstack prüft Klick, Freitext, Neuladen, Fehler und Wiederholung; Details in docs/checkpoint-validation.md."
+        }
+      ],
+      "branch": "feat/roadmap-checkpoints"
     }
   ],
   "unplanned": [
@@ -624,7 +679,7 @@
   },
   "focus": {
     "milestone": "m6",
-    "reason": "Marvin möchte roadmap-live an der eigenen Roadmap entwickeln und vor weiteren Arbeiten feste Zielprüfungen nutzen.",
+    "reason": "Marvin meldet, dass Antworten keine sichtbare Rückmeldung geben; die Reparatur gehört zur nutzbaren Erprobung der Prüfpunkte.",
     "baseline": {
       "outcome": "Vor dem nächsten Arbeitsschritt sehe ich, ob die Arbeit zum vereinbarten Meilenstein gehört und welche Nachweise fehlen.",
       "limit": 7,
@@ -700,6 +755,25 @@
             }
           ],
           "goal": null
+        },
+        {
+          "id": "comment-send-feedback",
+          "title": "Gespeicherte Antworten direkt bestätigen",
+          "acceptance": [
+            {
+              "id": "reliable-send",
+              "text": "Während des Versands entstehen keine Doppelübermittlungen, und fehlgeschlagene Texte bleiben für einen erneuten Versuch erhalten."
+            },
+            {
+              "id": "verified-flow",
+              "text": "Automatisierte Regressionstests und ein lokaler Browsertest prüfen beide Eingabewege einschließlich Neuladen."
+            },
+            {
+              "id": "visible-result",
+              "text": "Antwortbuttons und Freitext zeigen direkt an der Eingabe den laufenden Versand, Erfolg oder Fehler."
+            }
+          ],
+          "goal": null
         }
       ]
     }
@@ -712,7 +786,7 @@
     "input": {
       "focus": {
         "milestone": "m6",
-        "reason": "Marvin möchte roadmap-live an der eigenen Roadmap entwickeln und vor weiteren Arbeiten feste Zielprüfungen nutzen.",
+        "reason": "Marvin meldet, dass Antworten keine sichtbare Rückmeldung geben; die Reparatur gehört zur nutzbaren Erprobung der Prüfpunkte.",
         "baseline": {
           "outcome": "Vor dem nächsten Arbeitsschritt sehe ich, ob die Arbeit zum vereinbarten Meilenstein gehört und welche Nachweise fehlen.",
           "limit": 7,
@@ -785,6 +859,25 @@
                 {
                   "id": "workflow",
                   "text": "Agent-Anleitung und CI rufen die Prüfung an den dokumentierten Übergängen auf."
+                }
+              ],
+              "goal": null
+            },
+            {
+              "id": "comment-send-feedback",
+              "title": "Gespeicherte Antworten direkt bestätigen",
+              "acceptance": [
+                {
+                  "id": "reliable-send",
+                  "text": "Während des Versands entstehen keine Doppelübermittlungen, und fehlgeschlagene Texte bleiben für einen erneuten Versuch erhalten."
+                },
+                {
+                  "id": "verified-flow",
+                  "text": "Automatisierte Regressionstests und ein lokaler Browsertest prüfen beide Eingabewege einschließlich Neuladen."
+                },
+                {
+                  "id": "visible-result",
+                  "text": "Antwortbuttons und Freitext zeigen direkt an der Eingabe den laufenden Versand, Erfolg oder Fehler."
                 }
               ],
               "goal": null
@@ -867,6 +960,25 @@
               }
             ],
             "goal": null
+          },
+          {
+            "id": "comment-send-feedback",
+            "title": "Gespeicherte Antworten direkt bestätigen",
+            "acceptance": [
+              {
+                "id": "reliable-send",
+                "text": "Während des Versands entstehen keine Doppelübermittlungen, und fehlgeschlagene Texte bleiben für einen erneuten Versuch erhalten."
+              },
+              {
+                "id": "verified-flow",
+                "text": "Automatisierte Regressionstests und ein lokaler Browsertest prüfen beide Eingabewege einschließlich Neuladen."
+              },
+              {
+                "id": "visible-result",
+                "text": "Antwortbuttons und Freitext zeigen direkt an der Eingabe den laufenden Versand, Erfolg oder Fehler."
+              }
+            ],
+            "goal": null
           }
         ]
       },
@@ -938,15 +1050,7 @@
               "evidence": ""
             }
           ],
-          "question": {
-            "text": "Wie viele Arbeitstage hast du die Prüfpunkte tatsächlich genutzt, und helfen sie dir, den nächsten Schritt klarer zu sehen?",
-            "options": [
-              "Noch nicht ausprobiert",
-              "Hilft mir beim Fokus",
-              "Zu viele Unterbrechungen"
-            ],
-            "asked": "2026-09-15T11:56:03.155Z"
-          },
+          "question": null,
           "points": [],
           "goal": {
             "label": "Arbeitstage selbst genutzt",
@@ -981,9 +1085,36 @@
           "question": null,
           "points": [],
           "goal": null
+        },
+        {
+          "id": "comment-send-feedback",
+          "title": "Gespeicherte Antworten direkt bestätigen",
+          "milestone": "m6",
+          "status": "done",
+          "branch": "feat/roadmap-checkpoints",
+          "acceptance": [
+            {
+              "id": "reliable-send",
+              "text": "Während des Versands entstehen keine Doppelübermittlungen, und fehlgeschlagene Texte bleiben für einen erneuten Versuch erhalten.",
+              "evidence": "Automatisierte Tests prüfen Doppelübermittlung, abgelaufenen Schlüssel und SSE-Reihenfolge; der Browsertest bestätigt Texterhalt nach Fehler und genau einen gespeicherten Kommentar beim erneuten Versuch."
+            },
+            {
+              "id": "verified-flow",
+              "text": "Automatisierte Regressionstests und ein lokaler Browsertest prüfen beide Eingabewege einschließlich Neuladen.",
+              "evidence": "node --test test/*.test.js: 223 bestanden, 0 fehlgeschlagen, 1 optional übersprungen; gstack prüft Klick, Freitext, Neuladen, Fehler und Wiederholung; Details in docs/checkpoint-validation.md."
+            },
+            {
+              "id": "visible-result",
+              "text": "Antwortbuttons und Freitext zeigen direkt an der Eingabe den laufenden Versand, Erfolg oder Fehler.",
+              "evidence": "12 Regressionstests und gstack-Browsertest: Antwortbutton und Freitext zeigen Versand, Bestätigung und Fehler direkt an der Eingabe; Bestätigung bleibt nach Neuladen sichtbar."
+            }
+          ],
+          "question": null,
+          "points": [],
+          "goal": null
         }
       ]
     },
-    "at": "2026-09-15T11:59:00.821Z"
+    "at": "2026-09-15T12:54:06.910Z"
   }
 }

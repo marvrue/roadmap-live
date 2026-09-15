@@ -21,3 +21,16 @@ Die neue Arbeitskopie läuft lokal unter `http://localhost:4243`. Ein zusätzlic
 ## Eigene Nutzung
 
 Die Lieferaufgaben wurden nacheinander über `checkpoint --event complete` und `checkpoint --event start` bearbeitet. Eingetragene Nachweise sind Hinweise für eine fachliche Prüfung, keine automatische Bestätigung der referenzierten Tests. Der Fünf-Arbeitstage-Versuch bleibt offen; daraus wird noch keine Verbesserung der Produktivität behauptet.
+
+## Answer feedback regression — 2026-09-15
+
+The first real interaction exposed a usability defect: four clicks on the same answer and one free-text reply were all stored, but the question had no visible confirmation. Existing comments are preserved and the trial remains open.
+
+- Added 12 bootstrap/renderer regression tests in `test/comment-feedback.test.js`; the initial reproduction failed 7 of 8 checks before the fix, with later failing cases covering a replacement question and failed draft retention.
+- Final `node --test test/*.test.js`: 224 tests, 223 passed, 0 failed, 1 optional provider test skipped.
+- gstack browser, isolated local test roadmap: real answer click showed sending and disabled controls; free-text submit persisted; saved feedback survived reload.
+- Simulated one rejected comment request in the test browser: failed state appeared, the draft survived blur and re-render, and a real retry saved exactly one new comment.
+- Mobile screenshot at 380px: feedback sits directly below the input, document width 380px, no horizontal overflow. Screenshot: `/tmp/roadmap-comment-feedback-mobile.png`.
+- Restarted the actual roadmap server with its existing write key and verified the original link still exposes comment forms and the agent reply. Temporary connection errors in the browser console correspond to the deliberate server restart.
+
+These checks cover saving and feedback; they do not launch an agent automatically or replace the five-day usage trial.

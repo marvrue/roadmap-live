@@ -326,7 +326,7 @@
   function commentsOf(it, opts) {
     var list = (it.comments || []).slice();
     (opts.pending || []).forEach(function (p) {
-      if (p.id === it.id) list.push({ from: 'human', text: p.text, at: p.at, pending: true, failed: p.failed });
+      if (p.id === it.id) list.push({ from: 'human', text: p.text, at: p.at, pending: true, failed: p.failed, confirmed: p.confirmed });
     });
     return list;
   }
@@ -493,17 +493,20 @@
   // conversation follows and brings its own field and read-only hint.
   function renderQuestionBody(state, opts, it, inThread) {
     var t = opts.t, q = it.question;
+    var feedback = feedbackOf(it, opts);
     var out = esc(q.text);
     if (writable(state, opts)) {
       out += '<div class="answers">';
       (q.options || []).forEach(function (o) {
-        out += '<button type="button" data-action="answer" data-id="' + esc(it.id) + '" data-text="' + esc(o) + '">' + esc(o) + '</button>';
+        var selected = feedback && feedback.status === 'saved' && feedback.text === o;
+        var disabled = selected || (feedback && feedback.status === 'sending');
+        out += '<button type="button" data-action="answer" data-id="' + esc(it.id) + '" data-text="' + esc(o) + '"' + (disabled ? ' disabled' : '') + (selected ? ' aria-pressed="true"' : '') + '>' + esc(o) + '</button>';
       });
-      out += '</div>' + (inThread ? '' : renderCommentForm(it, t));
+      out += '</div>' + (inThread ? '' : renderCommentForm(it, opts));
     } else if (!inThread || state.mode !== 'live') {
       out += '<div class="hint">' + esc(t(state.mode === 'live' ? 'page.readOnly' : 'page.waiting.hint')) + '</div>';
     }
-    return out;
+    return out + (inThread ? '' : renderCommentFeedback(it, opts));
   }
 
   // A question inside an item block (focus, conversations).
@@ -518,8 +521,33 @@
     return state.mode === 'live' && opts.canWrite === true;
   }
 
-  function renderCommentForm(it, t) {
-    return '<form class="comment-form" data-id="' + esc(it.id) + '"><input name="text" type="text" maxlength="2000" autocomplete="off" placeholder="' + esc(t('page.comments.placeholder')) + '"><button type="submit">' + esc(t('page.comments.send')) + '</button></form>';
+  function feedbackOf(it, opts) {
+    var feedback = opts.commentFeedback && opts.commentFeedback[it.id];
+    if (feedback && (!it.question || feedback.question === JSON.stringify(it.question))) return feedback;
+    // Persisted comments let an answered question remain visibly answered
+    // after reload, until the agent reads it and removes the question.
+    if (!it.question || !it.question.asked) return null;
+    var comments = it.comments || [];
+    for (var i = comments.length - 1; i >= 0; i--) {
+      var c = comments[i];
+      if (c.from === 'human' && Date.parse(c.at) >= Date.parse(it.question.asked)) return { status: 'saved', text: c.text };
+    }
+    return null;
+  }
+
+  function renderCommentFeedback(it, opts) {
+    var feedback = feedbackOf(it, opts);
+    if (!feedback) return '';
+    var failed = feedback.status === 'failed' || feedback.status === 'unauthorized';
+    return '<p class="comment-feedback' + (failed ? ' attention' : '') + '" data-comment-state="' + esc(feedback.status) + '" role="status" aria-live="polite" aria-atomic="true">' +
+      '<strong>' + esc(opts.t('page.comments.' + feedback.status)) + '</strong> <span>' + esc(feedback.text) + '</span>' +
+      (feedback.status === 'saved' ? '<small>' + esc(opts.t('page.comments.nextStep')) + '</small>' : '') + '</p>';
+  }
+
+  function renderCommentForm(it, opts) {
+    var t = opts.t, feedback = feedbackOf(it, opts);
+    var sending = feedback && feedback.status === 'sending';
+    return '<form class="comment-form" data-id="' + esc(it.id) + '"><input name="text" type="text" maxlength="2000" autocomplete="off" aria-label="' + esc(t('page.comments.placeholder')) + '" placeholder="' + esc(t('page.comments.placeholder')) + '"' + (feedback && feedback.status === 'failed' ? ' value="' + esc(feedback.text) + '"' : '') + '><button type="submit"' + (sending ? ' disabled' : '') + '>' + esc(t(sending ? 'page.comments.sending' : 'page.comments.send')) + '</button></form>';
   }
 
   function renderConversation(state, opts, it) {
@@ -527,14 +555,14 @@
     var list = commentsOf(it, opts);
     var items = list.map(function (c) {
       var who = c.from === 'agent' ? t('page.comments.agent') : t('page.comments.you');
-      var when = c.pending ? esc(t(c.failed ? 'page.comments.failed' : 'page.comments.sent')) : time(c.at, opts.now, opts.lang);
+      var when = c.pending ? esc(t(c.failed ? 'page.comments.failed' : c.confirmed ? 'page.comments.saved' : 'page.comments.sending')) : time(c.at, opts.now, opts.lang);
       var whenCls = 'when' + (c.failed ? ' attention' : '');
       return '<li class="' + esc(c.from) + '"><span class="label">' + esc(who) + '</span><span class="text">' + esc(c.text) + '</span><span class="' + whenCls + '">' + when + '</span></li>';
     });
     var out = items.length ? '<ul class="conv">' + items.join('') + '</ul>' : '';
-    if (writable(state, opts)) out += renderCommentForm(it, t);
+    if (writable(state, opts)) out += renderCommentForm(it, opts);
     else if (state.mode === 'live') out += '<div class="hint">' + esc(t('page.readOnly')) + '</div>';
-    return out;
+    return out + renderCommentFeedback(it, opts);
   }
 
   function renderNow(state, opts) {

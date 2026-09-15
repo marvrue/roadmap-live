@@ -117,11 +117,15 @@
       "add": "kommentieren",
       "send": "Senden",
       "sent": "gesendet",
-      "failed": "nicht gesendet, noch einmal versuchen",
+      "failed": "Speichern nicht bestätigt; Verlauf prüfen und erneut versuchen.",
       "you": "du",
       "agent": "Agent",
       "show": "anzeigen",
-      "hide": "ausblenden"
+      "hide": "ausblenden",
+      "sending": "Wird gespeichert…",
+      "saved": "Gespeichert.",
+      "unauthorized": "Schreibzugriff abgelaufen; öffne den Schreiblink erneut.",
+      "nextStep": "Der Agent liest deine Nachricht beim nächsten Arbeitsschritt."
     },
     "git": {
       "ahead": {

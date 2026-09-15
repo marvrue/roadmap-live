@@ -104,6 +104,7 @@
   var shareTimer = null;
   var expanded = Object.create(null);     // item id -> true (no prototype: ids are user text)
   var pending = [];      // comments sent but not yet in a snapshot
+  var commentFeedback = Object.create(null); // latest send result, beside every input for this item
   var prevStatus = null;
   var unseen = false;
 
@@ -131,7 +132,7 @@
   }
 
   function opts(changed) {
-    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, view: view, showAllFeed: showAllFeed, sort: sort, open: open, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending, share: share, canWrite: state.mode === 'live' && !!key };
+    return { t: t, lang: lang, now: Date.now(), filter: filter, colorMode: colorMode, theme: theme, view: view, showAllFeed: showAllFeed, sort: sort, open: open, showAllDone: showAllDone, changed: changed || null, expanded: expanded, pending: pending, commentFeedback: commentFeedback, share: share, canWrite: state.mode === 'live' && !!key };
   }
 
   function render(changed) {
@@ -243,30 +244,48 @@
   setInterval(tick, 1000);
 
   // ---- comments ---------------------------------------------------------------
+  function matchingComments(id, text) {
+    var it = state.data && state.data.items.filter(function (x) { return x.id === id; })[0];
+    return it ? (it.comments || []).filter(function (c) { return c.from === 'human' && c.text === text; }).length : 0;
+  }
   // The static page never writes: bail out before touching pending/network.
   function sendComment(id, text) {
     text = String(text || '').trim();
     if (!id || !text) return Promise.resolve(false);
     if (state.mode !== 'live' || !key) return Promise.resolve(false);
+    if (commentFeedback[id] && commentFeedback[id].status === 'sending') return Promise.resolve(false);
     // A retry with the same text replaces the earlier failed entry instead
     // of stacking another one below it.
     pending = pending.filter(function (p) { return !(p.failed && p.id === id && p.text === text); });
-    var entry = { id: id, text: text, at: new Date().toISOString() };
+    var item = state.data && state.data.items.filter(function (it) { return it.id === id; })[0];
+    var question = item && item.question ? JSON.stringify(item.question) : null;
+    var entry = { id: id, text: text, at: new Date().toISOString(), before: matchingComments(id, text), question: question, status: 'sending' };
     pending.push(entry);
+    commentFeedback[id] = entry;
     expanded[id] = true;
     render();
-    var fail = function () {
+    var saved = function () {
+      entry.confirmed = true;
+      entry.status = 'saved';
+      render();
+      return true;
+    };
+    var fail = function (status) {
+      // The live snapshot may have confirmed the write even if its HTTP
+      // response was lost. Do not invite a duplicate retry in that case.
+      if (entry.saved) return saved();
       entry.failed = true;
+      entry.status = status === 401 ? 'unauthorized' : 'failed';
       render();
       return false;
     };
     return fetch(base + 'comment', { method: 'POST', headers: { 'content-type': 'application/json', 'x-roadmap-key': key }, body: JSON.stringify({ id: id, text: text }) })
       .then(function (r) {
-        if (r.ok) return true;
+        if (r.ok) return saved();
         // The key is no longer valid (server restarted with a new one): back
         // to read-only until the write address is opened again.
         if (r.status === 401) forgetKey();
-        return fail();
+        return fail(r.status);
       })
       .catch(fail);
   }
@@ -275,8 +294,10 @@
   function settlePending() {
     if (!pending.length || !state.data) return;
     pending = pending.filter(function (p) {
-      var it = state.data.items.filter(function (x) { return x.id === p.id; })[0];
-      return !(it && (it.comments || []).some(function (c) { return c.from === 'human' && c.text === p.text; }));
+      if (matchingComments(p.id, p.text) <= p.before) return true;
+      p.saved = true;
+      if (p.failed && commentFeedback[p.id] === p) p.status = 'saved';
+      return false;
     });
   }
 
@@ -332,8 +353,9 @@
     e.preventDefault();
     var input = form.querySelector('input[name="text"]');
     var value = input.value;
-    input.value = '';
     var id = form.getAttribute('data-id');
+    if (!value.trim() || (commentFeedback[id] && commentFeedback[id].status === 'sending')) return;
+    input.value = '';
     var sameIdForms = app.querySelectorAll('form.comment-form[data-id="' + id.replace(/"/g, '\\"') + '"]');
     var last = { id: id, text: value, index: Array.prototype.indexOf.call(sameIdForms, form) };
     sendComment(id, value).then(function (ok) {

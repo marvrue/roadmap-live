@@ -336,3 +336,10 @@ h2.section.attention { color: var(--attention); }
 .checkpoint summary { cursor: pointer; font-size: 13px; color: var(--text-2); padding: 8px 0; }
 .checkpoint h4 { font-weight: 500; font-size: 14px; margin: 16px 0 8px; }
 .checkpoint strong { font-weight: 500; }
+
+/* Keep send results beside the question or comment field that triggered them. */
+.comment-feedback { margin: 8px 0 0; padding: 10px 12px; border-left: 2px solid var(--line-strong); background: var(--surface); font-size: 13px; overflow-wrap: anywhere; }
+.comment-feedback strong { font-weight: 600; }
+.comment-feedback small { display: block; margin-top: 4px; color: var(--text-2); }
+.answers button:disabled, .comment-form button:disabled { opacity: .6; cursor: default; }
+.answers button[aria-pressed="true"] { color: var(--text); border-bottom-color: var(--text); }

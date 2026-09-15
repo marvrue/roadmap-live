@@ -177,7 +177,7 @@ test('conversations: count collapsed, thread when expanded, pending marker, done
   const expanded = view.renderApp(state, { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', theme: 'neutral', showAllDone: false, changed: null, expanded: { checkout: true, 'menu-editor': true }, pending: [{ id: 'checkout', text: 'Use 15', at: new Date(NOW).toISOString() }] });
   assert.ok(expanded.includes('Finish the cart first, the checkout can wait'));
   assert.ok(/class="conv"[\s\S]*<li class="agent">[\s\S]*Ok, cart first/.test(expanded));
-  assert.ok(/Use 15[\s\S]*?<span class="when">sent<\/span>/.test(expanded));
+  assert.ok(/Use 15[\s\S]*?<span class="when">Saving…<\/span>/.test(expanded));
   assert.ok(!expanded.includes('Images are resized on upload now.'), 'done item conversation is not rendered');
 });
 
@@ -186,7 +186,7 @@ test('a failed pending comment shows the attention marker', () => {
   const t = i18n.translator('en');
   const html = view.renderApp(state, { t, lang: 'en', now: NOW, filter: null, colorMode: 'system', theme: 'neutral', showAllDone: false, changed: null, expanded: { checkout: true }, pending: [{ id: 'checkout', text: 'x', at: new Date(NOW).toISOString(), failed: true }] });
   assert.ok(html.includes('class="when attention"'));
-  assert.ok(html.includes('not sent, try again'));
+  assert.ok(html.includes('Save not confirmed; check the conversation and try again.'));
 });
 
 test('git state in the header and branch in the subline', () => {

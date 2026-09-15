@@ -117,11 +117,15 @@
       "add": "comment",
       "send": "Send",
       "sent": "sent",
-      "failed": "not sent, try again",
+      "failed": "Save not confirmed; check the conversation and try again.",
       "you": "you",
       "agent": "agent",
       "show": "show",
-      "hide": "hide"
+      "hide": "hide",
+      "sending": "Saving…",
+      "saved": "Saved.",
+      "unauthorized": "Write access expired; open the write link again.",
+      "nextStep": "The agent reads your message at the next work step."
     },
     "git": {
       "ahead": {

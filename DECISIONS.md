@@ -123,3 +123,9 @@ Judgment calls made while adding pull request sync, render, themes and languages
 - **`init` does not touch `CLAUDE.md` or other rules files.** The spec lists three files; the README explains the one line for each agent.
 - **No hosted version, no issue or commit tracking.** Both are named in the README as limits and plans.
 - **No watching of agent sessions, token budgets or rules files.** Tools such as blume.codes read agent transcripts for that; roadmap-live stays with a file the user owns and a page that leaves the machine.
+
+## Answer feedback (2026-09-15)
+
+- **The user reported that question buttons and free-text submissions appeared to do nothing.** Five human comments were persisted, but feedback appeared only in a conversation farther down the page; the question remained unchanged. The authorized repair adds `comment-send-feedback` to the current milestone without changing its outcome or order.
+- **Show sending, saved and failed states beside the originating question and conversation input.** A successful HTTP response confirms persistence even if SSE is delayed; saved comments keep question feedback visible after reload. The agent still reads and resolves the question at its next work step.
+- **Serialize sends per item in the browser and disable the selected saved answer.** A new pending send must observe an additional matching comment before SSE can settle it, so an older identical message does not hide a failed attempt.
