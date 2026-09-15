@@ -1,0 +1,47 @@
+/* still: a calm room. Warm sand and soft charcoal, the three text tones close together but all at AA, a muted terracotta for attention, soft corners, a short line. */
+:root {
+  color-scheme: light dark;
+  --bg: #f3efe9;
+  --surface: #faf8f4;
+  --text: #33302c;
+  --text-2: #625b54;
+  --text-3: #6f6861;
+  --line: #e2dcd3;
+  --line-strong: #c6bdb1;
+  --attention: #a84f3b;
+  --attention-bg: rgba(168, 79, 59, 0.08);
+  --done: #625b54;
+  --font-heading: "Avenir Next", Avenir, Seravek, "Segoe UI Variable Display", "Segoe UI", "Trebuchet MS", sans-serif;
+  --font-body: "Avenir Next", Avenir, Seravek, "Segoe UI Variable Text", "Segoe UI", "Trebuchet MS", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 8px;
+  --measure: 58ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --bg: #1c1a1f;
+    --surface: #25222a;
+    --text: #e8e3db;
+    --text-2: #b4ada4;
+    --text-3: #958e86;
+    --line: #2e2b34;
+    --line-strong: #46424d;
+    --attention: #e6957e;
+    --attention-bg: rgba(230, 149, 126, 0.12);
+    --done: #bdb6ac;
+  }
+}
+:root[data-mode="dark"] {
+  --bg: #1c1a1f;
+  --surface: #25222a;
+  --text: #e8e3db;
+  --text-2: #b4ada4;
+  --text-3: #958e86;
+  --line: #2e2b34;
+  --line-strong: #46424d;
+  --attention: #e6957e;
+  --attention-bg: rgba(230, 149, 126, 0.12);
+  --done: #bdb6ac;
+}
+:root[data-mode="light"] { color-scheme: light; }
+:root[data-mode="dark"] { color-scheme: dark; }

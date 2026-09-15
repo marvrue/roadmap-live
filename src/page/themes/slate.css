@@ -1,0 +1,47 @@
+/* slate: cool blue-grays, the system sans, a burnt orange for attention. A tool, clear and technical. */
+:root {
+  color-scheme: light dark;
+  --bg: #f3f5f7;
+  --surface: #fafbfc;
+  --text: #141d26;
+  --text-2: #495764;
+  --text-3: #5d6b79;
+  --line: #d9dfe5;
+  --line-strong: #aeb8c2;
+  --attention: #b3480d;
+  --attention-bg: rgba(179, 72, 13, 0.09);
+  --done: #2c3b4a;
+  --font-heading: system-ui, "Segoe UI Variable Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body: system-ui, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 4px;
+  --measure: 66ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --bg: #0f151b;
+    --surface: #161d24;
+    --text: #e2e8ee;
+    --text-2: #a3aeb9;
+    --text-3: #8896a3;
+    --line: #232c35;
+    --line-strong: #3a4652;
+    --attention: #f5985e;
+    --attention-bg: rgba(245, 152, 94, 0.12);
+    --done: #c2cdd7;
+  }
+}
+:root[data-mode="dark"] {
+  --bg: #0f151b;
+  --surface: #161d24;
+  --text: #e2e8ee;
+  --text-2: #a3aeb9;
+  --text-3: #8896a3;
+  --line: #232c35;
+  --line-strong: #3a4652;
+  --attention: #f5985e;
+  --attention-bg: rgba(245, 152, 94, 0.12);
+  --done: #c2cdd7;
+}
+:root[data-mode="light"] { color-scheme: light; }
+:root[data-mode="dark"] { color-scheme: dark; }

@@ -1,0 +1,47 @@
+/* press: black ink on white paper, serif in titles and text, a red pencil for attention, a narrow column. */
+:root {
+  color-scheme: light dark;
+  --bg: #fdfdfa;
+  --surface: #f5f4ef;
+  --text: #121211;
+  --text-2: #46453f;
+  --text-3: #63625b;
+  --line: #dedcd5;
+  --line-strong: #b3b0a6;
+  --attention: #bd2a2e;
+  --attention-bg: rgba(189, 42, 46, 0.08);
+  --done: #1f1f1d;
+  --font-heading: Baskerville, "Baskerville Old Face", "Hoefler Text", "Iowan Old Style", Cambria, Georgia, serif;
+  --font-body: Charter, "Bitstream Charter", "Iowan Old Style", "Palatino Linotype", Cambria, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 0px;
+  --measure: 60ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --bg: #151514;
+    --surface: #1c1c1a;
+    --text: #ecebe5;
+    --text-2: #b2b1a9;
+    --text-3: #91908a;
+    --line: #2d2d2a;
+    --line-strong: #474740;
+    --attention: #f2837c;
+    --attention-bg: rgba(242, 131, 124, 0.12);
+    --done: #d4d3cb;
+  }
+}
+:root[data-mode="dark"] {
+  --bg: #151514;
+  --surface: #1c1c1a;
+  --text: #ecebe5;
+  --text-2: #b2b1a9;
+  --text-3: #91908a;
+  --line: #2d2d2a;
+  --line-strong: #474740;
+  --attention: #f2837c;
+  --attention-bg: rgba(242, 131, 124, 0.12);
+  --done: #d4d3cb;
+}
+:root[data-mode="light"] { color-scheme: light; }
+:root[data-mode="dark"] { color-scheme: dark; }
