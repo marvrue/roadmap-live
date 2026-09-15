@@ -88,6 +88,7 @@ function runCheck(file, env = process.env) {
       if (w.key === 'taglineLong') console.log(t('cli.checkTagline', { length: w.length, max: TAGLINE_MAX }));
       else if (w.key === 'goalDoneUnderTarget') console.log(t('cli.checkGoalDone', { item, current: w.current, target: w.target }));
       else if (w.key === 'goalReachedButOpen') console.log(t('cli.checkGoalReached', { item, current: w.current, target: w.target }));
+      else if (w.key === 'viewUnavailable') console.log(t('cli.checkView', { view: w.view }));
     }
     return 0;
   }

@@ -225,6 +225,7 @@
     "checkGoalDone": "note: \"{item}\" is done but its goal stands at {current}/{target}",
     "checkGoalReached": "note: \"{item}\" reached its goal ({current}/{target}) but is still open",
     "checkTagline": "note: the tagline is {length} characters, keep it at {max} or fewer so it stays one short line",
+    "checkView": "note: \"view\" is {view}, but the page lists that view only after a sync brought pull requests or open points; until then it shows the milestones",
     "checkProblems": {
       "one": "{file}: 1 problem",
       "other": "{file}: {n} problems"

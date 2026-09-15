@@ -381,3 +381,18 @@ test('--check fails on a malformed goal and prints no notes', () => {
   assert.ok(errs[0].endsWith(': 1 problem'));
   assert.ok(errs.some((l) => l.includes('items[0] ("menu-editor").goal.target must be a finite number greater than 0')));
 });
+
+test('--check notes a default view the page would hide until a sync brings the data', () => {
+  const { warnings } = require('../src/validate');
+  const data = fixture('roadmap-base.json');
+  data.view = 'prs';
+  assert.ok(warnings(data).some((w) => w.key === 'viewUnavailable' && w.view === 'prs'));
+  data.items[0].prs = [7];
+  assert.ok(!warnings(data).some((w) => w.key === 'viewUnavailable'), 'a linked pull request makes the view available');
+  data.view = 'points';
+  assert.ok(warnings(data).some((w) => w.key === 'viewUnavailable'));
+  data.items[0].open_points = [{ text: 'x', source: 'pr:7#comment:1', opened: '2026-09-10T10:00:00Z', resolved: null }];
+  assert.ok(!warnings(data).some((w) => w.key === 'viewUnavailable'));
+  data.view = 'board';
+  assert.ok(!warnings(data).some((w) => w.key === 'viewUnavailable'));
+});

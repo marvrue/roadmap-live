@@ -137,6 +137,14 @@ function validateGoal(errors, goal, where) {
 function warnings(data) {
   const out = [];
   if (!isObject(data)) return out;
+  if (data.view === 'prs' || data.view === 'points') {
+    const items = Array.isArray(data.items) ? data.items : [];
+    const hasPrs = items.some((it) => isObject(it) && Array.isArray(it.prs) && it.prs.length > 0)
+      || (Array.isArray(data.unplanned) && data.unplanned.some((u) => isObject(u) && Array.isArray(u.prs) && u.prs.length > 0));
+    const hasPoints = items.some((it) => isObject(it) && Array.isArray(it.open_points) && it.open_points.length > 0);
+    // The page lists these views only once a sync brought the data; until then it falls back to milestones.
+    if (data.view === 'prs' ? !hasPrs : !hasPoints) out.push({ key: 'viewUnavailable', view: data.view });
+  }
   if (typeof data.tagline === 'string') {
     const length = [...data.tagline].length; // code points, so an emoji counts once
     if (length > TAGLINE_MAX) out.push({ key: 'taglineLong', length });

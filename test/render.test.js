@@ -853,3 +853,22 @@ test('timeline: rows without a parseable time are dropped, nothing else breaks',
   const html = mainOf(view.renderApp(state, { ...BASE_OPTS(), view: 'timeline' }), 'timeline');
   assert.ok(!/Invalid Date|NaN/.test(html));
 });
+
+test('milestones: open items sort blocked, then in progress, then open, whatever order the file has', () => {
+  const state = demoState();
+  // Put a todo item first in the file for m2 so a comparator that is not total would leave it in front.
+  const m2 = state.data.items.filter((it) => it.milestone === 'm2');
+  state.data.items = state.data.items.filter((it) => it.milestone !== 'm2').concat(m2.filter((it) => it.status === 'todo'), m2.filter((it) => it.status !== 'todo'));
+  const html = mainOf(view.renderApp(state, BASE_OPTS()), 'milestones');
+  const m1 = html.match(/data-milestone="m1">[\s\S]*?<\/section>/)[0].match(/data-id="([a-z-]+)" data-status="(\w+)"/g);
+  assert.deepStrictEqual(m1.slice(0, 2), ['data-id="payment" data-status="blocked"', 'data-id="checkout" data-status="active"']);
+  const ids2 = html.match(/data-milestone="m2">[\s\S]*?<\/section>/)[0].match(/<article class="item" data-id="([a-z-]+)"/g).map((m) => m.replace(/.*data-id=/, 'data-id='));
+  assert.deepStrictEqual(ids2, ['data-id="order-queue"', 'data-id="printer"', 'data-id="notifications"']);
+});
+
+test('a roadmap without milestones shows the empty sentence instead of a blank view', () => {
+  const state = demoState();
+  state.data.milestones = [];
+  state.data.items = [];
+  assert.ok(mainOf(view.renderApp(state, BASE_OPTS()), 'milestones').includes('No items yet.'));
+});

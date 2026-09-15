@@ -83,6 +83,6 @@ Exit code 0 means the file is valid. Exit code 1 prints the problems; fix them b
 - `milestone` must reference an existing milestone `id`.
 - `note` and `updated` are optional.
 - `comments`, `question`, `branch` and `goal` are optional, see above.
-- `theme`, `language`, `stale_after_days` and `tagline` at the top level are optional settings for the page; leave them as they are.
+- `theme`, `language`, `stale_after_days`, `tagline` and `view` at the top level are optional settings for the page; leave them as they are.
 
-`node roadmap-live.js --check` may print notes after the ok line: a done item whose goal is under target, an open item that already reached its goal, or a tagline longer than 140 characters. Notes are hints for the human, not errors.
+`node roadmap-live.js --check` may print notes after the ok line: a done item whose goal is under target, an open item that already reached its goal, a tagline longer than 140 characters, or a `"view"` of `prs` or `points` while the file holds no pull requests or open points yet. Notes are hints for the human, not errors.
