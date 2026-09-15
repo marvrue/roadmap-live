@@ -162,12 +162,12 @@ rl.addComment(data, 'listing-editor', 'Finish the cart first');
 
 - The agent writes `project`, `milestones`, `items` with `id`, `title`, `milestone`, `status` (`todo`, `active`, `done`), `note` and `updated`.
 - Sync writes `prs`, `open_points`, `unplanned`, `sync` and the status `blocked`. The agent leaves those alone.
-- `theme`, `language`, `stale_after_days` and `tagline` are optional settings. `tagline` is one sentence about the project, 140 characters or fewer. Files without them, and files from older versions, work unchanged.
+- `theme`, `language`, `stale_after_days`, `tagline` and `view` are optional settings. `tagline` is one sentence about the project, 140 characters or fewer; `view` names the default view (see "Views" below). Files without them, and files from older versions, work unchanged.
 - Milestones are in array order. A milestone is complete when all of its items are done; a milestone without items is not started. The current milestone is the first one that is not complete.
 - The human writes `comments` from the page; the agent answers there, sets and clears `question` and records `branch`.
 - An item may carry a `goal`, a number it works towards: `label` and `target`, plus `current`, `changed` (when `current` last changed) and `source` when known. `source` names where the number comes from, as `kind:argument`: `github-stars:owner/name` or `npm-downloads:package`. Goals go on items, never on milestones. The page shows a goal as `34/100` next to the item (`–/100` until something was measured) and the tagline under the project name; `--check` validates both.
 
-`--check` may print notes after the ok line: a done item whose goal is under its target, an open item that already reached its goal, or a tagline longer than 140 characters. Notes are hints, not errors; the exit code stays 0.
+`--check` may print notes after the ok line: a done item whose goal is under its target, an open item that already reached its goal, a tagline longer than 140 characters, or a `"view"` of `prs` or `points` while the file holds no pull requests or open points yet (the page shows the milestones until a sync brings them). Notes are hints, not errors; the exit code stays 0.
 
 ## Views
 
