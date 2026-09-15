@@ -105,13 +105,14 @@ function startServer(opts, env = process.env, deps = {}) {
     for (const res of clients) res.write(': ping\n\n');
   }, HEARTBEAT_MS);
 
-  const page = () => {
+  // view: the name from ?view=, so the page opens on it before any script runs.
+  const page = (view) => {
     const snap = withLinks(store.snapshot());
     const { lang } = i18n.resolveLanguage({ roadmap: snap.data, env });
     const baseDir = path.dirname(opts.file);
     const themeName = opts.theme || (snap.data && snap.data.theme) || DEFAULT_THEME;
     const theme = resolveTheme(themeName, baseDir) ? themeName : DEFAULT_THEME;
-    return renderPage(snap, { theme, baseDir, lang, langFixed: snap.fixedLang, live: true });
+    return renderPage(snap, { theme, baseDir, lang, langFixed: snap.fixedLang, live: true, view: view || undefined });
   };
 
   const MAX_BODY = 16 * 1024;
@@ -176,7 +177,7 @@ function startServer(opts, env = process.env, deps = {}) {
     switch (url.pathname) {
       case '/':
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
-        return res.end(page());
+        return res.end(page(url.searchParams.get('view')));
       case '/data':
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
         return res.end(JSON.stringify(withLinks(store.snapshot())));

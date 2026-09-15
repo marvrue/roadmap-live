@@ -303,3 +303,22 @@ test('share: page_url in roadmap.json wins over the Pages address', async () => 
     await new Promise((r) => server.close(r));
   }
 });
+
+test('the live page opens on the view named in ?view= before any script runs', async () => {
+  const file = roadmapFile(fixture('demo-roadmap.json'));
+  const { server, port } = await listen(file);
+  const get = (p) => new Promise((resolve, reject) => {
+    http.get({ host: '127.0.0.1', port, path: p }, (res) => {
+      let o = '';
+      res.on('data', (d) => { o += d; });
+      res.on('end', () => resolve(o.split('<script id="roadmap-state"')[0]));
+    }).on('error', reject);
+  });
+  try {
+    assert.ok((await get('/?view=board')).includes('<main class="board">'));
+    assert.ok((await get('/')).includes('<main class="milestones">'));
+    assert.ok((await get('/?view=nope')).includes('<main class="milestones">'), 'an unknown name falls back to the first view');
+  } finally {
+    server.close();
+  }
+});
