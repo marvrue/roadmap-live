@@ -11,6 +11,60 @@
         ],
         "createdAt": "2026-09-11T12:51:44.559Z",
         "reason": "Claude, pre-existing: the 5px progress bar fill widens when an item is done; literal progress motion on one element, not layout thrash"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "young serif",
+        "files": [
+          "site/index.html"
+        ],
+        "createdAt": "2026-09-14T17:18:06.405Z",
+        "reason": "Claude: site/index.html is a separate landing surface with its own type, per the user's pinned direction on 2026-09-14; DESIGN.md describes the roadmap page"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "onest",
+        "files": [
+          "site/index.html"
+        ],
+        "createdAt": "2026-09-14T17:18:06.426Z",
+        "reason": "Claude: site/index.html is a separate landing surface with its own type, per the user's pinned direction on 2026-09-14; DESIGN.md describes the roadmap page"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "sfmono-regular",
+        "files": [
+          "site/index.html"
+        ],
+        "createdAt": "2026-09-14T17:18:06.465Z",
+        "reason": "Claude: site/index.html is a separate landing surface with its own type, per the user's pinned direction on 2026-09-14; DESIGN.md describes the roadmap page"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "apple color emoji",
+        "files": [
+          "site/index.html"
+        ],
+        "createdAt": "2026-09-14T17:18:06.503Z",
+        "reason": "User chose system emojis for the landing illustrations on 2026-09-14; the emoji font stack is intentional"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "site/index.html"
+        ],
+        "createdAt": "2026-09-14T17:18:06.541Z",
+        "reason": "Claude: warm ground follows the user's pinned direction on 2026-09-14 (happiness and harmony, like blume.codes)"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "site/index.html"
+        ],
+        "createdAt": "2026-09-14T17:18:06.565Z",
+        "reason": "Claude: false positive, section.journey-bg is a full-bleed color band whose content sits inside the padded .wrap"
       }
     ]
   }

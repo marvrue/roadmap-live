@@ -66,7 +66,7 @@ test('every built-in theme is embedded, the chosen one active, custom themes add
   const custom = renderPage(demoState(), { theme: 'custom', baseDir: dir, lang: 'en', live: false, now: NOW });
   assert.ok(custom.includes('<style data-theme="custom" media="all">'));
   assert.ok(custom.includes('<style data-theme="neutral" media="not all">'));
-  assert.ok(custom.includes('"themes":["custom","neutral","paper","mono"]'));
+  assert.ok(custom.includes('"themes":["custom","neutral","paper","mono","press","slate","phosphor","kraft","meadow","still"]'));
 });
 
 test('static page is English by default and German with lang de', () => {

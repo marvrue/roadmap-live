@@ -20,7 +20,7 @@ test('the entry exports the pieces a service needs', () => {
   assert.strictEqual(typeof lib.providers.byName, 'function');
   assert.strictEqual(typeof lib.providers.resolveProvider, 'function');
   assert.ok(Array.isArray(lib.providers.PROVIDERS));
-  assert.deepStrictEqual(lib.BUILTIN_THEMES, ['neutral', 'paper', 'mono']);
+  assert.deepStrictEqual(lib.BUILTIN_THEMES, ['neutral', 'paper', 'mono', 'press', 'slate', 'phosphor', 'kraft', 'meadow', 'still']);
 });
 
 test('syncRoadmap returns the next roadmap and the changes without writing anything', async () => {
