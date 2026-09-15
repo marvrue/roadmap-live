@@ -1,0 +1,10 @@
+{
+  "project": "A small delivery",
+  "milestones": [
+    { "id": "m1", "title": "First usable flow", "outcome": "An order can be placed and opened again", "limit": 3 }
+  ],
+  "items": [
+    { "id": "place-order", "title": "Place an order", "milestone": "m1", "status": "todo", "acceptance": [{ "id": "saved", "text": "The order is saved" }] },
+    { "id": "open-order", "title": "Open the order again", "milestone": "m1", "status": "todo", "acceptance": [{ "id": "reload", "text": "The order survives a reload" }] }
+  ]
+}

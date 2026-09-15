@@ -159,6 +159,19 @@ function warnings(data) {
   return out;
 }
 
+function validateAcceptance(errors, value, where) {
+  if (value === undefined) return;
+  if (!Array.isArray(value)) { errors.push(`${where} must be an array`); return; }
+  const ids = new Set();
+  value.forEach((c, i) => {
+    if (!isObject(c)) { errors.push(`${where}[${i}] must be an object`); return; }
+    if (!isText(c.id) || !ID_RE.test(c.id) || ids.has(c.id)) errors.push(`${where}[${i}].id must be unique kebab-case`);
+    ids.add(c.id);
+    if (!isText(c.text)) errors.push(`${where}[${i}].text must be a non-empty string`);
+    if (c.evidence !== undefined && !isText(c.evidence)) errors.push(`${where}[${i}].evidence must be a non-empty string`);
+  });
+}
+
 function validate(data) {
   const errors = [];
   if (!isObject(data)) return ['root must be a JSON object'];
@@ -186,6 +199,8 @@ function validate(data) {
       else if (milestoneIds.has(m.id)) errors.push(`${where}.id "${stripControls(m.id)}" is used more than once`);
       else milestoneIds.add(m.id);
       if (!isText(m.title)) errors.push(`${where}.title must be a non-empty string`);
+      if (m.outcome !== undefined && !isText(m.outcome)) errors.push(`${where}.outcome must be a non-empty string`);
+      if (m.limit !== undefined && (!Number.isInteger(m.limit) || m.limit < 1)) errors.push(`${where}.limit must be a positive integer`);
       if (m.goal !== undefined) errors.push(`${where}.goal is not supported, put goals on items`);
     });
   }
@@ -219,7 +234,44 @@ function validate(data) {
       validateComments(errors, it.comments, `${label}.comments`);
       validateQuestion(errors, it.question, `${label}.question`);
       validateGoal(errors, it.goal, `${label}.goal`);
+      validateAcceptance(errors, it.acceptance, `${label}.acceptance`);
     });
+  }
+
+  if (data.focus !== undefined) {
+    if (!isObject(data.focus)) errors.push('focus must be an object');
+    else {
+      if (!milestoneIds.has(data.focus.milestone)) errors.push('focus.milestone must reference an existing milestone');
+      if (!isText(data.focus.reason)) errors.push('focus.reason must be a non-empty string');
+      const baseline = data.focus.baseline;
+      if (!isObject(baseline) || typeof baseline.outcome !== 'string' || !Number.isInteger(baseline.limit) || baseline.limit < 1 || !Array.isArray(baseline.items)) errors.push('focus.baseline must contain outcome, limit and items from the focus command');
+      else {
+        const ids = new Set();
+        baseline.items.forEach((it, i) => {
+          const where = `focus.baseline.items[${i}]`;
+          if (!isObject(it) || !isText(it.id) || !isText(it.title)) errors.push(`${where} needs id and title`);
+          else {
+            if (ids.has(it.id)) errors.push(`${where}.id is duplicated`);
+            ids.add(it.id);
+            validateAcceptance(errors, it.acceptance, `${where}.acceptance`);
+            if (!Array.isArray(it.acceptance)) errors.push(`${where}.acceptance is required`);
+          }
+        });
+      }
+    }
+  }
+  if (data.checkpoint !== undefined) {
+    const c = data.checkpoint;
+    if (!isObject(c)) errors.push('checkpoint must be an object');
+    else {
+      checkDate(errors, c.at, 'checkpoint.at', false);
+      if (!['check', 'start', 'complete', 'scope', 'milestone'].includes(c.event)) errors.push('checkpoint.event is invalid');
+      if (!['continue', 'review'].includes(c.result)) errors.push('checkpoint.result is invalid');
+      if (c.item !== null && !isText(c.item)) errors.push('checkpoint.item must be a string or null');
+      if (c.input !== null && !isObject(c.input)) errors.push('checkpoint.input must be an object or null');
+      if (!Array.isArray(c.findings)) errors.push('checkpoint.findings must be an array');
+      else c.findings.forEach((f) => { if (!isObject(f) || !isText(f.code) || !isObject(f.params)) errors.push('checkpoint finding needs code and params'); });
+    }
   }
 
   if (data.unplanned !== undefined) {

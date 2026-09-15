@@ -24,6 +24,7 @@ function loadAssets() {
     template: fs.readFileSync(path.join(PAGE_DIR, 'template.html'), 'utf8'),
     pageCss: fs.readFileSync(path.join(PAGE_DIR, 'page.css'), 'utf8'),
     viewJs: fs.readFileSync(path.join(PAGE_DIR, 'view.js'), 'utf8'),
+    checkpointJs: fs.readFileSync(path.join(__dirname, 'checkpoint.js'), 'utf8'),
     pageJs: fs.readFileSync(path.join(PAGE_DIR, 'page.js'), 'utf8'),
     liveJs: fs.readFileSync(path.join(PAGE_DIR, 'live.js'), 'utf8'),
   };
@@ -120,6 +121,7 @@ function renderPage(state, opts = {}) {
     state_json: jsonForHtml(fullState),
     locales_json: jsonForHtml(locales),
     view_js: inlineScript(a.viewJs),
+    checkpoint_js: inlineScript(a.checkpointJs),
     page_js: inlineScript(a.pageJs),
     live_script: opts.live ? `<script>${inlineScript(a.liveJs)}</script>` : '',
   };

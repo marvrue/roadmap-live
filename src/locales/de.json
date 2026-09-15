@@ -215,7 +215,7 @@
     }
   },
   "cli": {
-    "usage": "Aufruf: roadmap-live [Befehl] [Datei] [Optionen]\n\nBefehle:\n  (keiner)               Live-Server starten (Standard)\n  sync                   Pull-Request-Aktivität von GitHub lesen und die Roadmap aktualisieren\n  render                 statische HTML-Seite aus dem aktuellen Stand schreiben\n  init                   roadmap.json, AGENTS.md und die Workflow-Datei anlegen\n  auth                   im Browser bei GitHub anmelden (--logout entfernt das Token)\n  doctor                 erklären, welche GitHub-Anmeldung und welcher Provider verwendet würden\n\nOptionen:\n  Datei                  Pfad zur roadmap.json (Standard: ./roadmap.json)\n  --port <n>             HTTP-Port für den Live-Server (Standard: 4242)\n  --key <geheim>         Schreibschlüssel für die Live-Seite (Standard: beim Start erzeugt, oder ROADMAP_KEY)\n  --check                Datei prüfen und mit 0 (ok) oder 1 (Probleme) beenden\n  --repo owner/name      Repository für sync und init (Standard: sync.repo, GITHUB_REPOSITORY oder das Git-Remote)\n  --dry-run              sync: geplante Änderungen anzeigen, nichts schreiben\n  --apply                sync: .roadmap-live/result.json vom Coding-Agenten übernehmen\n  --no-bootstrap         init: leere Roadmap schreiben, statt eine aus dem Repository zu entwerfen\n  --provider <name>      sync, init: anthropic, claude-cli, codex-cli, gemini-cli oder agent\n  --public               auth: nur den Scope public_repo anfordern\n  --out <Pfad>           render: Ausgabedatei (Standard: roadmap/index.html)\n  --theme <name>         render: neutral, paper, mono oder eine Datei in roadmap-themes/\n  --mode light|dark      render: Farbmodus festlegen statt dem System zu folgen\n  -h, --help             diese Hilfe anzeigen",
+    "usage": "Aufruf: roadmap-live [Befehl] [Datei] [Optionen]\n\nBefehle:\n  (keiner)               Live-Server starten (Standard)\n  sync                   Pull-Request-Aktivität von GitHub lesen und die Roadmap aktualisieren\n  render                 statische HTML-Seite aus dem aktuellen Stand schreiben\n  init                   roadmap.json, AGENTS.md und die Workflow-Datei anlegen\n  auth                   im Browser bei GitHub anmelden (--logout entfernt das Token)\n  doctor                 erklären, welche GitHub-Anmeldung und welcher Provider verwendet würden\n\nOptionen:\n  Datei                  Pfad zur roadmap.json (Standard: ./roadmap.json)\n  --port <n>             HTTP-Port für den Live-Server (Standard: 4242)\n  --key <geheim>         Schreibschlüssel für die Live-Seite (Standard: beim Start erzeugt, oder ROADMAP_KEY)\n  --check                Datei prüfen und mit 0 (ok) oder 1 (Probleme) beenden\n  --repo owner/name      Repository für sync und init (Standard: sync.repo, GITHUB_REPOSITORY oder das Git-Remote)\n  --dry-run              sync: geplante Änderungen anzeigen, nichts schreiben\n  --apply                sync: .roadmap-live/result.json vom Coding-Agenten übernehmen\n  --no-bootstrap         init: leere Roadmap schreiben, statt eine aus dem Repository zu entwerfen\n  --provider <name>      sync, init: anthropic, claude-cli, codex-cli, gemini-cli oder agent\n  --public               auth: nur den Scope public_repo anfordern\n  --out <Pfad>           render: Ausgabedatei (Standard: roadmap/index.html)\n  --theme <name>         render: neutral, paper, mono oder eine Datei in roadmap-themes/\n  --mode light|dark      render: Farbmodus festlegen statt dem System zu folgen\n  -h, --help             diese Hilfe anzeigen\n\nCheckpoints:\n  roadmap-live focus --milestone <id> --reason <text>\n  roadmap-live checkpoint [--event check|start|complete|scope|milestone] [--item <id>] [--dry-run]",
     "unknownOption": "unbekannte Option: {option}",
     "unknownCommand": "unbekannter Befehl: {command}",
     "invalidPort": "ungültiger Port: {port}",
@@ -366,5 +366,56 @@
       "committed": "{files} committet und gepusht.",
       "commitMessage": "Roadmap aus Pull-Request-Aktivität aktualisieren"
     }
+  },
+  "checkpoint": {
+    "title": "Prüfpunkt",
+    "results": {
+      "continue": "Regeln geprüft: keine Befunde",
+      "review": "Klärung nötig",
+      "disabled": "Prüfpunkte sind nicht aktiviert"
+    },
+    "focusUsage": "Verwende focus --milestone <id> --reason <Begründung für diesen Umfang>.",
+    "focusSet": "Umfang für {milestone} vereinbart.",
+    "usage": "Verwende checkpoint --event check|start|complete|scope|milestone; start und complete benötigen --item <id>.",
+    "reason": "Warum dieser Meilenstein",
+    "evidenceCount": "{evidenced} von {total} Kriterien mit Nachweis",
+    "evidenceHint": "Eingetragene Nachweise müssen weiterhin fachlich geprüft werden.",
+    "pending": "Nachweis fehlt",
+    "recorded": "Letzte gespeicherte Prüfung",
+    "stale": "Die Roadmap hat sich seit dieser Prüfung geändert.",
+    "none": "Noch kein Prüfpunkt gespeichert.",
+    "criteriaTitle": "Abnahmekriterien",
+    "events": {
+      "check": "Roadmap prüfen",
+      "start": "Vor Aufgabenstart",
+      "complete": "Vor Aufgabenabschluss",
+      "scope": "Umfang prüfen",
+      "milestone": "Meilenstein abschließen"
+    },
+    "next": "Nächster Schritt",
+    "continueHint": "An der vereinbarten Aufgabe arbeiten und das Ergebnis vor dem Abschluss prüfen.",
+    "reviewHint": "Befunde vor der nächsten Aufgabe klären; Änderungen des Umfangs mit dem Menschen vereinbaren.",
+    "findings": {
+      "focusRequired": "Zuerst einen Meilenstein wählen und seinen Umfang vereinbaren.",
+      "invalidEvent": "Unbekannter Prüfpunkt.",
+      "unknownItem": "Aufgabe nicht gefunden: {item}.",
+      "wrongMilestone": "{item} liegt außerhalb des gewählten Meilensteins {milestone}.",
+      "missingOutcome": "Das beabsichtigte Ergebnis von {milestone} beschreiben.",
+      "emptyMilestone": "Dieser Meilenstein enthält keine Aufgaben.",
+      "scopeChanged": "Ergebnis, Begrenzung, Aufgaben, Abnahmekriterien oder Zielwerte haben sich seit der Vereinbarung geändert.",
+      "tooManyItems": "{count} offene Aufgaben überschreiten die vereinbarte Grenze von {limit}.",
+      "finishCurrent": "{item} abschließen oder zurückgeben, bevor eine weitere Aufgabe beginnt.",
+      "finishedItem": "{item} ist bereits fertig.",
+      "notStarted": "{item} vor dem Abschluss zuerst beginnen.",
+      "missingCriteria": "Abnahmekriterien für {item} festlegen.",
+      "missingEvidence": "{item}: Nachweis für „{criterion}“ fehlt.",
+      "openQuestion": "Die offene Frage zu {item} beantworten und klären.",
+      "reviewPoints": "Für {item} sind noch Anforderungen aus dem Review offen.",
+      "blocked": "{item} ist blockiert.",
+      "unfinishedItem": "{item} vor dem Meilensteinabschluss fertigstellen.",
+      "goalPending": "{item}: Das Ziel „{label}“ wurde noch nicht mit mindestens {target} gemessen."
+    },
+    "workingOn": "In Arbeit",
+    "nextTask": "Nächste Aufgabe"
   }
 }

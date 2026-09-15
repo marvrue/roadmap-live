@@ -235,6 +235,59 @@ English by default. The page and the command line switch to German when your sys
 - The browser login needs a public OAuth app; until one is registered for this project, use the GitHub CLI or `GITHUB_TOKEN`.
 - The GitHub Action commits to the default branch. Branch protection rules that block the built-in token need a different token in `github_token`.
 
+## Stay on course with checkpoints
+
+Checkpoints are optional. They compare the work with an explicitly agreed milestone and report missing acceptance evidence, open decisions and changes in scope. The same rules run in the CLI, on the live page after each update, and in the static page. They make no model calls and do not start or stop your agents.
+
+1. Give the milestone an `outcome` describing the usable result and optionally a `limit` for open tasks (default 7).
+2. Give its tasks `acceptance` criteria with stable ids. Add `evidence` after actually checking each criterion.
+3. Agree the focus and scope once:
+
+```sh
+node roadmap-live.js focus --milestone m1 --reason "Finish the first usable buying flow"
+```
+
+This sets `focus.milestone`, `focus.reason` and a `focus.baseline` containing the outcome, limit, task titles, criteria and numerical goal targets. It leaves milestone order unchanged. Agree changes with the human before running `focus` again; record significant changes in `DECISIONS.md`.
+
+```json
+{
+  "id": "place-order",
+  "title": "Place an order",
+  "milestone": "m1",
+  "status": "active",
+  "acceptance": [
+    {
+      "id": "order-saved",
+      "text": "A submitted order can be opened after a page reload",
+      "evidence": "test/order.test.js: persistence test passed; also checked in the browser"
+    }
+  ]
+}
+```
+
+The agent runs a check at each transition:
+
+```sh
+# Before setting active
+node roadmap-live.js checkpoint --event start --item place-order
+# After testing and recording evidence, before setting done
+node roadmap-live.js checkpoint --event complete --item place-order
+# After changing the scope
+node roadmap-live.js checkpoint --event scope
+# Before declaring the entire milestone complete
+node roadmap-live.js checkpoint --event milestone
+# After a status change, or in CI (read-only)
+node roadmap-live.js checkpoint --dry-run
+```
+
+Exit **0** means no rule findings; **2** means review is needed; **1** means invalid input or a file error. A general check on a roadmap without `focus` reports that checkpoints are disabled and exits 0, so old projects keep working. Start and complete need an item id. The command leaves item statuses, timestamps, comments and sync fields alone. Without `--dry-run` it records the latest result in `checkpoint`; identical consecutive checks do not write again. That record is historical after relevant roadmap changes; the page always computes the current findings separately.
+
+Missing evidence on an active task is expected until its completion check. Marking an item done directly still exposes missing evidence on the page and in CI. Completing a milestone requires all its tasks to be done and have criteria and evidence, with no open questions or reviewer requests and required goals reached. Evidence is a recorded statement: the agent or human still needs to inspect its substance. A passing rule check does not verify the linked test or the current source-code revision.
+
+The included `AGENTS.md` describes the working agreement. Add `node roadmap-live.js checkpoint --dry-run` to CI to check it before merging; preventing a merge also requires that check to be required in your repository settings. Local direct edits are still possible. Time limits, token accounting and agent-specific execution hooks are future work.
+
+See [the runnable example](examples/checkpoint-roadmap.json) and [the design](docs/designs/roadmap-checkpoints.md).
+
 ## License
 
 MIT, see `LICENSE`.
