@@ -29,7 +29,11 @@
       "milestone": "m1",
       "status": "done",
       "note": "Single file, no dependencies.",
-      "updated": "2026-09-08T07:10:00Z"
+      "updated": "2026-09-15T06:39:28Z",
+      "prs": [
+        20
+      ],
+      "branch": "feat/view-query"
     },
     {
       "id": "file-watcher",
@@ -45,7 +49,12 @@
       "milestone": "m1",
       "status": "done",
       "note": "Invalid files never stop the server.",
-      "updated": "2026-09-08T07:40:00Z"
+      "updated": "2026-09-14T16:03:58Z",
+      "prs": [
+        16,
+        20
+      ],
+      "branch": "feat/view-query"
     },
     {
       "id": "progress-bar",
@@ -109,8 +118,11 @@
       "milestone": "m2",
       "status": "done",
       "note": "Commit subjects, README headings and pull request titles go through the provider chain; the empty skeleton stays the fallback.",
-      "updated": "2026-09-14T11:59:53Z",
-      "branch": "feat/init-draft"
+      "updated": "2026-09-14T17:13:06Z",
+      "branch": "feat/init-draft",
+      "prs": [
+        19
+      ]
     },
     {
       "id": "npm-publish",
@@ -160,8 +172,9 @@
       "title": "Theme switch, progress favicon and tab title",
       "milestone": "m2",
       "status": "done",
-      "updated": "2026-09-11T08:17:05Z",
+      "updated": "2026-09-10T15:07:09Z",
       "prs": [
+        1,
         2
       ],
       "branch": "feat/theme-switch"
@@ -183,9 +196,10 @@
       "title": "English and German UI strings with automatic language detection",
       "milestone": "m3",
       "status": "done",
-      "updated": "2026-09-10T15:07:09Z",
+      "updated": "2026-09-15T06:39:28Z",
       "prs": [
-        1
+        1,
+        20
       ],
       "branch": "feat/pr-sync"
     },
@@ -205,9 +219,10 @@
       "title": "Classification providers: API key, Claude, Codex, Gemini, agent inbox",
       "milestone": "m3",
       "status": "done",
-      "updated": "2026-09-10T15:07:09Z",
+      "updated": "2026-09-14T17:13:06Z",
       "prs": [
-        1
+        1,
+        19
       ],
       "branch": "feat/pr-sync"
     },
@@ -217,9 +232,10 @@
       "milestone": "m3",
       "status": "done",
       "note": "Idempotent, writes CHANGELOG.md.",
-      "updated": "2026-09-14T16:04:11Z",
+      "updated": "2026-09-14T16:03:58Z",
       "prs": [
         1,
+        16,
         17
       ],
       "branch": "feat/pr-sync"
@@ -229,12 +245,13 @@
       "title": "render: static page with three themes for GitHub Pages",
       "milestone": "m3",
       "status": "done",
-      "updated": "2026-09-14T17:12:10Z",
+      "updated": "2026-09-15T06:39:28Z",
       "prs": [
         1,
         2,
         17,
-        18
+        18,
+        20
       ],
       "branch": "feat/theme-switch"
     },
@@ -254,9 +271,10 @@
       "title": "Test suite with recorded fixtures and render snapshots",
       "milestone": "m3",
       "status": "done",
-      "updated": "2026-09-10T15:07:09Z",
+      "updated": "2026-09-15T06:39:28Z",
       "prs": [
-        1
+        1,
+        20
       ],
       "branch": "feat/pr-sync"
     },
@@ -265,7 +283,11 @@
       "title": "README for readers who steer agents but do not code",
       "milestone": "m3",
       "status": "done",
-      "updated": "2026-09-10T16:25:00Z"
+      "updated": "2026-09-14T17:13:06Z",
+      "prs": [
+        19
+      ],
+      "branch": "feat/init-draft"
     },
     {
       "id": "feedback-channel",
@@ -289,9 +311,10 @@
       "status": "todo",
       "note": "Needs a GitHub account; the code path is ready.",
       "prs": [
+        1,
         12
       ],
-      "updated": "2026-09-11T15:11:37Z",
+      "updated": "2026-09-10T15:07:09Z",
       "branch": "chore/github-app-done"
     },
     {
@@ -300,10 +323,12 @@
       "milestone": "m4",
       "status": "done",
       "note": "require(\"roadmap-live\") gives syncRoadmap, renderPage, addComment without files.",
-      "updated": "2026-09-11T09:42:00Z",
+      "updated": "2026-09-11T09:02:51Z",
       "branch": "feat/lib-exports",
       "prs": [
-        6
+        4,
+        6,
+        9
       ]
     },
     {
@@ -312,9 +337,10 @@
       "milestone": "m4",
       "status": "done",
       "note": "renderPage takes basePath; the page calls data, events and comment relative to it.",
-      "updated": "2026-09-11T09:43:28Z",
+      "updated": "2026-09-11T09:02:51Z",
       "branch": "feat/page-base-url",
       "prs": [
+        4,
         7,
         9
       ]
@@ -325,11 +351,13 @@
       "milestone": "m4",
       "status": "done",
       "note": "Plain address reads, ?key= address writes; the key is a header, never in a response.",
-      "updated": "2026-09-11T09:43:53Z",
+      "updated": "2026-09-11T09:02:51Z",
       "branch": "feat/page-write-token",
       "prs": [
+        4,
         8,
-        9
+        9,
+        18
       ]
     },
     {
@@ -338,8 +366,9 @@
       "milestone": "m4",
       "status": "done",
       "note": "GitHub App gtm-roadmap registered on 2026-09-11; the device-flow OAuth app for the CLI is still open (oauth-app).",
-      "updated": "2026-09-11T11:57:55Z",
+      "updated": "2026-09-11T09:02:51Z",
       "prs": [
+        4,
         10,
         12
       ],
@@ -351,9 +380,10 @@
       "milestone": "m4",
       "status": "done",
       "note": "Private repo marvrue/roadmap-live-cloud; spec and plan live there.",
-      "updated": "2026-09-11T11:57:55Z",
+      "updated": "2026-09-11T09:02:51Z",
       "branch": "main (roadmap-live-cloud)",
       "prs": [
+        4,
         10
       ]
     },
@@ -363,8 +393,9 @@
       "milestone": "m4",
       "status": "done",
       "note": "Add more than one repository and see all of them at a glance.",
-      "updated": "2026-09-11T11:57:55Z",
+      "updated": "2026-09-11T09:02:51Z",
       "prs": [
+        4,
         10
       ],
       "branch": "chore/cloud-repo-active"
@@ -376,9 +407,10 @@
       "status": "done",
       "note": "Customers may add their own key instead.",
       "prs": [
+        4,
         10
       ],
-      "updated": "2026-09-11T11:57:55Z",
+      "updated": "2026-09-11T09:02:51Z",
       "branch": "chore/cloud-repo-active"
     },
     {
@@ -430,11 +462,12 @@
       "title": "Page shows current/target, tagline in the header",
       "milestone": "m5",
       "status": "done",
-      "updated": "2026-09-13T13:46:35Z",
+      "updated": "2026-09-14T16:03:58Z",
       "branch": "feat/page-goals",
       "note": "34/100 in the label column, goal in the subline, one feed row, tagline in the header.",
       "prs": [
-        14
+        14,
+        16
       ]
     },
     {
@@ -478,9 +511,10 @@
       "milestone": "m5",
       "status": "active",
       "prs": [
+        17,
         18
       ],
-      "updated": "2026-09-14T16:52:02Z",
+      "updated": "2026-09-14T16:04:11Z",
       "branch": "feat/views-followup"
     }
   ],
@@ -491,24 +525,10 @@
         5
       ],
       "first_seen": "2026-09-11T09:17:57Z"
-    },
-    {
-      "title": "Add hosted version milestone items to roadmap",
-      "prs": [
-        4
-      ],
-      "first_seen": "2026-09-11T08:37:32Z"
-    },
-    {
-      "title": "Fix corrupted roadmap json after merge conflict",
-      "prs": [
-        16
-      ],
-      "first_seen": "2026-09-14T15:51:56Z"
     }
   ],
   "sync": {
-    "last_run": "2026-09-14T16:53:06.000Z",
+    "last_run": "2026-10-01T00:47:12.395Z",
     "repo": "marvrue/roadmap-live"
   }
 }
