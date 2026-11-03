@@ -1,0 +1,47 @@
+/* kraft: kraft paper, brown-black ink, a deep teal for attention. Serif titles, humanist sans text. A notebook. */
+:root {
+  color-scheme: light dark;
+  --bg: #eadcc3;
+  --surface: #f2e7d2;
+  --text: #2a1e12;
+  --text-2: #57452f;
+  --text-3: #6a5842;
+  --line: #d3c2a3;
+  --line-strong: #ad9973;
+  --attention: #0f6367;
+  --attention-bg: rgba(15, 99, 103, 0.10);
+  --done: #3d2d1c;
+  --font-heading: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Constantia, Georgia, serif;
+  --font-body: Seravek, "Avenir Next", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 2px;
+  --measure: 62ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --bg: #1f1912;
+    --surface: #282118;
+    --text: #efe3cd;
+    --text-2: #b9a98d;
+    --text-3: #9d8c72;
+    --line: #362d22;
+    --line-strong: #4f4434;
+    --attention: #62c9c4;
+    --attention-bg: rgba(98, 201, 196, 0.12);
+    --done: #d5c6aa;
+  }
+}
+:root[data-mode="dark"] {
+  --bg: #1f1912;
+  --surface: #282118;
+  --text: #efe3cd;
+  --text-2: #b9a98d;
+  --text-3: #9d8c72;
+  --line: #362d22;
+  --line-strong: #4f4434;
+  --attention: #62c9c4;
+  --attention-bg: rgba(98, 201, 196, 0.12);
+  --done: #d5c6aa;
+}
+:root[data-mode="light"] { color-scheme: light; }
+:root[data-mode="dark"] { color-scheme: dark; }

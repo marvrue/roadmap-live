@@ -1,0 +1,47 @@
+/* meadow: the landing page's world. Cream sheet, blue-black ink, the car's red for attention, and a green progress fill: the one theme whose done is a hue. Slab titles, rounded text, a pill track. */
+:root {
+  color-scheme: light dark;
+  --bg: #fbf4e4;
+  --surface: #fffbf2;
+  --text: #1f2a33;
+  --text-2: #44515c;
+  --text-3: #59666f;
+  --line: #e4d8bd;
+  --line-strong: #c4b294;
+  --attention: #c23a26;
+  --attention-bg: rgba(194, 58, 38, 0.09);
+  --done: #4a8f35;
+  --font-heading: Rockwell, "Roboto Slab", "Zilla Slab", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-body: ui-rounded, "Avenir Next", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 999px;
+  --measure: 62ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --bg: #1b2430;
+    --surface: #222d3a;
+    --text: #f4ecda;
+    --text-2: #c3bba8;
+    --text-3: #a49c8a;
+    --line: #2e3946;
+    --line-strong: #465363;
+    --attention: #f5876f;
+    --attention-bg: rgba(245, 135, 111, 0.12);
+    --done: #8ccf73;
+  }
+}
+:root[data-mode="dark"] {
+  --bg: #1b2430;
+  --surface: #222d3a;
+  --text: #f4ecda;
+  --text-2: #c3bba8;
+  --text-3: #a49c8a;
+  --line: #2e3946;
+  --line-strong: #465363;
+  --attention: #f5876f;
+  --attention-bg: rgba(245, 135, 111, 0.12);
+  --done: #8ccf73;
+}
+:root[data-mode="light"] { color-scheme: light; }
+:root[data-mode="dark"] { color-scheme: dark; }

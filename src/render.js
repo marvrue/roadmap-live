@@ -12,7 +12,7 @@ const { loadRoadmap, displayName } = require('./validate');
 
 const PAGE_DIR = path.join(__dirname, 'page');
 const THEME_DIR = path.join(PAGE_DIR, 'themes');
-const BUILTIN_THEMES = ['neutral', 'paper', 'mono'];
+const BUILTIN_THEMES = ['neutral', 'paper', 'mono', 'press', 'slate', 'phosphor', 'kraft', 'meadow', 'still'];
 const DEFAULT_THEME = 'neutral';
 const DEFAULT_OUT = path.join('roadmap', 'index.html');
 const CHANGELOG_LINES = 10;
